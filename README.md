@@ -1,6 +1,17 @@
 # aikavali-front
+[![Build Status](https://travis-ci.org/ohtu-aikavali/aikavali-front.svg?branch=master)](https://travis-ci.org/ohtu-aikavali/aikavali-front)
+[![codecov](https://codecov.io/gh/ohtu-aikavali/aikavali-front/branch/master/graph/badge.svg)](https://codecov.io/gh/ohtu-aikavali/aikavali-front)
+[![dependencies Status](https://david-dm.org/ohtu-aikavali/aikavali-front/status.svg)](https://david-dm.org/ohtu-aikavali/aikavali-front)
+[![Maintainability](https://api.codeclimate.com/v1/badges/587108bad312c57e2c74/maintainability)](https://codeclimate.com/github/ohtu-aikavali/aikavali-front/maintainability)
 
-[Backlog](https://docs.google.com/spreadsheets/d/1eLOK-ZdBtr7S7bItJMD2JX7B941bgRIqcAq6uivDRaY/edit#gid=7)  
+[Backlog](https://docs.google.com/spreadsheets/d/1eLOK-ZdBtr7S7bItJMD2JX7B941bgRIqcAq6uivDRaY/edit#gid=7)
+
+# Definition of Done
+
+- The feature has to be planned and documented accordingly.
+- The feature has to pass testing on the Travis CI server.
+- The feature has been approved by the customer.
+
 ## Start  
 Install dependencies:
 
