@@ -25,4 +25,3 @@ Tests:
 Linter:
 
 ```npm run lint```
->>>>>>> b2fe096aecaa70b508c0ba88676d31ff969a1615
