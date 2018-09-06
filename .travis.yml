@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+- '8'
+branches:
+  only:
+  - master
+script:
+- npm run lint
+- npm run test-coverage
+- npm run codecov
+deploy:
+  provider: heroku
+  api_key:
+    secure: ZdQ8GyZuSHBY8rq1FGV1Wo8axZUIancnhD9w/JDkTrSeyn0fU68UwxRsXdc+qQHSdJlNx8c2RbL4bg/YAaL2FVPTWHrB2bIKnT8ljdDYgsIR28dsFPeUyy03OiP2bTJQ98t/iHyzO+blM2ZZzAtjUy4jlTSH84TNVUXcb/rrE8aORqsU+m3PXVk7EHJ7UF8A2ClN+wE4MK9SWLHUZU84KMLnTZsHAvnHbeuDhWIW1G3qZ/wBBvZ2CwjdFzue/qhJTiwKAfSz3k+O5s4+iOCHOQWnxuX2JjP7Kv1Xp4Nh12zPpohOay0R/hp3vf781xddi0m2EHBprFDIINShJaeC92KxOwuXBTpyH3UUpyKOszHEh9CwIJvHbBAgERM7k2FAaVtKSHXikirLRpLtSP8sntafahHf2Ve4/ShiAIdOGNcZ1mU3/p33jZu3VVfGdF6trS/vCQQyDIV+LJyP84jhCvU+tShh+ufjNIJRfOvXbkMt+s4NmfSomc+fLA1t+v2D5N8mKsUkkvCwvdRvydi4Dp7uFbrI7EKZAguF19gnPKMikFwJWk2qi3GhWzcmS4O5Jon5LrjYjnJyN3HrwxpzLB62KuBNJMATnA6aN/g603K1+D01Nd7JEewt9vGUDrod4xyl1YgIU28BSGTI05SXJu3UO8NMUDsBLhxtkGnQkbc=
+  app: react-cd-pipeline-skeleton
