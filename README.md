@@ -7,3 +7,22 @@
 - The feature has to be planned and documented accordingly.
 - The feature has to pass testing on the Travis CI server.
 - The feature has been approved by the customer.
+
+## Start  
+Install dependencies:
+
+```npm install```
+
+Start the project:
+
+```npm start```
+
+## Additional scripts
+Tests:
+
+```npm test```
+
+Linter:
+
+```npm run lint```
+>>>>>>> b2fe096aecaa70b508c0ba88676d31ff969a1615
