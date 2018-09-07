@@ -3,12 +3,12 @@ import thunk from 'redux-thunk'
 import exampleReducer from './exampleReducer'
 
 const combinedReducers = combineReducers({
-  example: exampleReducer,
+  example: exampleReducer
 })
 
 const store = createStore(
   combinedReducers,
-  applyMiddleware(thunk),
+  applyMiddleware(thunk)
 )
 
 export default store

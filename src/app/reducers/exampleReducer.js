@@ -5,17 +5,16 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
-  case exampleConstants.EXAMPLE_INCREMENT: {
-    return {
-      ...state,
-      currentValue: action.payload
+  switch (action.type) {
+    case exampleConstants.EXAMPLE_INCREMENT: {
+      return {
+        ...state,
+        currentValue: action.payload
+      }
     }
-  }
-
-  default: {
-    return state
-  }
+    default: {
+      return state
+    }
   }
 }
 
