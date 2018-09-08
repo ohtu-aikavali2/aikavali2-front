@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-class Button extends React.Component {
-  render() {
+class Button extends Component {
+  render () {
     return (
-      <button className='button' onClick={ this.props.handleClick }>{ this.props.value }</button>
+      <button className='button' onClick={this.props.handleClick}>{this.props.value}</button>
     )
   }
 }

@@ -16,7 +16,7 @@
     "test": "CI=true react-scripts test --env=jsdom",
     "test-coverage": "CI=true react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
-    "lint": "./node_modules/.bin/eslint .",
+    "lint": "eslint .",
     "codecov": "./node_modules/.bin/codecov",
     "precommit": "npm test && npm run lint"
   },

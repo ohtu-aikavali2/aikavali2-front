@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { Component } from 'react'
 import ExampleCalculator from './ExampleCalculator'
 import { connect } from 'react-redux'
 import { exampleIncrement } from '../../reducers/actions/exampleActions'
 import './frontPage.css'
 
-class FrontPage extends React.Component {
-  render() {
+class FrontPage extends Component {
+  render () {
     return (
       <div>
         <h1>Aikavälikertaus</h1>
-        <ExampleCalculator currentValue={ this.props.example.currentValue } handleClick={this.props.exampleIncrement} />
+        <ExampleCalculator currentValue={this.props.example.currentValue} handleClick={this.props.exampleIncrement} />
       </div>
     )
   }
@@ -17,7 +17,7 @@ class FrontPage extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    example: state.example,
+    example: state.example
   }
 }
 
@@ -25,6 +25,5 @@ const ConnectedFrontPage = connect(
   mapStateToProps,
   { exampleIncrement }
 )(FrontPage)
-
 
 export default ConnectedFrontPage
