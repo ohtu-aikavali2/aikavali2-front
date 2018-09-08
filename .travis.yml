@@ -1,9 +1,6 @@
 language: node_js
 node_js:
 - '8'
-branches:
-  only:
-  - master
 script:
 - npm run lint
 - npm run test-coverage
@@ -13,3 +10,5 @@ deploy:
   api_key:
     secure: xDD+05ccwQEMTR6GL3VO10dNXHs0C6XB95Os+yvALdfqOFn3+vg/njEzN6SVGqvaItKU5pZLfsne2DJEFzJwUPHR8EGfs08LRiFqxg65QJ8MzrmRNkuaROZFx1NgcKZAc5Ica+1Sle5ZYy0kPDp3hiUMtkuaLjCFTiIeYiuhzooZHa5OzF2YlpbOLt1RfGZK2NorXb4jwWPiHMs+EFZgw7DEBLl/zdm1d5OnLtfLAx+DS2AU6LWkHQ+BZAFRIp2G4kqrLIJICXdWLvO/Hpp6VDPj4Bk0uxZO01mWgLKznL90W+qP0R1DdG/EzEOQMCEBlQqDA/gpzaIn9w7oq+pptTKSPm4GxK1YPi/5G9cwz2bXIAch0E2WYUOLZCmnPL+GlITGzOaNRj3rFUxx7k46zVON6LJiSpud9DH640c7paBYuO95je5oWPQ3HxkET2moNOEjeLcS+7t2181F9UCeFECMji0nZ4/72OfdkTaCQ+3kMswTLji43Y1p5c+k7c9DbbtgAB12XoJJKeqTcN4rLc/7+7RBW7h46hzF5aFVUzmLr+gEEiLbRERi239iKYZeQmHNpJFPyvOQGBsT6mUlAmHWLHvR6zGk5bP3LEa9Ui05dZD3fqAsU6MEbXkWWmHp5cabcZQBPDfxBfn0AzBC8krOxFxWH/Bevi4fTUntH4k=
   app: aikavali-front
+  on:
+    branch: master
