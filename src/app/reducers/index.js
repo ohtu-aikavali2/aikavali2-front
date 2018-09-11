@@ -1,9 +1,11 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import exampleReducer from './exampleReducer'
+import authReducer from './authReducer'
 
 const combinedReducers = combineReducers({
-  example: exampleReducer
+  example: exampleReducer,
+  loggedUser: authReducer
 })
 
 const store = createStore(
