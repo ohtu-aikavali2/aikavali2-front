@@ -6,6 +6,7 @@ jest.mock('../../../app/services/authService')
 import { Provider } from 'react-redux'
 import store from '../../../app/reducers'
 import authService from '../../../app/services/authService'
+import AppBar from '../../../app/components/common/AppBar'
 
 describe('<App />', () => {
   let app
@@ -21,5 +22,9 @@ describe('<App />', () => {
     expect(contentDiv.text()).toContain('User id: 123')
     expect(authService.user.id).toEqual(123)
     expect(authService.user.token).toEqual(null)
+  })
+  it('renders AppBar', () => {
+    const appBarComponents = app.find(AppBar)
+    expect(appBarComponents.length).toBe(1)
   })
 })

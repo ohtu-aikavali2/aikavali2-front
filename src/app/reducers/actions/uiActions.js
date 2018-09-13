@@ -1,3 +1,9 @@
 import uiConstants from '../constants/uiConstants'
 
-export const toggleDrawer = () => ({ type: uiConstants.TOGGLE_DRAWER })
+export const toggleDrawer = () => {
+  return async (dispatch) => {
+    dispatch({
+      type: uiConstants.TOGGLE_DRAWER
+    })
+  }
+}
