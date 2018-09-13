@@ -21,19 +21,19 @@ const styles = {
   }
 }
 
-const ButtonAppBar = (props) => {
+export const ButtonAppBar = (props) => {
   const { classes } = props
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton onClick={props.toggleDrawer} className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
+    <div className='appBar'>
+      <AppBar position='static' className='appBar_material'>
+        <Toolbar className='toolbar_material'>
+          <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
+            <MenuIcon className='menuicon_material' />
           </IconButton>
-          <Typography variant="title" color="inherit" className={classes.grow}>
+          <Typography variant='title' color='inherit' className={classes.grow}>
             Aikavälikertaus
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button onClick={() => console.log('login pressed')} color='inherit' className='appBar_login_button'>Login</Button>
         </Toolbar>
       </AppBar>
     </div>

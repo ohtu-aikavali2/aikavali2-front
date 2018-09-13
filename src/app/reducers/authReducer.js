@@ -8,7 +8,6 @@ const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case authConstants.INITIALIZE_USER: {
       return {
-        ...state,
         loggedUser: action.data
       }
     }
