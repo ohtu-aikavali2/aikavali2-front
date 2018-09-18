@@ -10,3 +10,12 @@ export const exampleIncrement = (value) => {
     })
   }
 }
+export const getExample = () => {
+  return async (dispatch) => {
+    const example = await exampleService.getExample()
+    dispatch({
+      type: exampleConstants.GET_EXAMPLE,
+      data: example.message
+    })
+  }
+}

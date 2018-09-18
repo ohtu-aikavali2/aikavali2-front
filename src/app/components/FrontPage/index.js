@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import ExampleCalculator from './ExampleCalculator'
 import { connect } from 'react-redux'
-import { exampleIncrement } from '../../reducers/actions/exampleActions'
+import { exampleIncrement, getExample } from '../../reducers/actions/exampleActions'
 import './frontPage.css'
 import { loggedUserInitialization, logout } from '../../reducers/actions/authActions'
+import { getRandomQuestion } from '../../reducers/actions/questionActions'
 
 class FrontPage extends Component {
 
@@ -33,6 +34,11 @@ class FrontPage extends Component {
         }
         <ExampleCalculator currentValue={this.props.example.currentValue} handleClick={this.props.exampleIncrement} />
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
+        <button onClick={this.props.getExample}>Example backendistä</button>
+        <div>
+          <p>api/v1/example :sta saatu response: </p>
+          {this.props.example.example ? <p>{this.props.example.example}</p> : <p>Ei kysymystä</p>}
+        </div>
       </div>
     )
   }
@@ -41,13 +47,16 @@ class FrontPage extends Component {
 const mapStateToProps = (state) => {
   return {
     example: state.example,
-    loggedUser: state.loggedUser
+    loggedUser: state.loggedUser,
+    question: state.question
   }
 }
 const mapDispatchToProps = {
   loggedUserInitialization,
   exampleIncrement,
-  logout
+  logout,
+  getExample,
+  getRandomQuestion
 }
 
 const ConnectedFrontPage = connect(mapStateToProps, mapDispatchToProps)(FrontPage)
