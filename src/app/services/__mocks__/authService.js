@@ -1,10 +1,10 @@
-const user = {
+const loggedUser = {
   id: 123,
-  token: null
+  token: 12345
 }
 
 const generateNewUnregisteredUser = () => {
-  return Promise.resolve(user)
+  return Promise.resolve(loggedUser)
 }
 
-export default { generateNewUnregisteredUser, user }
+export default { generateNewUnregisteredUser, loggedUser }

@@ -20,8 +20,8 @@ describe('<App />', () => {
     const contentDiv = frontPageComponent.find('.user-info')
 
     expect(contentDiv.text()).toContain('User id: 123')
-    expect(authService.user.id).toEqual(123)
-    expect(authService.user.token).toEqual(null)
+    expect(authService.loggedUser.id).toEqual(123)
+    expect(authService.loggedUser.token).toEqual(12345)
   })
   it('renders AppBar', () => {
     const appBarComponents = app.find(AppBar)

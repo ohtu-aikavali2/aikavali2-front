@@ -2,6 +2,8 @@ import * as actions from '../../../app/reducers/actions/authActions'
 import localStore from 'store-js'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
+jest.mock('../../../app/services/authService')
+import authService from '../../../app/services/authService'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -12,13 +14,13 @@ describe('authActions', () => {
     // mockStore is required for async functions
     reduxStore = mockStore({ loggedUser: null })
   })
-  it('loggedUserInitialization returns user with id and null token when store does not have user and sets that user to store', () => {
+  it('loggedUserInitialization returns user with id and token when store does not have user and sets that user to store', () => {
     localStore.remove('user')
     return reduxStore.dispatch(actions.loggedUserInitialization()).then(() => {
       // return of async actions
       const store = reduxStore.getActions()[0].data
-      expect(isNaN(store.id)).toBe(false)
-      expect(store.token).toBe(null)
+      expect(store.id).toBe(authService.loggedUser.id)
+      expect(store.token).toBe(authService.loggedUser.token)
       // Sets user to store
       expect(localStore.get('user').id).toEqual(store.id)
       expect(localStore.get('user').token).toEqual(store.token)
