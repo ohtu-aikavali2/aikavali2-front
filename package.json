@@ -35,5 +35,6 @@
     "husky": "^0.14.3",
     "jest-cli": "^21.2.1",
     "redux-mock-store": "^1.5.3"
-  }
+  },
+  "proxy": "http://localhost:3005"
 }
