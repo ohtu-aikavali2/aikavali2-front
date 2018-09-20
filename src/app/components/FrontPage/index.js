@@ -38,21 +38,21 @@ class FrontPage extends Component {
         <div>
           <p>api/v1/questions/random saatu response</p>
           {this.props.question.question
-          ? this.props.question.question.kind === 'PrintQuestion'
-            ? (
-              <div>
-                <p>{this.props.question.question.value}</p>
-                {this.props.question.question.options.map((q, index) => <p key={index}>{q}</p>)}
-              </div>
-            )
-            : this.props.question.question.kind === 'CompileQuestion' &&
-              (
+            ? this.props.question.question.kind === 'PrintQuestion'
+              ? (
                 <div>
-                  <p>Which one is compiled?</p>
+                  <p>{this.props.question.question.value}</p>
                   {this.props.question.question.options.map((q, index) => <p key={index}>{q}</p>)}
                 </div>
               )
-          : <p>Ei kysymystä</p>}
+              : this.props.question.question.kind === 'CompileQuestion' &&
+                (
+                  <div>
+                    <p>Which one is compiled?</p>
+                    {this.props.question.question.options.map((q, index) => <p key={index}>{q}</p>)}
+                  </div>
+                )
+            : <p>Ei kysymystä</p>}
         </div>
       </div>
     )
