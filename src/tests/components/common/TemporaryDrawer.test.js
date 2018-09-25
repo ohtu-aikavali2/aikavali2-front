@@ -19,6 +19,6 @@ describe('<TemporaryDrawer />', () => {
     const containerComponent = temporaryDrawer.find('div')
     expect(containerComponent.length).toBe(1)
     // expect(containerComponent.length).toBe(1)
-    console.log(containerComponent.props())
+    // console.log(containerComponent.props())
   })
 })

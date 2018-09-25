@@ -2,7 +2,6 @@ import React from 'react'
 import { mount } from 'enzyme'
 import App from '../../../app/App'
 import FrontPage from '../../../app/components/FrontPage'
-jest.mock('../../../app/services/authService')
 import { Provider } from 'react-redux'
 import store from '../../../app/reducers'
 import authService from '../../../app/services/authService'

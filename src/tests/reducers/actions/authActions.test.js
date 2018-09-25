@@ -3,7 +3,9 @@ import localStore from 'store-js'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 jest.mock('../../../app/services/authService')
+jest.mock('../../../app/services/questionService')
 import authService from '../../../app/services/authService'
+import questionService from '../../../app/services/questionService'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -24,6 +26,13 @@ describe('authActions', () => {
       // Sets user to store
       expect(localStore.get('user').id).toEqual(store.id)
       expect(localStore.get('user').token).toEqual(store.token)
+    })
+  })
+  it('loggedUserInitialization calls setToken for questionService AND authService', () => {
+    return reduxStore.dispatch(actions.loggedUserInitialization()).then(() => {
+      // return of async actions
+      expect(authService.tokenIsSet()).toBe(true)
+      expect(questionService.tokenIsSet()).toBe(true)
     })
   })
   it('if there is a user in store, loggedUserInitialization returns that user', () => {
