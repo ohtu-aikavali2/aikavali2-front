@@ -23,11 +23,10 @@ const styles = theme => ({
   }
 })
 
-function IconLabelButtons(props) {
-  const { classes } = props
+function IconLabelButtons({ classes, handleSkip }) {
   return (
     <div>
-      <Button onClick={() => console.log('skip pressed')} variant="contained" color="secondary" className={classes.buttonLeft}>
+      <Button onClick={handleSkip} variant="contained" color="secondary" className={classes.buttonLeft}>
         Skip
         <SkipNext className={classes.rightIcon} />
       </Button>

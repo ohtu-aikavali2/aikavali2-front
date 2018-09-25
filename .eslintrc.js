@@ -68,5 +68,8 @@ module.exports = {
       ],
       "no-multiple-empty-lines": [ "error", { "max": 1 } ],
       "comma-dangle": ["error", "never"]
+  },
+  "globals": {
+    "process": true
   }
 }
