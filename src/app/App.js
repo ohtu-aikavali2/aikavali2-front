@@ -13,7 +13,7 @@ class App extends React.Component {
         <AppBar toggleDrawer={this.props.toggleDrawer} />
         <TemporaryDrawer toggleDrawer={this.props.toggleDrawer} isOpen={this.props.ui.drawerOpen} />
         <FrontPage />
-        <ButtonBar/>
+        <ButtonBar />
       </div>
     )
   }

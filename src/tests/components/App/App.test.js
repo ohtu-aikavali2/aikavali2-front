@@ -7,6 +7,8 @@ import { Provider } from 'react-redux'
 import store from '../../../app/reducers'
 import authService from '../../../app/services/authService'
 import AppBar from '../../../app/components/common/AppBar'
+import TemporaryDrawer from '../../../app/components/common/TemporaryDrawer'
+import ButtonBar from '../../../app/components/common/ButtonBar'
 
 describe('<App />', () => {
   let app
@@ -26,5 +28,13 @@ describe('<App />', () => {
   it('renders AppBar', () => {
     const appBarComponents = app.find(AppBar)
     expect(appBarComponents.length).toBe(1)
+  })
+  it('renders TemporaryDrawer', () => {
+    const temporaryDrawerComponents = app.find(TemporaryDrawer)
+    expect(temporaryDrawerComponents.length).toBe(1)
+  })
+  it('renders ButtonBar', () => {
+    const buttonBarComponents = app.find(ButtonBar)
+    expect(buttonBarComponents.length).toBe(1)
   })
 })
