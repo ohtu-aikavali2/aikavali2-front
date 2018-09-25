@@ -4,6 +4,7 @@ import AppBar from './components/common/AppBar'
 import TemporaryDrawer from './components/common/TemporaryDrawer'
 import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 class App extends React.Component {
   render () {
@@ -11,7 +12,12 @@ class App extends React.Component {
       <div className="App">
         <AppBar toggleDrawer={this.props.toggleDrawer} />
         <TemporaryDrawer toggleDrawer={this.props.toggleDrawer} isOpen={this.props.ui.drawerOpen} />
-        <FrontPage />
+        <Router>
+          <Switch>
+            <Route exact path='/' render={() => <FrontPage />} />
+            <Route exact path='/admin' render={() => <p>helloworld</p>} />
+          </Switch>
+        </Router>
       </div>
     )
   }
