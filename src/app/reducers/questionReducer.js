@@ -8,6 +8,7 @@ const questionReducer = (state = initialState, action) => {
   switch (action.type) {
     case questionConstants.GET_RANDOM_QUESTION: {
       return {
+        ...state,
         question: action.data
       }
     }
