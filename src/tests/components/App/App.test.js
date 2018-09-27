@@ -14,6 +14,9 @@ describe('<App />', () => {
   beforeAll(() => {
     app = mount(<Provider store={store}><App /></Provider>)
   })
+  afterAll(() => {
+    app.unMount()
+  })
   // Very useless test. Should test the amount of rendered answer options for example.
   it('generates a new user on startup', () => {
     app.update()

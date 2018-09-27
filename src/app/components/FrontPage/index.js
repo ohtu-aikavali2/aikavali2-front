@@ -26,6 +26,9 @@ class FrontPage extends Component {
   getNewQuestion = () => {
     this.props.getRandomQuestion(this.props.loggedUser.loggedUser)
   }
+  handleConfirm = () => {
+    console.log('Confirm pressed')
+  }
 
   render () {
     const user = this.props.loggedUser.loggedUser
@@ -48,7 +51,7 @@ class FrontPage extends Component {
           {this.props.example.example ? <p>{this.props.example.example}</p> : <p>Ei kysymystä</p>}
         </div> */}
         {this.props.question && <Question question={this.props.question} />}
-        <ButtonBar handleSkip={this.getNewQuestion} />
+        <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
       </div>
     )
   }
