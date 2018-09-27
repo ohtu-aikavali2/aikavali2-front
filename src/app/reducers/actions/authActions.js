@@ -1,5 +1,6 @@
 import authConstants from '../constants/authConstants'
 import authService from '../../services/authService'
+import questionService from '../../services/questionService'
 import store from 'store-js'
 
 export const loggedUserInitialization = () => {
@@ -10,6 +11,8 @@ export const loggedUserInitialization = () => {
       store.set('user', loggedUser)
       // loggedUser will have id. If user is registered, also token and other stuff
     }
+    await questionService.setToken(loggedUser.token)
+    await authService.setToken(loggedUser.token)
     dispatch({
       type: authConstants.INITIALIZE_USER,
       data: loggedUser
@@ -19,6 +22,8 @@ export const loggedUserInitialization = () => {
 export const logout = () => {
   return async (dispatch) => {
     store.remove('user')
+    await questionService.setToken(null)
+    await authService.setToken(null)
     dispatch({
       type: authConstants.LOGOUT
     })

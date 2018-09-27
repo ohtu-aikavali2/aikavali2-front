@@ -1,10 +1,19 @@
-const user = {
+const loggedUser = {
   id: 123,
-  token: null
+  token: 12345
 }
+let tokenSet = false
 
 const generateNewUnregisteredUser = () => {
-  return Promise.resolve(user)
+  return Promise.resolve(loggedUser)
 }
 
-export default { generateNewUnregisteredUser, user }
+const setToken = () => {
+  tokenSet = true
+}
+
+const tokenIsSet = () => {
+  return tokenSet
+}
+
+export default { generateNewUnregisteredUser, loggedUser, setToken, tokenIsSet }

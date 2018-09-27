@@ -1,4 +1,5 @@
 import axios from 'axios'
+let token = null
 
 let baseUrl = ''
 if (process.env.NODE_ENV === 'production') {
@@ -7,9 +8,16 @@ if (process.env.NODE_ENV === 'production') {
 
 const apiUrl = '/api/v1/questions'
 
+const setToken = (newToken) => {
+  token = `bearer ${newToken}`
+}
+
 const getRandomQuestion = async () => {
-  const response = await axios.get(`${baseUrl}${apiUrl}/random`)
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  const response = await axios.get(`${baseUrl}${apiUrl}/random`, config)
   return response.data
 }
 
-export default { getRandomQuestion }
+export default { getRandomQuestion, setToken }

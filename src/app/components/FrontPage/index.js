@@ -24,7 +24,7 @@ class FrontPage extends Component {
   }
 
   getNewQuestion = () => {
-    this.props.getRandomQuestion()
+    this.props.getRandomQuestion(this.props.loggedUser.loggedUser)
   }
 
   render () {
