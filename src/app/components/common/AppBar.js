@@ -10,8 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 
 const styles = {
   root: {
-    flexGrow: 1,
-    border: 'solid'
+    flexGrow: 1
   },
   grow: {
     flexGrow: 1

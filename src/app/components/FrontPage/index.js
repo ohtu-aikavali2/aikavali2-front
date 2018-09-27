@@ -24,7 +24,7 @@ class FrontPage extends Component {
   }
 
   getNewQuestion = () => {
-    this.props.getRandomQuestion(this.props.loggedUser.loggedUser)
+    this.props.getRandomQuestion()
   }
   handleConfirm = () => {
     console.log('Confirm pressed')
@@ -37,7 +37,7 @@ class FrontPage extends Component {
         {user
           ? (
             <div className="user-info">
-              <p>User id: {user.id}, User token: {user.token}</p>
+              <p>User id: {user.id}, User token: {false && user.token}</p>
               {!user.token ? <p>Käyttäjä ei ole rekisteröitynyt (Jos käyttäjällä token, on rekisteröitynyt)</p> : <p>Käyttäjä on rekisteröitynyt</p>}
             </div>
           )
@@ -45,11 +45,6 @@ class FrontPage extends Component {
         }
         <ExampleCalculator currentValue={this.props.example.currentValue} handleClick={this.props.exampleIncrement} />
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
-        <button onClick={this.props.getExample}>Example backendistä</button>
-        {/* <div>
-          <p>api/v1/example :sta saatu response: </p>
-          {this.props.example.example ? <p>{this.props.example.example}</p> : <p>Ei kysymystä</p>}
-        </div> */}
         {this.props.question && <Question question={this.props.question} />}
         <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
       </div>
