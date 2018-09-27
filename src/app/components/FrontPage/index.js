@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import ExampleCalculator from './ExampleCalculator'
 import { connect } from 'react-redux'
-import { exampleIncrement, getExample } from '../../reducers/actions/exampleActions'
 import './frontPage.css'
 import { loggedUserInitialization, logout } from '../../reducers/actions/authActions'
 import { getRandomQuestion } from '../../reducers/actions/questionActions'
@@ -43,7 +41,6 @@ class FrontPage extends Component {
           )
           : <p>Ei käyttäjää, refreshaa sivu generoidaksesi uuden käyttäjän</p>
         }
-        <ExampleCalculator currentValue={this.props.example.currentValue} handleClick={this.props.exampleIncrement} />
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
         {this.props.question && <Question question={this.props.question} />}
         <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
@@ -54,16 +51,13 @@ class FrontPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    example: state.example,
     loggedUser: state.loggedUser,
     question: state.question.question
   }
 }
 const mapDispatchToProps = {
   loggedUserInitialization,
-  exampleIncrement,
   logout,
-  getExample,
   getRandomQuestion
 }
 
