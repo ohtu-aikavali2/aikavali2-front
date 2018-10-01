@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import ExampleCalculator from './ExampleCalculator'
 import { connect } from 'react-redux'
-import { exampleIncrement, getExample } from '../../reducers/actions/exampleActions'
 import './frontPage.css'
 import { loggedUserInitialization, logout } from '../../reducers/actions/authActions'
 import { getRandomQuestion } from '../../reducers/actions/questionActions'
@@ -24,7 +22,10 @@ class FrontPage extends Component {
   }
 
   getNewQuestion = () => {
-    this.props.getRandomQuestion(this.props.loggedUser.loggedUser)
+    this.props.getRandomQuestion()
+  }
+  handleConfirm = () => {
+    console.log('Confirm pressed')
   }
 
   render () {
@@ -34,21 +35,15 @@ class FrontPage extends Component {
         {user
           ? (
             <div className="user-info">
-              <p>User id: {user.id}, User token: {user.token}</p>
+              <p>User id: {user.id}, User token: {false && user.token}</p>
               {!user.token ? <p>Käyttäjä ei ole rekisteröitynyt (Jos käyttäjällä token, on rekisteröitynyt)</p> : <p>Käyttäjä on rekisteröitynyt</p>}
             </div>
           )
           : <p>Ei käyttäjää, refreshaa sivu generoidaksesi uuden käyttäjän</p>
         }
-        <ExampleCalculator currentValue={this.props.example.currentValue} handleClick={this.props.exampleIncrement} />
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
-        <button onClick={this.props.getExample}>Example backendistä</button>
-        {/* <div>
-          <p>api/v1/example :sta saatu response: </p>
-          {this.props.example.example ? <p>{this.props.example.example}</p> : <p>Ei kysymystä</p>}
-        </div> */}
         {this.props.question && <Question question={this.props.question} />}
-        <ButtonBar handleSkip={this.getNewQuestion} />
+        <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
       </div>
     )
   }
@@ -56,16 +51,13 @@ class FrontPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    example: state.example,
     loggedUser: state.loggedUser,
     question: state.question.question
   }
 }
 const mapDispatchToProps = {
   loggedUserInitialization,
-  exampleIncrement,
   logout,
-  getExample,
   getRandomQuestion
 }
 

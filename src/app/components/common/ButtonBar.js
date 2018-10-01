@@ -5,32 +5,32 @@ import { withStyles } from '@material-ui/core/styles'
 import SkipNext from '@material-ui/icons/SkipNext'
 import Confirm from '@material-ui/icons/Check'
 
-const styles = theme => ({
+const styles = {
   buttonLeft: {
-    margin: theme.spacing.unit,
+    margin: 2,
     position: 'absolute',
     bottom: 0,
     left: 0
   },
   buttonRight: {
-    margin: theme.spacing.unit,
+    margin: 2,
     position: 'absolute',
     bottom: 0,
     right: 0
   },
   rightIcon: {
-    marginLeft: theme.spacing.unit
+    marginLeft: 10
   }
-})
+}
 
-function IconLabelButtons({ classes, handleSkip }) {
+function IconLabelButtons({ classes, handleSkip, handleConfirm }) {
   return (
-    <div>
-      <Button onClick={handleSkip} variant="contained" color="secondary" className={classes.buttonLeft}>
+    <div className='mainContainer'>
+      <Button onClick={handleSkip} variant="contained" color="secondary" className='leftButton' style={styles.buttonLeft}>
         Skip
         <SkipNext className={classes.rightIcon} />
       </Button>
-      <Button onClick={() => console.log('confirm pressed')} variant="contained" color="primary" className={classes.buttonRight}>
+      <Button onClick={handleConfirm} variant="contained" color="primary" className='rightButton' style={styles.buttonRight}>
         Confirm
         <Confirm className={classes.rightIcon} />
       </Button>

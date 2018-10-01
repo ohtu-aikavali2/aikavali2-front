@@ -24,8 +24,8 @@ const styles = {
 export const ButtonAppBar = (props) => {
   const { classes } = props
   return (
-    <div className='appBar'>
-      <AppBar position='static' className='appBar_material'>
+    <div className='appBar' style={styles.root}>
+      <AppBar position='static' className='appBar_material' style={[styles.root, { border: 'solid', borderColor: 'red' }]}>
         <Toolbar className='toolbar_material'>
           <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
             <MenuIcon className='menuicon_material' />
