@@ -26,9 +26,10 @@ const TemporaryDrawer = (props) => {
   )
 
   return (
-    <div>
-      <Drawer open={props.isOpen} onClose={props.toggleDrawer}>
+    <div className='temporaryDrawer'>
+      <Drawer open={props.isOpen} onClose={props.toggleDrawer} className='drawer'>
         <div
+          className='listContainer'
           tabIndex={0}
           role="button"
         >

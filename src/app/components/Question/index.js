@@ -6,7 +6,7 @@ class Question extends Component {
   render() {
     const { question } = this.props
     return (
-      <div>
+      <div className='questionContainer'>
         {question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} />}
         {question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} />}
       </div>
