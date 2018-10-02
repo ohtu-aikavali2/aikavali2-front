@@ -8,11 +8,17 @@ import authService from '../../../app/services/authService'
 import AppBar from '../../../app/components/common/AppBar'
 import TemporaryDrawer from '../../../app/components/common/TemporaryDrawer'
 import ButtonBar from '../../../app/components/common/ButtonBar'
+import { MemoryRouter } from 'react-router'
+import AdminPage from '../../../app/components/Admin'
 
 describe('<App />', () => {
   let app
   beforeAll(() => {
-    app = mount(<Provider store={store}><App /></Provider>)
+    app = mount(
+      <MemoryRouter initialEntries={[ '/' ]}>
+        <Provider store={store}><App /></Provider>
+      </MemoryRouter>
+    )
   })
   afterAll(() => {
     app.unMount()
@@ -38,5 +44,26 @@ describe('<App />', () => {
   it('renders ButtonBar', () => {
     const buttonBarComponents = app.find(ButtonBar)
     expect(buttonBarComponents.length).toBe(1)
+  })
+
+  /* ------------ ROUTES ------------- */
+
+  it('path \'/\' renders FrontPage', () => {
+    const wrapper = mount(
+      <MemoryRouter initialEntries={[ '/' ]}>
+        <Provider store={store}><App /></Provider>
+      </MemoryRouter>
+    )
+    expect(wrapper.find(FrontPage).length).toBe(1)
+    expect(wrapper.find(AdminPage).length).toBe(0)
+  })
+  it('path \'/admin\' renders AdminPage', () => {
+    const wrapper = mount(
+      <MemoryRouter initialEntries={[ '/admin' ]}>
+        <Provider store={store}><App /></Provider>
+      </MemoryRouter>
+    )
+    expect(wrapper.find(FrontPage).length).toBe(0)
+    expect(wrapper.find(AdminPage).length).toBe(1)
   })
 })

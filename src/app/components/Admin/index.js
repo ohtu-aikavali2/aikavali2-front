@@ -22,7 +22,7 @@ class AdminPage extends Component {
         {user
           ? (
             <div className="user-info">
-              <p>User id: {user.id}, User token: {user.token}</p>
+              <p>User id: {user.id}, User token: {false && user.token}</p>
               {!user.token ? <p>Käyttäjä ei ole rekisteröitynyt (Jos käyttäjällä token, on rekisteröitynyt)</p> : <p>Käyttäjä on rekisteröitynyt</p>}
             </div>
           )
