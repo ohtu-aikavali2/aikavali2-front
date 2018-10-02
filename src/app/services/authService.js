@@ -7,6 +7,11 @@ const setToken = (newToken) => {
   token = `bearer ${newToken}`
 }
 
+// For tests
+const getToken = () => {
+  return token
+}
+
 const generateNewUnregisteredUser = async () => {
   // No need for config here. Just here to get lint through
   const config = {
@@ -16,4 +21,4 @@ const generateNewUnregisteredUser = async () => {
   return response.data
 }
 
-export default { generateNewUnregisteredUser, setToken }
+export default { generateNewUnregisteredUser, setToken, getToken }
