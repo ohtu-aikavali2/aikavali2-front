@@ -19,7 +19,6 @@ class AdminPage extends Component {
     const user = this.props.loggedUser.loggedUser
     return (
       <div>
-        <p>Admin page</p>
         {user
           ? (
             <div className="user-info">
@@ -30,6 +29,7 @@ class AdminPage extends Component {
           : <p>Ei käyttäjää, refreshaa sivu generoidaksesi uuden käyttäjän</p>
         }
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
+        <h1>Admin page</h1>
         <QuestionForm />
       </div>
     )

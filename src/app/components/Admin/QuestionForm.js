@@ -1,36 +1,49 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import SaveIcon from '@material-ui/icons/Save'
+import AddIcon from '@material-ui/icons/Add'
 
-const styles = theme => ({
-  textField: {
-    margin: theme.spacing.unit,
+const styles = {
+  questionField: {
+    margin: 2,
     width: 250
+  },
+  questionType: {
+    margin: 2,
+    width: 250
+  },
+  saveButton: {
+    margin: 5,
+    position: 'absolute',
+    bottom: 0,
+    right: 0
+  },
+  addButton: {
+    margin: 5
   }
-})
+}
 
+//toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
-    value: 'equals',
-    label: '='
+    value: 'kääntyy',
+    label: 'valitse mikä koodeista kääntyy'
   },
   {
-    value: 'less than',
-    label: '<'
-  },
-  {
-    value: 'more than',
-    label: '>'
+    value: 'tulostaa',
+    label: 'valitse mitä koodi tulostaa'
   }
 ]
 
-class QuestionForm extends React.Component {
+class QuestionForm extends Component {
   state = {
-    questionType: 'equals',
+    questionType: '',
     question: '',
-    answer: ''
+    rightAnswer: '',
+    wrongAnswer: ''
   };
 
   handleChange = name => event => {
@@ -39,23 +52,24 @@ class QuestionForm extends React.Component {
     })
   };
 
-  render() {
-    const { classes } = this.props
+  handleSave = () => {
+    console.log('Save pressed')
+  }
 
+  handleAdd = () => {
+    console.log('Add pressed')
+  }
+
+  render() {
     return (
-      <form className={classes.container} noValidate autoComplete="off">
+      <form className='mainContainer' noValidate autoComplete="off">
         <TextField
-          id="select-question-type"
           select
           label="Question type"
-          className={classes.textField}
+          className='questionType'
+          style={styles.questionType}
           value={this.state.questionType}
           onChange={this.handleChange('questionType')}
-          SelectProps={{
-            MenuProps: {
-              className: classes.menu
-            }
-          }}
           margin="normal"
         >
           {questionTypes.map(option => (
@@ -65,22 +79,45 @@ class QuestionForm extends React.Component {
           ))}
         </TextField>
         <TextField
-          id="standard-multiline-flexible"
           label="Question"
           multiline
           rowsMax="4"
           value={this.state.question}
           onChange={this.handleChange('question')}
-          className={classes.textField}
+          className='questionField'
+          style={styles.questionField}
           margin="normal"
         />
+        <TextField
+          label="Right Answer"
+          multiline
+          rowsMax="4"
+          value={this.state.rightAnswer}
+          onChange={this.handleChange('rightAnswer')}
+          className='questionField'
+          style={styles.questionField}
+          margin="normal"
+        />
+        <TextField
+          label="Wrong Answer"
+          multiline
+          rowsMax="4"
+          value={this.state.wrongAnswer}
+          onChange={this.handleChange('wrongAnswer')}
+          className='questionField'
+          style={styles.questionField}
+          margin="normal"
+        />
+        <Button onClick={this.handleAdd} variant="fab" mini color="primary" aria-label="Add" className='addButton' style={styles.addButton}>
+          <AddIcon className='addIcon' />
+        </Button>
+        <Button onClick={this.handleSave} variant="contained" className='saveButton' style={styles.saveButton}>
+          Save
+          <SaveIcon className='saveIcon' />
+        </Button>
       </form>
     )
   }
-}
-
-QuestionForm.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(QuestionForm)
