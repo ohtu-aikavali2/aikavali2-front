@@ -28,7 +28,7 @@ describe('<AppBar />', () => {
     expect(typeof iconButtonProps.onClick).toBe('function')
     expect(appBar.find(MenuIcon).hasClass('menuicon_material')).toBe(true)
     const typographyComponent = appBar.find(Typography)
-    expect(typographyComponent.hasClass('Component-grow-02')).toBe(true)
+    expect(typographyComponent.hasClass('typography')).toBe(true)
     const typographyProps = typographyComponent.props()
     expect(typographyProps.variant).toBe('title')
     expect(typographyComponent.text()).toContain('Aikavälikertaus')
