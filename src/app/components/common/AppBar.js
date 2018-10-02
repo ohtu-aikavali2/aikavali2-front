@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -22,7 +21,6 @@ const styles = {
 }
 
 export const ButtonAppBar = (props) => {
-  const { classes } = props
   return (
     <div className='appBar' style={styles.root}>
       <AppBar position='static' className='appBar_material' style={[styles.root, { border: 'solid', borderColor: 'red' }]}>
@@ -30,7 +28,7 @@ export const ButtonAppBar = (props) => {
           <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
             <MenuIcon className='menuicon_material' />
           </IconButton>
-          <Typography variant='title' color='inherit' className={classes.grow}>
+          <Typography variant='title' color='inherit' className='typography'>
             Aikavälikertaus
           </Typography>
           <Button onClick={() => console.log('login pressed')} color='inherit' className='appBar_login_button'>Login</Button>
@@ -38,10 +36,6 @@ export const ButtonAppBar = (props) => {
       </AppBar>
     </div>
   )
-}
-
-ButtonAppBar.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(ButtonAppBar)
