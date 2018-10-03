@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { loggedUserInitialization, logout } from '../../reducers/actions/authActions'
 import QuestionForm from './QuestionForm'
 
-class AdminPage extends Component {
+// export for testing without having to worry about connected component
+export class AdminPage extends Component {
 
   async componentDidMount() {
     await this.props.loggedUserInitialization()
@@ -18,7 +19,7 @@ class AdminPage extends Component {
   render() {
     const user = this.props.loggedUser.loggedUser
     return (
-      <div>
+      <div className='adminPageContainer'>
         {user
           ? (
             <div className="user-info">
