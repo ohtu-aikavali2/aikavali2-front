@@ -5,6 +5,7 @@ import { loggedUserInitialization, logout } from '../../reducers/actions/authAct
 import { getRandomQuestion } from '../../reducers/actions/questionActions'
 import Question from '../Question'
 import ButtonBar from '../common/ButtonBar'
+import PrintQuestion from '../Question/PrintQuestion'
 
 class FrontPage extends Component {
 
@@ -44,6 +45,7 @@ class FrontPage extends Component {
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
         {this.props.question && <Question question={this.props.question} />}
         <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
+        <PrintQuestion />
       </div>
     )
   }
