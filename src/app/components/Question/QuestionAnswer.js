@@ -31,7 +31,7 @@ function QuestionAnswer(props) {
             <Avatar>1</Avatar>
           </Grid>
           <Grid item>
-            <Typography noWrap>Vastausvaihtoehto</Typography>
+            <Typography align="center">Vastausvaihtoehto</Typography>
           </Grid>
         </Grid>
       </Paper>

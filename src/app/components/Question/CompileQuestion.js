@@ -1,11 +1,17 @@
 import React from 'react'
+import Typography from '@material-ui/core/Typography'
+import QuestionAnswer from './QuestionAnswer'
 
-const CompileQuestion = ({ question }) => {
+function CompileQuestion() {
+
   return (
-    <div className='compileQuestion'>
-      <h1>COMPILE QUESTION</h1>
-      <h2>Mikä seuraavista kääntyy?</h2>
-      {question.options.map((option, i) => <p key={i}>{option}</p>)}
+    <div>
+      <Typography variant="headline" align="center" color="default" gutterBottom>
+        Valitse mikä koodinpätkä kääntyy
+      </Typography>
+      <QuestionAnswer />
+      <QuestionAnswer />
+      <QuestionAnswer />
     </div>
   )
 }

@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import QuestionAnswer from './QuestionAnswer'
 
-const styles = theme => ({
+const styles = ({
   card: {
     height: '100%',
     width: '350px',
@@ -16,16 +16,6 @@ const styles = theme => ({
   question: {
     width: '350px',
     margin: '0 auto'
-  },
-
-  wrapper: {
-    maxWidth: '365px',
-    margin: '0 auto'
-  },
-
-  paper: {
-    margin: theme.spacing.unit,
-    padding: theme.spacing.unit * 2
   }
 })
 
