@@ -7,7 +7,8 @@ import Question from '../Question'
 import ButtonBar from '../common/ButtonBar'
 import PrintQuestion from '../Question/PrintQuestion'
 
-class FrontPage extends Component {
+// exported for tests
+export class FrontPage extends Component {
 
   async componentDidMount () {
     await this.props.loggedUserInitialization()
@@ -32,7 +33,7 @@ class FrontPage extends Component {
   render () {
     const user = this.props.loggedUser.loggedUser
     return (
-      <div>
+      <div className='frontPageContainer'>
         {user
           ? (
             <div className="user-info">
