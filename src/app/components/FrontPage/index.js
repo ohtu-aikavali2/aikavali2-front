@@ -5,9 +5,7 @@ import { loggedUserInitialization, logout } from '../../reducers/actions/authAct
 import { getRandomQuestion } from '../../reducers/actions/questionActions'
 import Question from '../Question'
 import ButtonBar from '../common/ButtonBar'
-
 import PrintQuestion from '../Question/PrintQuestion'
-import CompileQuestion from '../Question/CompileQuestion'
 
 class FrontPage extends Component {
 
@@ -48,7 +46,6 @@ class FrontPage extends Component {
         {this.props.question && <Question question={this.props.question} />}
         <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
         <PrintQuestion />
-        <CompileQuestion />
       </div>
     )
   }
