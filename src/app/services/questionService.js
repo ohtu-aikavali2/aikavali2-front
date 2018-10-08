@@ -25,4 +25,13 @@ const getRandomQuestion = async () => {
   return response.data
 }
 
-export default { getRandomQuestion, setToken, getToken }
+const answerQuestion = async (id, answer) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+
+  const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer }, config)
+  return response.data
+}
+
+export default { getRandomQuestion, answerQuestion, setToken, getToken }

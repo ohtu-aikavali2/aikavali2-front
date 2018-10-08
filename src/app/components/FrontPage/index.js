@@ -5,7 +5,6 @@ import { loggedUserInitialization, logout } from '../../reducers/actions/authAct
 import { getRandomQuestion } from '../../reducers/actions/questionActions'
 import Question from '../Question'
 import ButtonBar from '../common/ButtonBar'
-import PrintQuestion from '../Question/PrintQuestion'
 
 // exported for tests
 export class FrontPage extends Component {
@@ -26,12 +25,24 @@ export class FrontPage extends Component {
   getNewQuestion = () => {
     this.props.getRandomQuestion()
   }
+
   handleConfirm = () => {
     console.log('Confirm pressed')
   }
 
+  renderUserAnswer = (userAnswer) => {
+    const { isCorrect, correctAnswer } = userAnswer
+    const message = isCorrect ? 'Correct!' : `Wrong! Correct answer is '${correctAnswer}'`
+    return (
+      <div style={styles.userAnswer}>
+        {message}
+      </div>
+    )
+  }
+
   render () {
     const user = this.props.loggedUser.loggedUser
+    const userAnswer = this.props.userAnswer
     return (
       <div className='frontPageContainer'>
         {user
@@ -45,17 +56,27 @@ export class FrontPage extends Component {
         }
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
         {this.props.question && <Question question={this.props.question} />}
+        {userAnswer && this.renderUserAnswer(userAnswer)}
         <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
-        <PrintQuestion />
       </div>
     )
+  }
+}
+
+const styles = {
+  userAnswer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center'
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     loggedUser: state.loggedUser,
-    question: state.question.question
+    question: state.question.question,
+    userAnswer: state.question.userAnswer
   }
 }
 const mapDispatchToProps = {

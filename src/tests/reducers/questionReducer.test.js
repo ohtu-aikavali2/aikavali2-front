@@ -4,7 +4,8 @@ import questionConstants from '../../app/reducers/constants/questionConstants'
 describe('questionReducer', () => {
   it('should return initial state', () => {
     expect(questionReducer(undefined, {})).toEqual({
-      question: null
+      question: null,
+      userAnswer: null
     })
   })
   it('should handle GET_RANDOM_QUESTION', () => {

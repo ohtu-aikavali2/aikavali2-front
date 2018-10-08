@@ -10,3 +10,13 @@ export const getRandomQuestion = () => {
     })
   }
 }
+
+export const answerQuestion = (id, value) => {
+  return async (dispatch) => {
+    const data = await questionService.answerQuestion(id, value)
+    dispatch({
+      type: questionConstants.QUESTION_ANSWERED,
+      data
+    })
+  }
+}
