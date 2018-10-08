@@ -22,17 +22,22 @@ const styles = {
   }
 }
 
-function ButtonBar({ handleSkip, handleConfirm }) {
+function ButtonBar({ handleSkip, handleConfirm, showNext }) {
+  const text = !showNext ? 'Skip' : 'Next'
   return (
     <div className='mainContainer'>
-      <Button onClick={handleSkip} variant="contained" color="secondary" className='leftButton' style={styles.buttonLeft}>
-        Skip
+      <Button onClick={handleSkip} variant="contained" color="secondary" className='leftButton' style={!showNext ? styles.buttonLeft : styles.buttonRight}>
+        {text}
         <SkipNext className='skipIcon' />
       </Button>
-      <Button onClick={handleConfirm} variant="contained" color="primary" className='rightButton' style={styles.buttonRight}>
-        Confirm
-        <Confirm className='confirmIcon' />
-      </Button>
+      {!showNext &&
+        (
+          <Button onClick={handleConfirm} variant="contained" color="primary" className='rightButton' style={styles.buttonRight}>
+            Confirm
+            <Confirm className='confirmIcon' />
+          </Button>
+        )
+      }
     </div>
   )
 }

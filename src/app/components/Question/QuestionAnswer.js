@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import { answerQuestion } from '../../reducers/actions/questionActions'
+import { selectAnswer } from '../../reducers/actions/questionActions'
 
 const styles = theme => ({
   wrapper: {
@@ -21,23 +21,44 @@ const styles = theme => ({
   }
 })
 
-class QuestionAnswer extends Component {
+export class QuestionAnswer extends Component {
   handleClick = () => {
-    const { id, value } = this.props
-    this.props.answerQuestion(id, value)
+    const { id, value, userAnswer } = this.props
+    if (!userAnswer) {
+      this.props.selectAnswer(id, value)
+    } else {
+      console.log('already answered!')
+    }
+    // this.props.answerQuestion(id, value)
+  }
+
+  determineStyle = () => {
+    const { userAnswer, value, selectedAnswer } = this.props
+    const selectedStyle = { borderStyle: 'solid', borderWidth: 2 }
+    const correctStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'green' }
+    const wrongStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'red' }
+    if (userAnswer && userAnswer.isCorrect && selectedAnswer.value === value) {
+      return correctStyle
+    } else if (userAnswer && userAnswer.correctAnswer === value) {
+      return correctStyle
+    } else if (selectedAnswer && selectedAnswer.value === value && userAnswer && !userAnswer.isCorrect) {
+      return wrongStyle
+    } else if (selectedAnswer && selectedAnswer.value === value && !userAnswer) {
+      return selectedStyle
+    }
+    return null
   }
 
   render () {
     const { classes, value } = this.props
+    const style = this.determineStyle()
+    // const style = (this.props.selectedAnswer && this.props.selectedAnswer.value === this.props.value) ? { borderStyle: 'solid', borderWidth: 2 } : null
     return (
-      <div className={classes.wrapper} onClick={this.handleClick}>
-        <Paper className={classes.paper}>
-          <Grid container wrap="nowrap" spacing={16}>
-            {/* <Grid item>
-              <Avatar>1</Avatar>
-            </Grid> */}
-            <Grid item>
-              <Typography align="center">{value}</Typography>
+      <div className={classes.wrapper} id='container' onClick={this.handleClick} style={style}>
+        <Paper className={classes.paper} id='paper'>
+          <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
+            <Grid item className='itemGrid'>
+              <Typography className='typography' align="center">{value}</Typography>
             </Grid>
           </Grid>
         </Paper>
@@ -46,12 +67,19 @@ class QuestionAnswer extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    selectedAnswer: state.question.selectedAnswer,
+    userAnswer: state.question.userAnswer
+  }
+}
+
 const mapDispatchToProps = {
-  answerQuestion
+  selectAnswer
 }
 
 QuestionAnswer.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(QuestionAnswer))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(QuestionAnswer))

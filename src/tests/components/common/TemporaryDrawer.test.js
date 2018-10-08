@@ -18,7 +18,5 @@ describe('<TemporaryDrawer />', () => {
     expect(drawerComponent.hasClass('drawer')).toBe(true)
     const containerComponent = temporaryDrawer.find('div')
     expect(containerComponent.length).toBe(1)
-    // expect(containerComponent.length).toBe(1)
-    // console.log(containerComponent.props())
   })
 })

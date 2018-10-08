@@ -20,3 +20,13 @@ export const answerQuestion = (id, value) => {
     })
   }
 }
+
+export const selectAnswer = (id, value) => {
+  const data = { id, value }
+  return async (dispatch) => {
+    dispatch({
+      type: questionConstants.SELECT_ANSWER,
+      data
+    })
+  }
+}

@@ -66,7 +66,7 @@ describe('QuestionForm', () => {
       expect(wrapper.state().question).toEqual('PASKA')
     })
   })
-  it('saveButton calls handleSave method', () => {
+  it('saveButton click calls handleSave method', () => {
     const spy = jest.spyOn(wrapper.instance(), 'handleSave')
 
     // forceUpdate for instance() is NEEDED!!

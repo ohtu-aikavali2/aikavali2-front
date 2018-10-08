@@ -49,7 +49,6 @@ class QuestionForm extends Component {
   }
 
   handleChange = (name) => event => {
-    console.log('handleChange!!!')
     this.setState({
       [name]: event.target.value
     })
