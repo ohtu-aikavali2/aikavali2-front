@@ -39,18 +39,22 @@ const questionTypes = [
 ]
 
 class QuestionForm extends Component {
-  state = {
-    questionType: '',
-    question: '',
-    rightAnswer: '',
-    wrongAnswer: ''
-  };
+  constructor() {
+    super()
+    this.state = {
+      questionType: '',
+      question: '',
+      rightAnswer: '',
+      wrongAnswer: ''
+    }
+  }
 
-  handleChange = name => event => {
+  handleChange = (name) => event => {
+    console.log('handleChange!!!')
     this.setState({
       [name]: event.target.value
     })
-  };
+  }
 
   handleSave = () => {
     console.log('Save pressed')
@@ -62,62 +66,64 @@ class QuestionForm extends Component {
 
   render() {
     return (
-      <form className='mainContainer' noValidate autoComplete="off">
-        <TextField
-          select
-          label="Question type"
-          className='questionType'
-          style={styles.questionType}
-          value={this.state.questionType}
-          onChange={this.handleChange('questionType')}
-          margin="normal"
-        >
-          {questionTypes.map(option => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          label="Question"
-          multiline
-          rowsMax="4"
-          value={this.state.question}
-          onChange={this.handleChange('question')}
-          className='questionField'
-          style={styles.questionField}
-          margin="normal"
-        />
-        <TextField
-          label="Right Answer"
-          multiline
-          rowsMax="4"
-          value={this.state.rightAnswer}
-          onChange={this.handleChange('rightAnswer')}
-          className='questionField'
-          style={styles.questionField}
-          margin="normal"
-        />
-        <TextField
-          label="Wrong Answer"
-          multiline
-          rowsMax="4"
-          value={this.state.wrongAnswer}
-          onChange={this.handleChange('wrongAnswer')}
-          className='questionField'
-          style={styles.questionField}
-          margin="normal"
-        />
-        <Button onClick={this.handleAdd} variant="fab" mini color="primary" aria-label="Add" className='addButton' style={styles.addButton}>
-          <AddIcon className='addIcon' />
-        </Button>
-        <Button onClick={this.handleSave} variant="contained" className='saveButton' style={styles.saveButton}>
-          Save
-          <SaveIcon className='saveIcon' />
-        </Button>
-      </form>
+      <div className='mainContainer'>
+        <form noValidate autoComplete="off" className='form'>
+          <TextField
+            select
+            label="Question type"
+            className='questionType'
+            style={styles.questionType}
+            value={this.state.questionType}
+            onChange={this.handleChange('questionType')}
+            margin="normal"
+          >
+            {questionTypes.map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Question"
+            multiline
+            rowsMax="4"
+            value={this.state.question}
+            onChange={this.handleChange('question')}
+            className='questionField'
+            style={styles.questionField}
+            margin="normal"
+          />
+          <TextField
+            label="Right Answer"
+            multiline
+            rowsMax="4"
+            value={this.state.rightAnswer}
+            onChange={this.handleChange('rightAnswer')}
+            className='rightAnswerField'
+            style={styles.questionField}
+            margin="normal"
+          />
+          <TextField
+            label="Wrong Answer"
+            multiline
+            rowsMax="4"
+            value={this.state.wrongAnswer}
+            onChange={this.handleChange('wrongAnswer')}
+            className='wrongAnswerField'
+            style={styles.questionField}
+            margin="normal"
+          />
+          <Button onClick={this.handleAdd} variant="fab" mini color="primary" aria-label="Add" className='addButton' style={styles.addButton}>
+            <AddIcon className='addIcon' />
+          </Button>
+          <Button onClick={this.handleSave} variant="contained" className='saveButton' style={styles.saveButton}>
+            Save
+            <SaveIcon className='saveIcon' />
+          </Button>
+        </form>
+      </div>
     )
   }
 }
 
-export default withStyles(styles)(QuestionForm)
+export default QuestionForm
