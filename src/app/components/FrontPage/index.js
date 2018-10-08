@@ -25,12 +25,24 @@ export class FrontPage extends Component {
   getNewQuestion = () => {
     this.props.getRandomQuestion()
   }
+
   handleConfirm = () => {
     console.log('Confirm pressed')
   }
 
+  renderUserAnswer = (userAnswer) => {
+    const { isCorrect, correctAnswer } = userAnswer
+    const message = isCorrect ? 'Correct!' : `Wrong! Correct answer is '${correctAnswer}'`
+    return (
+      <div style={styles.userAnswer}>
+        {message}
+      </div>
+    )
+  }
+
   render () {
     const user = this.props.loggedUser.loggedUser
+    const userAnswer = this.props.userAnswer
     return (
       <div className='frontPageContainer'>
         {user
@@ -44,16 +56,27 @@ export class FrontPage extends Component {
         }
         <button onClick={this.props.logout}>Tyhjennä localStorage</button>
         {this.props.question && <Question question={this.props.question} />}
+        {userAnswer && this.renderUserAnswer(userAnswer)}
         <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />
       </div>
     )
   }
 }
 
+const styles = {
+  userAnswer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center'
+  }
+}
+
 const mapStateToProps = (state) => {
   return {
     loggedUser: state.loggedUser,
-    question: state.question.question
+    question: state.question.question,
+    userAnswer: state.question.userAnswer
   }
 }
 const mapDispatchToProps = {

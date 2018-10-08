@@ -1,13 +1,37 @@
 import React from 'react'
+// import Card from '@material-ui/core/Card'
+// import CardContent from '@material-ui/core/CardContent'
+import PropTypes from 'prop-types'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
+import QuestionAnswer from './QuestionAnswer'
+
+const styles = ({
+  card: {
+    height: '100%',
+    width: '350px',
+    margin: '0 auto'
+  },
+
+  question: {
+    width: '350px',
+    margin: '0 auto'
+  }
+})
 
 const PrintQuestion = ({ question }) => {
   return (
     <div className='printQuestion'>
-      <h1>PRINT QUESTION</h1>
-      <h2>{question.value}</h2>
-      {question.options.map((option, i) => <p key={i}>{option}</p>)}
+      <Typography variant="headline" align="center" color="default" gutterBottom>
+        {question.value}
+      </Typography>
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} />)}
     </div>
   )
 }
 
-export default PrintQuestion
+PrintQuestion.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(PrintQuestion)
