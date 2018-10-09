@@ -2,8 +2,7 @@ import questionConstants from './constants/questionConstants'
 
 const initialState = {
   question: null,
-  userAnswer: null,
-  selectedAnswer: null
+  userAnswer: null
 }
 
 const questionReducer = (state = initialState, action) => {
@@ -12,8 +11,7 @@ const questionReducer = (state = initialState, action) => {
       return {
         ...state,
         question: action.data,
-        userAnswer: null,
-        selectedAnswer: null
+        userAnswer: null
       }
     }
 
@@ -21,14 +19,6 @@ const questionReducer = (state = initialState, action) => {
       return {
         ...state,
         userAnswer: action.data
-      }
-    }
-
-    case questionConstants.SELECT_ANSWER: {
-      return {
-        ...state,
-        // only contains object { id, value }
-        selectedAnswer: action.data
       }
     }
 

@@ -23,16 +23,6 @@ describe('<App />', () => {
   afterAll(() => {
     app.unMount()
   })
-  // Very useless test. Should test the amount of rendered answer options for example.
-  it('generates a new user on startup', () => {
-    app.update()
-    const frontPageComponent = app.find(FrontPage)
-    const contentDiv = frontPageComponent.find('.user-info')
-
-    expect(contentDiv.text()).toContain('User id: 123')
-    expect(authService.loggedUser.id).toEqual(123)
-    expect(authService.loggedUser.token).toEqual(12345)
-  })
   it('renders AppBar', () => {
     const appBarComponents = app.find(AppBar)
     expect(appBarComponents.length).toBe(1)
