@@ -1,7 +1,12 @@
 import axios from 'axios'
-let token = null
+let baseUrl = ''
+// This can not be tested. It's ok tho
+if (process.env.NODE_ENV === 'production') {
+  baseUrl = 'https://aikavali-back.herokuapp.com'
+}
 
-const baseUrl = '/api/v1/user'
+const apiUrl = '/api/v1/user'
+let token = null
 
 const setToken = (newToken) => {
   token = `bearer ${newToken}`
@@ -17,7 +22,7 @@ const generateNewUnregisteredUser = async () => {
   const config = {
     headers: { 'Authorization': token }
   }
-  const response = await axios.post(`${baseUrl}/generate`, config)
+  const response = await axios.post(`${baseUrl}${apiUrl}/generate`, config)
   return response.data
 }
 
