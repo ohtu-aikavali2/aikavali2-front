@@ -2,7 +2,6 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles'
 import SkipNext from '@material-ui/icons/SkipNext'
-import Confirm from '@material-ui/icons/Check'
 
 const styles = {
   buttonLeft: {
@@ -22,22 +21,14 @@ const styles = {
   }
 }
 
-function ButtonBar({ handleSkip, handleConfirm, showNext }) {
-  const text = !showNext ? 'Skip' : 'Next'
+export function ButtonBar ({ handleSkip, showNext }) {
+  const text = showNext ? 'Next' : 'Skip'
   return (
     <div className='mainContainer'>
-      <Button onClick={handleSkip} variant="contained" color="secondary" className='leftButton' style={!showNext ? styles.buttonLeft : styles.buttonRight}>
+      <Button onClick={handleSkip} variant="contained" color="secondary" className='button' style={showNext ? styles.buttonRight : styles.buttonLeft}>
         {text}
         <SkipNext className='skipIcon' />
       </Button>
-      {!showNext &&
-        (
-          <Button onClick={handleConfirm} variant="contained" color="primary" className='rightButton' style={styles.buttonRight}>
-            Confirm
-            <Confirm className='confirmIcon' />
-          </Button>
-        )
-      }
     </div>
   )
 }

@@ -25,17 +25,16 @@ export class FrontPage extends Component {
   render () {
     const user = this.props.loggedUser.loggedUser
     return (
-      <div className='frontPageContainer'>
-        {user
-          ? (
+      <div className='frontPageContainer' style={{ marginTop: 50 }}>
+        {false && user &&
+          (
             <div className="user-info">
               <p>User id: {user.id}, User token: {false && user.token}</p>
               {!user.token ? <p>Käyttäjä ei ole rekisteröitynyt (Jos käyttäjällä token, on rekisteröitynyt)</p> : <p>Käyttäjä on rekisteröitynyt</p>}
             </div>
           )
-          : <p>Ei käyttäjää, refreshaa sivu generoidaksesi uuden käyttäjän</p>
         }
-        <button onClick={this.props.logout}>Tyhjennä localStorage</button>
+        {false && <button onClick={this.props.logout}>Tyhjennä localStorage</button>}
         <Question />
         {false && <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />}
       </div>

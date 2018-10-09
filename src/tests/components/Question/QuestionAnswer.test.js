@@ -6,22 +6,27 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 
 describe('<QuestionAnswer />', () => {
-  let question
-  const props = {
-    selectAnswer: jest.fn(),
-    userAnswer: null,
-    selectedAnswer: null,
-    value: 'Option',
-    id: 1,
-    classes: {
-      wrapper: {},
-      paper: {}
-    }
-  }
-  beforeAll(() => {
+  let question, props
+  beforeEach(() => {
     // Component requires propTypes classes
+    props = {
+      handleSelect: jest.fn(),
+      handleConfirm: jest.fn(),
+      userAnswer: null,
+      selected: false,
+      value: 'Option',
+      id: 1,
+      classes: {
+        wrapper: {},
+        paper: {}
+      }
+    }
     question = shallow(<QuestionAnswer {...props} />)
   })
+  /*afterEach(() => {
+    props.handleSelect.mockClear()
+    props.handleConfirm.mockClear()
+  })*/
   it('renders self and subcomponents', () => {
     const containerDiv = question.find('div').first()
     expect(containerDiv.props().id).toEqual('container')
@@ -47,7 +52,7 @@ describe('<QuestionAnswer />', () => {
       children: 'Option'
     })
   })
-  it('container <div> click calls the method handleClick() which calls the prop selectAnswer() is userAnswer is null', () => {
+  it('container <div> click calls the method handleClick() which calls the prop handleSelect() if userAnswer is null AND selected === false (user has not yet selected any option)', () => {
     const spy = jest.spyOn(question.instance(), 'handleClick')
 
     // forceUpdate for instance() is NEEDED!!
@@ -55,7 +60,24 @@ describe('<QuestionAnswer />', () => {
     let containerDiv = question.find('div').first()
     containerDiv.simulate('click')
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(props.selectAnswer).toHaveBeenCalledTimes(1)
+    expect(props.handleSelect).toHaveBeenCalledTimes(1)
+    expect(props.handleConfirm).toHaveBeenCalledTimes(0)
+  })
+  it('container <div> click calls the method handleClick() which calls the prop handleConfirm() if userAnswer is null and selected === true (user has already selected that specific option)', () => {
+    props = {
+      ...props,
+      selected: true
+    }
+    question = shallow(<QuestionAnswer {...props} />)
+    const spy = jest.spyOn(question.instance(), 'handleClick')
+
+    // forceUpdate for instance() is NEEDED!!
+    question.instance().forceUpdate()
+    let containerDiv = question.find('div').first()
+    containerDiv.simulate('click')
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(props.handleSelect).toHaveBeenCalledTimes(0)
+    expect(props.handleConfirm).toHaveBeenCalledTimes(1)
   })
 })
 /*

@@ -6,13 +6,20 @@ import { connect } from 'react-redux'
 import { getRandomQuestion, answerQuestion } from '../../reducers/actions/questionActions'
 
 export class Question extends Component {
+  constructor () {
+    super()
+    this.state = {
+      selected: null
+    }
+  }
 
   getNewQuestion = () => {
+    this.setState({ selected: null })
     this.props.getRandomQuestion()
   }
 
   handleConfirm = async () => {
-    const selected = this.props.selectedAnswer
+    const { selected } = this.state
     if (selected) {
       // Muodossa { id, value }
       await this.props.answerQuestion(selected.id, selected.value)
@@ -30,14 +37,18 @@ export class Question extends Component {
     )
   }
 
+  selectOption = (id, value) => {
+    this.setState({ selected: { id, value } })
+  }
+
   render() {
     const { question, userAnswer } = this.props
     return (
       <div className='questionContainer'>
         {userAnswer && this.renderUserAnswer(userAnswer)}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} />}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} />}
-        <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} showNext={userAnswer} />
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
+        <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer} />
       </div>
     )
   }
@@ -46,7 +57,6 @@ export class Question extends Component {
 const mapStateToProps = (state) => {
   return {
     userAnswer: state.question.userAnswer,
-    selectedAnswer: state.question.selectedAnswer,
     question: state.question.question
   }
 }
