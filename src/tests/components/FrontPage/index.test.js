@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { FrontPage } from '../../../app/components/FrontPage'
-import ButtonBar from '../../../app/components/common/ButtonBar'
 import Question from '../../../app/components/Question'
 
 describe('FrontPage', () => {
@@ -16,8 +15,7 @@ describe('FrontPage', () => {
           id: 12345,
           token: 54321
         }
-      },
-      question: null
+      }
     }
     wrapper = shallow(<FrontPage {...props} />)
   })
@@ -52,12 +50,7 @@ describe('FrontPage', () => {
   it('renders self', () => {
     expect(wrapper.find('.frontPageContainer').length).toBe(1)
   })
-  it('renders ButtonBar', () => {
-    expect(wrapper.find(ButtonBar).length).toBe(1)
-  })
-  it('renders question if it is not null, undefined or false', () => {
-    expect(wrapper.find(Question).length).toBe(0)
-    wrapper.setProps({ ...props, question: 'not NULL' })
+  it('renders question', () => {
     expect(wrapper.find(Question).length).toBe(1)
   })
 })

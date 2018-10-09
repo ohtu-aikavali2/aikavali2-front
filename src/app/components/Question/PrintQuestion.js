@@ -22,7 +22,7 @@ const styles = ({
 const PrintQuestion = ({ question }) => {
   return (
     <div className='printQuestion'>
-      <Typography variant="headline" align="center" color="default" gutterBottom>
+      <Typography className='typography' variant="headline" align="center" color="default" gutterBottom>
         {question.value}
       </Typography>
       {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} />)}

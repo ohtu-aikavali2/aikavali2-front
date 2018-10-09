@@ -1,14 +1,12 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { shallow } from 'enzyme'
 import PrintQuestion from '../../../app/components/Question/PrintQuestion'
 import CompileQuestion from '../../../app/components/Question/CompileQuestion'
-import Question from '../../../app/components/Question'
-import store from '../../../app/reducers'
-import { Provider } from 'react-redux'
+import { Question } from '../../../app/components/Question'
 
 describe('<Question />', () => {
-  let question
-  const props = [
+  let props, question
+  let questions = [
     {
       kind: 'PrintQuestion',
       item: {
@@ -33,7 +31,8 @@ describe('<Question />', () => {
   ]
 
   beforeAll(() => {
-    question = mount(<Provider store={store}><Question question={props[0]} /></Provider>)
+    props = { question: questions[0] }
+    question = shallow(<Question {...props} />)
   })
 
   it('renders self', () => {
@@ -44,7 +43,8 @@ describe('<Question />', () => {
     expect(question.find(PrintQuestion).length).toBe(1)
   })
   it('renders only CompileQuestion when question.kind is CompileQuestion', () => {
-    question = mount(<Provider store={store}><Question question={props[1]} /></Provider>)
+    props = { question: questions[1] }
+    question = shallow(<Question {...props} />)
     expect(question.find(CompileQuestion).length).toBe(1)
     expect(question.find(PrintQuestion).length).toBe(0)
   })
