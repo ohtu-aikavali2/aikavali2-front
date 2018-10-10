@@ -1,36 +1,26 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
-import { withStyles } from '@material-ui/core/styles'
 import SkipNext from '@material-ui/icons/SkipNext'
+import Confirm from '@material-ui/icons/Check'
+import './common.css'
 
-const styles = {
-  buttonLeft: {
-    margin: 5,
-    position: 'absolute',
-    bottom: 0,
-    left: 0
-  },
-  buttonRight: {
-    margin: 5,
-    position: 'absolute',
-    bottom: 0,
-    right: 0
-  },
-  rightIcon: {
-    marginLeft: 10
-  }
-}
-
-export function ButtonBar ({ handleSkip, showNext }) {
-  const text = showNext ? 'Next' : 'Skip'
+export function ButtonBar({ handleSkip, showNext }) {
   return (
-    <div className='mainContainer'>
-      <Button onClick={handleSkip} variant="contained" color="secondary" className='button' style={showNext ? styles.buttonRight : styles.buttonLeft}>
-        {text}
-        <SkipNext className='skipIcon' />
-      </Button>
+    <div className='buttonBarContainer'>
+      <div className='skip'>
+        <Button disabled={showNext} onClick={handleSkip} variant="contained" color="secondary" className='skipButton'>
+          Skip
+          <SkipNext className='skipIcon' />
+        </Button>
+      </div>
+      <div className='next'>
+        <Button disabled={!showNext} onClick={handleSkip} variant="contained" color="primary" className='nextButton'>
+          Next
+          <Confirm className='confirmIcon' />
+        </Button>
+      </div>
     </div>
   )
 }
 
-export default withStyles(styles)(ButtonBar)
+export default ButtonBar

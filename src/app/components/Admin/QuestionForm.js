@@ -4,26 +4,7 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import SaveIcon from '@material-ui/icons/Save'
 import AddIcon from '@material-ui/icons/Add'
-
-const styles = {
-  questionField: {
-    margin: 2,
-    width: 250
-  },
-  questionType: {
-    margin: 2,
-    width: 250
-  },
-  saveButton: {
-    margin: 5,
-    position: 'absolute',
-    bottom: 0,
-    right: 0
-  },
-  addButton: {
-    margin: 5
-  }
-}
+import './admin.css'
 
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
@@ -64,13 +45,13 @@ class QuestionForm extends Component {
 
   render() {
     return (
-      <div className='mainContainer'>
+      <div className='questionFormContainer'>
         <form noValidate autoComplete="off" className='form'>
           <TextField
             select
+            fullWidth
             label="Question type"
             className='questionType'
-            style={styles.questionType}
             value={this.state.questionType}
             onChange={this.handleChange('questionType')}
             margin="normal"
@@ -84,40 +65,44 @@ class QuestionForm extends Component {
           <TextField
             label="Question"
             multiline
+            fullWidth
             rowsMax="4"
             value={this.state.question}
             onChange={this.handleChange('question')}
             className='questionField'
-            style={styles.questionField}
             margin="normal"
           />
           <TextField
             label="Right Answer"
             multiline
+            fullWidth
             rowsMax="4"
             value={this.state.rightAnswer}
             onChange={this.handleChange('rightAnswer')}
             className='rightAnswerField'
-            style={styles.questionField}
             margin="normal"
           />
           <TextField
             label="Wrong Answer"
             multiline
+            fullWidth
             rowsMax="4"
             value={this.state.wrongAnswer}
             onChange={this.handleChange('wrongAnswer')}
             className='wrongAnswerField'
-            style={styles.questionField}
             margin="normal"
           />
-          <Button onClick={this.handleAdd} variant="fab" mini color="primary" aria-label="Add" className='addButton' style={styles.addButton}>
-            <AddIcon className='addIcon' />
-          </Button>
-          <Button onClick={this.handleSave} variant="contained" className='saveButton' style={styles.saveButton}>
-            Save
-            <SaveIcon className='saveIcon' />
-          </Button>
+          <div className='addButtonContainer'>
+            <Button onClick={this.handleAdd} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+              <AddIcon className='addIcon' />
+            </Button>
+          </div>
+          <div className='saveButtonContainer'>
+            <Button onClick={this.handleSave} variant="contained" className='saveButton'>
+              Save
+              <SaveIcon className='saveIcon' />
+            </Button>
+          </div>
         </form>
       </div>
     )
