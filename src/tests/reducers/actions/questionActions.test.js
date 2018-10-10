@@ -12,16 +12,25 @@ describe('questionActions', () => {
   let reduxStore = null
   beforeEach(() => {
     // mockStore is required for async functions
-    reduxStore = mockStore({ question: null })
+    reduxStore = mockStore({ question: null, answer: null })
   })
   it('getRandomQuestion returns a random question', () => {
     return reduxStore.dispatch(actions.getRandomQuestion()).then(() => {
       // return of async actions
       const store = reduxStore.getActions()[0].data
       expect(store.kind).toBe(questionService.question.kind)
-      expect(store.item).toBe(questionService.question.item)
+      // toEqual, because options are shuffled
+      expect(store.item).toEqual(questionService.question.item)
       expect(store._id).toBe(questionService.question._id)
       expect(store.__v).toBe(questionService.question.__v)
+    })
+  })
+  it('answerQuestion dispatches an answer object', () => {
+    return reduxStore.dispatch(actions.answerQuestion()).then(() => {
+      // return of async actions
+      const store = reduxStore.getActions()[0].data
+      expect(store.isCorrect).toBe(questionService.answer.isCorrect)
+      expect(store.correctAnswer).toEqual(questionService.answer.correctAnswer)
     })
   })
 })

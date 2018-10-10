@@ -34,9 +34,9 @@ export class QuestionAnswer extends Component {
 
   determineStyle = () => {
     const { userAnswer, value, selected } = this.props
-    const selectedStyle = { borderStyle: 'solid', borderWidth: 2 }
-    const correctStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'green' }
-    const wrongStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'red' }
+    const selectedStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'blue', backgroundColor: 'rgb(0, 55, 255, 0.3)' }
+    const correctStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'green', backgroundColor: 'rgb(68, 255, 0, 0.5)' }
+    const wrongStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'red', backgroundColor: 'rgb(255, 0, 0, 0.5)' }
     if (userAnswer && userAnswer.isCorrect && selected) {
       return correctStyle
     } else if (userAnswer && userAnswer.correctAnswer === value) {
@@ -53,8 +53,8 @@ export class QuestionAnswer extends Component {
     const { classes, value } = this.props
     const style = this.determineStyle()
     return (
-      <div className={classes.wrapper} id='container' onClick={this.handleClick} style={style}>
-        <Paper className={classes.paper} id='paper'>
+      <div className={classes.wrapper} id='container' onClick={this.handleClick}>
+        <Paper className={classes.paper} id='paper' style={style}>
           <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
             <Grid item className='itemGrid'>
               <Typography className='typography' align="center">{value}</Typography>

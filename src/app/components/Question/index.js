@@ -13,9 +13,11 @@ export class Question extends Component {
     }
   }
 
-  getNewQuestion = () => {
+  getNewQuestion = async () => {
+    await this.props.getRandomQuestion()
+    // setState() after async function, so that new question is
+    // rendered (almost) at the same time that option selections are removed
     this.setState({ selected: null })
-    this.props.getRandomQuestion()
   }
 
   handleConfirm = async () => {
