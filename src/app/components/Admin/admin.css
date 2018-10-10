@@ -1,0 +1,11 @@
+.adminPageContainer {
+    margin: 5%;
+}
+.addButtonContainer {
+    float: left;
+}
+.saveButtonContainer {
+    bottom: 5px;
+    right: 5px;
+    position: fixed;
+}
