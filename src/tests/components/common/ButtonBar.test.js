@@ -16,32 +16,67 @@ describe('<ButtonBar />', () => {
   it('renders self', () => {
     expect(buttonBar.find('.buttonBarContainer').length).toBe(1)
   })
-  it('renders skip Button to the left side, when showNext === false', () => {
-    const button = buttonBar.find(Button)
+  it('skipButton enabled on the left side, when showNext === false', () => {
+    const button = buttonBar.find(Button).first()
     const buttonProps = button.props()
     expect(buttonProps).toEqual({
       onClick: props.handleSkip,
       variant: 'contained',
       color: 'secondary',
+      disabled: false,
       className: 'skipButton',
       children: buttonProps.children
     })
     expect(buttonProps.children).toContain('Skip')
     expect(buttonBar.find(SkipNext).length).toBe(1)
   })
-  it('renders next Button to right side, when showNext === true', () => {
+  it('nextButton disabled on the right side, when showNext === false', () => {
+    const button = buttonBar.find(Button).last()
+    const buttonProps = button.props()
+    expect(buttonProps).toEqual({
+      onClick: props.handleSkip,
+      variant: 'contained',
+      color: 'primary',
+      disabled: true,
+      className: 'nextButton',
+      children: buttonProps.children
+    })
+    expect(buttonProps.children).toContain('Next')
+    expect(buttonBar.find(SkipNext).length).toBe(1)
+  })
+  it('skipButton disabled on the left side, when showNext === true', () => {
     props = {
       ...props,
       showNext: true
     }
     buttonBar = shallow(<ButtonBar {...props} />)
-    const button = buttonBar.find(Button)
+    const button = buttonBar.find(Button).first()
     const buttonProps = button.props()
     expect(buttonProps).toEqual({
       onClick: props.handleSkip,
       variant: 'contained',
       color: 'secondary',
+      disabled: true,
       className: 'skipButton',
+      children: buttonProps.children
+    })
+    expect(buttonProps.children).toContain('Skip')
+    expect(buttonBar.find(SkipNext).length).toBe(1)
+  })
+  it('nextButton enabled on the right side, when showNext === true', () => {
+    props = {
+      ...props,
+      showNext: true
+    }
+    buttonBar = shallow(<ButtonBar {...props} />)
+    const button = buttonBar.find(Button).last()
+    const buttonProps = button.props()
+    expect(buttonProps).toEqual({
+      onClick: props.handleSkip,
+      variant: 'contained',
+      color: 'primary',
+      disabled: false,
+      className: 'nextButton',
       children: buttonProps.children
     })
     expect(buttonProps.children).toContain('Next')

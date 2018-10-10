@@ -1,16 +1,24 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
 import SkipNext from '@material-ui/icons/SkipNext'
+import Confirm from '@material-ui/icons/Check'
 import './common.css'
 
-export function ButtonBar ({ handleSkip, showNext }) {
-  const text = showNext ? 'Next' : 'Skip'
+export function ButtonBar({ handleSkip, showNext }) {
   return (
-    <div className={`buttonBarContainer ${showNext ? 'next' : 'skip'}`}>
-      <Button onClick={handleSkip} variant="contained" color="secondary" className='skipButton'>
-        {text}
-        <SkipNext className='skipIcon' />
-      </Button>
+    <div className='buttonBarContainer'>
+      <div className='skip'>
+        <Button disabled={showNext} onClick={handleSkip} variant="contained" color="secondary" className='skipButton'>
+          Skip
+          <SkipNext className='skipIcon' />
+        </Button>
+      </div>
+      <div className='next'>
+        <Button disabled={!showNext} onClick={handleSkip} variant="contained" color="primary" className='nextButton'>
+          Next
+          <Confirm className='confirmIcon' />
+        </Button>
+      </div>
     </div>
   )
 }
