@@ -14,7 +14,7 @@
 }
 .appBarLoginButton {
     right: 10px;
-    position: fixed;
+    position: absolute;
 }
 .drawerList {
     width: 250px;
