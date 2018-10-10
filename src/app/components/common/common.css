@@ -16,3 +16,6 @@
     right: 10px;
     position: fixed;
 }
+.drawerList {
+    width: 250px;
+}
