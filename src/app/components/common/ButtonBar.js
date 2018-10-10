@@ -1,31 +1,13 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
-import { withStyles } from '@material-ui/core/styles'
 import SkipNext from '@material-ui/icons/SkipNext'
-
-const styles = {
-  buttonLeft: {
-    margin: 5,
-    position: 'absolute',
-    bottom: 0,
-    left: 0
-  },
-  buttonRight: {
-    margin: 5,
-    position: 'absolute',
-    bottom: 0,
-    right: 0
-  },
-  rightIcon: {
-    marginLeft: 10
-  }
-}
+import './common.css'
 
 export function ButtonBar ({ handleSkip, showNext }) {
   const text = showNext ? 'Next' : 'Skip'
   return (
-    <div className='mainContainer'>
-      <Button onClick={handleSkip} variant="contained" color="secondary" className='button' style={showNext ? styles.buttonRight : styles.buttonLeft}>
+    <div className={`buttonBarContainer ${showNext ? 'next' : 'skip'}`}>
+      <Button onClick={handleSkip} variant="contained" color="secondary" className='skipButton'>
         {text}
         <SkipNext className='skipIcon' />
       </Button>
@@ -33,4 +15,4 @@ export function ButtonBar ({ handleSkip, showNext }) {
   )
 }
 
-export default withStyles(styles)(ButtonBar)
+export default ButtonBar

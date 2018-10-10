@@ -11,7 +11,7 @@ describe('QuestionForm', () => {
   let wrapper
   it('renders self and subcomponents', () => {
     wrapper = mount(<QuestionForm />)
-    expect(wrapper.find('.mainContainer').length).toBe(1)
+    expect(wrapper.find('.questionFormContainer').length).toBe(1)
     expect(wrapper.find('form').length).toBe(1)
     const textFields = wrapper.find(TextField)
     expect(textFields.length).toBe(4)

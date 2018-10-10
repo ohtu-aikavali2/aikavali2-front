@@ -1,0 +1,18 @@
+.skip {
+    bottom: 5px;
+    left: 5px;
+    position: fixed;
+}
+.next {
+    bottom: 5px;
+    right: 5px;
+    position: fixed;
+}
+.appBarTitle {
+    left: 10px;
+    position: relative;
+}
+.appBarLoginButton {
+    right: 10px;
+    position: fixed;
+}

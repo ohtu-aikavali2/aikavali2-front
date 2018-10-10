@@ -14,7 +14,7 @@ describe('<ButtonBar />', () => {
     buttonBar = shallow(<ButtonBar {...props} />)
   })
   it('renders self', () => {
-    expect(buttonBar.find('.mainContainer').length).toBe(1)
+    expect(buttonBar.find('.buttonBarContainer').length).toBe(1)
   })
   it('renders skip Button to the left side, when showNext === false', () => {
     const button = buttonBar.find(Button)
@@ -23,13 +23,7 @@ describe('<ButtonBar />', () => {
       onClick: props.handleSkip,
       variant: 'contained',
       color: 'secondary',
-      className: 'button',
-      style: {
-        margin: 5,
-        position: 'absolute',
-        bottom: 0,
-        left: 0
-      },
+      className: 'skipButton',
       children: buttonProps.children
     })
     expect(buttonProps.children).toContain('Skip')
@@ -47,13 +41,7 @@ describe('<ButtonBar />', () => {
       onClick: props.handleSkip,
       variant: 'contained',
       color: 'secondary',
-      className: 'button',
-      style: {
-        margin: 5,
-        position: 'absolute',
-        bottom: 0,
-        right: 0
-      },
+      className: 'skipButton',
       children: buttonProps.children
     })
     expect(buttonProps.children).toContain('Next')
