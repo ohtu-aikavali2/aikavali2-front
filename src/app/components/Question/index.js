@@ -34,11 +34,17 @@ export class Question extends Component {
   }
 
   getNewQuestion = async () => {
-    await this.props.getRandomQuestion()
-    // setState() after async function, so that new question is
-    // rendered (almost) at the same time that option selections are removed
-    // Asetetaan myös startTime
-    this.setState({ selected: null, startTime: Date.now() })
+    if (!this.props.userAnswer) {
+      // If the question has not been answered
+      this.skipQuestion()
+      // Do nothing else
+    } else {
+      await this.props.getRandomQuestion()
+      // setState() after async function, so that new question is
+      // rendered (almost) at the same time that option selections are removed
+      // Asetetaan myös startTime
+      this.setState({ selected: null, startTime: Date.now() })
+    }
   }
 
   handleConfirm = async () => {
@@ -63,6 +69,12 @@ export class Question extends Component {
   startGame = async () => {
     await this.props.startGame()
     this.setState({ startTime: Date.now(), selected: null })
+  }
+
+  skipQuestion = async () => {
+    // Lähetetään vastaus, jossa value = 'Note: questionSkipped'
+    await this.props.answerQuestion(this.props.question.item._id, 'Note: questionSkipped')
+    this.setState({ selected: null })
   }
 
   render() {
