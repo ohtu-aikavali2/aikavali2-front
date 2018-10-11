@@ -12,16 +12,27 @@ export class Question extends Component {
     super()
     this.state = {
       selected: null,
-      startTime: null,
+      startTime: 0,
+      pauseStart: 0,
       timer: null
     }
   }
 
   componentWillReceiveProps (nextProps) {
+    // Peli paussille, paitsi jos kyseessä eka kysymys. (Siitä ei mitata aikaa)
+    if (nextProps.game.paused && this.state.startTime !== 0) {
+      this.setState({ pauseStart: Date.now() })
+    } else if (this.props.game.paused && !nextProps.game.paused && this.state.startTime !== 0) {
+      // Paussi päättyi, muutetaan vain startTimea
+      this.setState({
+        startTime: this.state.startTime + (Date.now() - this.state.pauseStart),
+        pauseStart: null
+      })
+    }
     if (!nextProps.loggedUser.loggedUser) {
       // Jos käyttäjä kirjautuu ulos, nollataan kaikki
       clearInterval(this.state.timer)
-      this.setState({ selected: null, startTime: null, timer: null })
+      this.setState({ selected: null, startTime: 0, timer: null })
     } else if (nextProps.questionMessage && !nextProps.game.ended) {
       // Kysymykset loppuneet. nexProps.game.ended = false, koska seuraavassa vasta asetetaan
       this.props.endGame()
@@ -32,7 +43,7 @@ export class Question extends Component {
     } else if (!nextProps.questionMessage && nextProps.game.ended) {
       // intervalli lopetetaan kun message on poissa ja ended = totta.
       clearInterval(this.state.timer)
-      this.setState({ timer: null, startTime: null, selected: null })
+      this.setState({ timer: null, startTime: 0, selected: null })
       this.props.initializeGame()
     }
   }
@@ -55,7 +66,7 @@ export class Question extends Component {
     const { selected } = this.state
     if (selected) {
       // Otetaan talteen vastauaika, joka lähetetään backendiin
-      const time = this.state.startTime ? Date.now() - this.state.startTime : null
+      const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
       await this.props.answerQuestion(selected.id, selected.value, time)
     }
   }
