@@ -16,6 +16,10 @@ const setToken = (newToken) => {
 const getToken = () => {
   return token
 }
+// For tests
+const reload = () => {
+  token = null
+}
 
 const getRandomQuestion = async () => {
   const config = {
@@ -29,9 +33,8 @@ const answerQuestion = async (id, answer) => {
   const config = {
     headers: { 'Authorization': token }
   }
-
   const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer }, config)
   return response.data
 }
 
-export default { getRandomQuestion, answerQuestion, setToken, getToken }
+export default { getRandomQuestion, answerQuestion, setToken, getToken, reload }

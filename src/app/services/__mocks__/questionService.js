@@ -26,4 +26,13 @@ const tokenIsSet = () => {
   return tokenSet
 }
 
-export default { getRandomQuestion, setToken, tokenIsSet, question }
+const answer = {
+  isCorrect: false,
+  correctAnswer: 'Oikea vastaus'
+}
+
+const answerQuestion = async () => {
+  return answer
+}
+
+export default { getRandomQuestion, answerQuestion, setToken, tokenIsSet, question, answer }
