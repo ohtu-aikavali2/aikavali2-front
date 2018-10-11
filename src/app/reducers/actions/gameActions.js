@@ -23,3 +23,11 @@ export const endGame = () => {
     })
   }
 }
+
+export const pauseGame = () => {
+  return async (dispatch) => {
+    dispatch({
+      type: gameConstants.PAUSE_GAME
+    })
+  }
+}
