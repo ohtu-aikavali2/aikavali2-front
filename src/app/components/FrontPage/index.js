@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import './frontPage.css'
 import { loggedUserInitialization, logout } from '../../reducers/actions/authActions'
 import { getRandomQuestion } from '../../reducers/actions/questionActions'
+import { initializeGame } from '../../reducers/actions/gameActions'
 import Question from '../Question'
-import ButtonBar from '../common/ButtonBar'
 
 // exported for tests
 export class FrontPage extends Component {
 
   async componentDidMount () {
     await this.props.loggedUserInitialization()
+    await this.props.initializeGame()
     await this.props.getRandomQuestion()
   }
 
@@ -19,6 +20,10 @@ export class FrontPage extends Component {
       // If user logs out, a new "unregistered" user is created, so user will get
       // "fresh/new" questions. This is also null ONLY if user logs out.
       await this.props.loggedUserInitialization()
+      // Try it out, if u press Tyhjennä localstorgae, u will get new questions immediately
+      // Tarvii ottaa tieto, että suoritus ei ole vielä alkanut
+      await this.props.initializeGame()
+      await this.props.getRandomQuestion()
     }
   }
 
@@ -34,9 +39,8 @@ export class FrontPage extends Component {
             </div>
           )
         }
-        {false && <button onClick={this.props.logout}>Tyhjennä localStorage</button>}
         <Question />
-        {false && <ButtonBar handleSkip={this.getNewQuestion} handleConfirm={this.handleConfirm} />}
+        {<button onClick={this.props.logout}>Tyhjennä localStorage</button>}
       </div>
     )
   }
@@ -50,7 +54,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   loggedUserInitialization,
   logout,
-  getRandomQuestion
+  getRandomQuestion,
+  initializeGame
 }
 
 const ConnectedFrontPage = connect(mapStateToProps, mapDispatchToProps)(FrontPage)

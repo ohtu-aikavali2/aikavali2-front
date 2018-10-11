@@ -2,7 +2,8 @@ import questionConstants from './constants/questionConstants'
 
 const initialState = {
   question: null,
-  userAnswer: null
+  userAnswer: null,
+  message: null
 }
 
 const questionReducer = (state = initialState, action) => {
@@ -11,7 +12,8 @@ const questionReducer = (state = initialState, action) => {
       return {
         ...state,
         question: action.data,
-        userAnswer: null
+        userAnswer: null,
+        message: null
       }
     }
 
@@ -19,6 +21,16 @@ const questionReducer = (state = initialState, action) => {
       return {
         ...state,
         userAnswer: action.data
+      }
+    }
+
+    case questionConstants.ADD_MESSAGE_FROM_BACKEND: {
+      return {
+        ...state,
+        // Just remove the question when message is applied from backend
+        question: null,
+        userAnswer: null,
+        message: action.data
       }
     }
 

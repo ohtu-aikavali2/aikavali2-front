@@ -9,14 +9,15 @@ describe('<ButtonBar />', () => {
   beforeEach(() => {
     props = {
       handleSkip: jest.fn(),
-      showNext: false
+      showNext: false,
+      noMoreQuestions: false
     }
     buttonBar = shallow(<ButtonBar {...props} />)
   })
   it('renders self', () => {
     expect(buttonBar.find('.buttonBarContainer').length).toBe(1)
   })
-  it('skipButton enabled on the left side, when showNext === false', () => {
+  it('skipButton enabled on the left side, when showNext === false AND noMoreQuestions === false', () => {
     const button = buttonBar.find(Button).first()
     const buttonProps = button.props()
     expect(buttonProps).toEqual({
@@ -30,40 +31,71 @@ describe('<ButtonBar />', () => {
     expect(buttonProps.children).toContain('Skip')
     expect(buttonBar.find(SkipNext).length).toBe(1)
   })
-  it('nextButton disabled on the right side, when showNext === false', () => {
-    const button = buttonBar.find(Button).last()
-    const buttonProps = button.props()
-    expect(buttonProps).toEqual({
+  it('nextButton disabled on the right side, when showNext === false OR noMoreQuestions === true', () => {
+    let button = buttonBar.find(Button).last()
+    let buttonProps = button.props()
+
+    const expectedProps = {
       onClick: props.handleSkip,
       variant: 'contained',
       color: 'primary',
       disabled: true,
       className: 'nextButton',
       children: buttonProps.children
-    })
+    }
+    expect(buttonProps).toEqual(expectedProps)
+    expect(buttonProps.children).toContain('Next')
+    expect(buttonBar.find(SkipNext).length).toBe(1)
+
+    props = {
+      ...props,
+      showNext: true,
+      noMoreQuestions: true
+    }
+    buttonBar = shallow(<ButtonBar {...props} />)
+    button = buttonBar.find(Button).last()
+    buttonProps = button.props()
+
+    expect(buttonProps).toEqual(expectedProps)
     expect(buttonProps.children).toContain('Next')
     expect(buttonBar.find(SkipNext).length).toBe(1)
   })
-  it('skipButton disabled on the left side, when showNext === true', () => {
+  it('skipButton disabled on the left side, when showNext === true OR noMoreQuestions === true', () => {
     props = {
       ...props,
       showNext: true
     }
     buttonBar = shallow(<ButtonBar {...props} />)
-    const button = buttonBar.find(Button).first()
-    const buttonProps = button.props()
-    expect(buttonProps).toEqual({
+    let button = buttonBar.find(Button).first()
+    let buttonProps = button.props()
+
+    const expectedProps = {
       onClick: props.handleSkip,
       variant: 'contained',
       color: 'secondary',
       disabled: true,
       className: 'skipButton',
       children: buttonProps.children
-    })
+    }
+
+    expect(buttonProps).toEqual(expectedProps)
+    expect(buttonProps.children).toContain('Skip')
+    expect(buttonBar.find(SkipNext).length).toBe(1)
+
+    props = {
+      ...props,
+      showNext: false,
+      noMoreQuestions: true
+    }
+    buttonBar = shallow(<ButtonBar {...props} />)
+    button = buttonBar.find(Button).first()
+    buttonProps = button.props()
+
+    expect(buttonProps).toEqual(expectedProps)
     expect(buttonProps.children).toContain('Skip')
     expect(buttonBar.find(SkipNext).length).toBe(1)
   })
-  it('nextButton enabled on the right side, when showNext === true', () => {
+  it('nextButton enabled on the right side, when showNext === true AND noMoreQuestions === false', () => {
     props = {
       ...props,
       showNext: true

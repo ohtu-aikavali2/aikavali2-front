@@ -31,21 +31,53 @@ describe('<Question />', () => {
   ]
 
   beforeAll(() => {
-    props = { question: questions[0] }
+    props = {
+      question: questions[0],
+      game: {
+        started: false,
+        ended: false
+      },
+      userAnswer: null,
+      questionMessage: null,
+      getRandomQuestion: jest.fn(),
+      answerQuestion: jest.fn(),
+      initializeGame: jest.fn(),
+      startGame: jest.fn(),
+      endGame: jest.fn()
+    }
     question = shallow(<Question {...props} />)
   })
 
   it('renders self', () => {
     expect(question.find('.questionContainer').length).toBe(1)
   })
-  it('renders only PrintQuestion when question.kind is PrintQuestion', () => {
-    expect(question.find(CompileQuestion).length).toBe(0)
-    expect(question.find(PrintQuestion).length).toBe(1)
-  })
-  it('renders only CompileQuestion when question.kind is CompileQuestion', () => {
-    props = { question: questions[1] }
-    question = shallow(<Question {...props} />)
-    expect(question.find(CompileQuestion).length).toBe(1)
-    expect(question.find(PrintQuestion).length).toBe(0)
+  describe('when prop game.started === true', () => {
+    beforeEach(() => {
+      props = {
+        ...props,
+        game: {
+          started: true,
+          ended: false
+        }
+      }
+      question = shallow(<Question {...props} />)
+    })
+    it('renders only PrintQuestion when question.kind is PrintQuestion', () => {
+      expect(question.find(CompileQuestion).length).toBe(0)
+      expect(question.find(PrintQuestion).length).toBe(1)
+    })
+    it('renders only CompileQuestion when question.kind is CompileQuestion', () => {
+      props = {
+        ...props,
+        question: questions[1],
+        game: {
+          started: true,
+          ended: false
+        }
+      }
+      question = shallow(<Question {...props} />)
+      expect(question.find(CompileQuestion).length).toBe(1)
+      expect(question.find(PrintQuestion).length).toBe(0)
+    })
   })
 })
