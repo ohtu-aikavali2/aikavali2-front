@@ -2,7 +2,7 @@ import questionReducer from '../../app/reducers/questionReducer'
 import questionConstants from '../../app/reducers/constants/questionConstants'
 
 describe('questionReducer', () => {
-  let INITIAL_STATE, questionData, userAnswerData
+  let INITIAL_STATE, questionData, userAnswerData, messageData
   beforeAll(() => {
     INITIAL_STATE = {
       question: null,
@@ -18,6 +18,9 @@ describe('questionReducer', () => {
       isCorrect: false,
       correctAnswer: 'if (i > 1) {}'
     }
+    messageData = {
+      message: 'Message fro backend'
+    }
   })
   it('should return initial state', () => {
     expect(questionReducer(undefined, {})).toEqual({
@@ -26,9 +29,9 @@ describe('questionReducer', () => {
       message: null
     })
   })
-  it('GET_RANDOM_QUESTION should set question to action.data and userAnswer: null', () => {
+  it('GET_RANDOM_QUESTION should set question to action.data, userAnswer: null and message: null', () => {
     const data = questionData
-    const returnedQuestion = questionReducer({ ...INITIAL_STATE, userAnswer: 'Something' }, {
+    const returnedQuestion = questionReducer({ ...INITIAL_STATE, userAnswer: 'Something', message: 'something' }, {
       type: questionConstants.GET_RANDOM_QUESTION,
       data
     })
@@ -45,9 +48,22 @@ describe('questionReducer', () => {
       data
     })
     expect(returnedAnswer).toEqual({
+      ...INITIAL_STATE,
       question: 'Something',
-      userAnswer: userAnswerData,
-      message: null
+      userAnswer: userAnswerData
+    })
+  })
+  it('ADD_MESSAGE_FROM_BACKEND should set message to action.data, userAnswer: null and question: null', () => {
+    const data = messageData
+    const reducerState = questionReducer({ ...INITIAL_STATE, message: 'jii', userAnswer: 'täällä jotain', question: 'täällä kans' }, {
+      type: questionConstants.ADD_MESSAGE_FROM_BACKEND,
+      data
+    })
+    expect(reducerState).toEqual({
+      ...INITIAL_STATE,
+      userAnswer: null,
+      question: null,
+      message: messageData
     })
   })
 })
