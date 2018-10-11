@@ -6,21 +6,35 @@ import AlertWindow from '../common/AlertWindow'
 import { connect } from 'react-redux'
 import { getRandomQuestion, answerQuestion } from '../../reducers/actions/questionActions'
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
-import Button from '@material-ui/core/Button'
 
 export class Question extends Component {
   constructor () {
     super()
     this.state = {
       selected: null,
-      startTime: null,
+      startTime: 0,
+      pauseStart: 0,
       timer: null
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.questionMessage && !nextProps.game.ended) {
-      console.log('ei kysymyksiä')
+    // Peli paussille, paitsi jos kyseessä eka kysymys. (Siitä ei mitata aikaa)
+    if (nextProps.game.paused && this.state.startTime !== 0) {
+      this.setState({ pauseStart: Date.now() })
+    } else if (this.props.game.paused && !nextProps.game.paused && this.state.startTime !== 0) {
+      // Paussi päättyi, muutetaan vain startTimea
+      this.setState({
+        startTime: this.state.startTime + (Date.now() - this.state.pauseStart),
+        pauseStart: null
+      })
+    }
+    if (!nextProps.loggedUser.loggedUser) {
+      // Jos käyttäjä kirjautuu ulos, nollataan kaikki
+      clearInterval(this.state.timer)
+      this.setState({ selected: null, startTime: 0, timer: null })
+    } else if (nextProps.questionMessage && !nextProps.game.ended) {
+      // Kysymykset loppuneet. nexProps.game.ended = false, koska seuraavassa vasta asetetaan
       this.props.endGame()
     } else if (nextProps.game.ended && !this.state.timer) {
       // aloitetaan intervalli
@@ -29,7 +43,8 @@ export class Question extends Component {
     } else if (!nextProps.questionMessage && nextProps.game.ended) {
       // intervalli lopetetaan kun message on poissa ja ended = totta.
       clearInterval(this.state.timer)
-      this.setState({ timer: null })
+      this.setState({ timer: null, startTime: 0, selected: null })
+      this.props.initializeGame()
     }
   }
 
@@ -51,7 +66,7 @@ export class Question extends Component {
     const { selected } = this.state
     if (selected) {
       // Otetaan talteen vastauaika, joka lähetetään backendiin
-      const time = Date.now() - this.state.startTime
+      const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
       await this.props.answerQuestion(selected.id, selected.value, time)
     }
   }
@@ -66,35 +81,25 @@ export class Question extends Component {
     this.setState({ selected: { id, value } })
   }
 
-  startGame = async () => {
-    await this.props.startGame()
-    this.setState({ startTime: Date.now(), selected: null })
-  }
-
   skipQuestion = async () => {
     // Lähetetään vastaus, jossa value = 'Note: questionSkipped'
-    await this.props.answerQuestion(this.props.question.item._id, 'Note: questionSkipped')
+    await this.props.answerQuestion(this.props.question.item._id, 'Note: questionSkipped', null)
     this.setState({ selected: null })
   }
 
   render() {
-    const { question, userAnswer, questionMessage, game } = this.props
+    const { question, userAnswer, questionMessage } = this.props
     return (
       <div className='questionContainer'>
         {userAnswer && this.renderUserAnswer(userAnswer)}
-        {!game.started && !questionMessage && (
-          <AlertWindow title={'Press start to get questions'}>
-            <Button style={{ backgroundColor: 'rgb(68, 255, 0)', color: 'white' }} onClick={this.startGame}>Start</Button>
-          </AlertWindow>
-        )}
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
             <p>New questions will be available soon, all you need to do is wait a few seconds</p>
           </AlertWindow>
         )}
-        {game.started && question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
-        {game.started && question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
-        <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null || !game.started} />
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
+        <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
       </div>
     )
   }
@@ -105,7 +110,8 @@ const mapStateToProps = (state) => {
     userAnswer: state.question.userAnswer,
     question: state.question.question,
     questionMessage: state.question.message,
-    game: state.game
+    game: state.game,
+    loggedUser: state.loggedUser
   }
 }
 const mapDispatchToProps = {
