@@ -1,7 +1,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import AppBar from '../../../app/components/common/AppBar'
-import Button from '@material-ui/core/Button'
+/* import Button from '@material-ui/core/Button' */
 import IconButton from '@material-ui/core/IconButton'
 import AppBarMaterial from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -32,12 +32,6 @@ describe('<AppBar />', () => {
     const typographyProps = typographyComponent.props()
     expect(typographyProps.variant).toBe('title')
     expect(typographyComponent.text()).toContain('Aikavälikertaus')
-  })
-  it('renders Login button', () => {
-    const button = appBar.find(Button)
-    const loginButton = button.find('.appBar_login_button')
-    const finalButton = loginButton.find('button')
-    expect(finalButton.text()).toContain('Login')
   })
   it('Menu button click should call given prop ToggleDrawer', () => {
     const button = appBar.find(IconButton)

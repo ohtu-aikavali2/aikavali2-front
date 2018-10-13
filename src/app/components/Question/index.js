@@ -48,6 +48,10 @@ export class Question extends Component {
     }
   }
 
+  componentWillUnmount () {
+    clearInterval(this.state.timer)
+  }
+
   getNewQuestion = async () => {
     if (!this.props.userAnswer) {
       // If the question has not been answered

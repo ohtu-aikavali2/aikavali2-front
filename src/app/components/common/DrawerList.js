@@ -11,24 +11,19 @@ function DrawerList() {
         <ListItem button component='a' href='/'>
           <ListItemText primary="OHPE" />
         </ListItem>
-      </List>
-      <Divider />
-      <List>
+        <Divider />
         <ListItem button disabled component='a' href='/OHJA'>
           <ListItemText primary="OHJA" />
         </ListItem>
-      </List>
-      <Divider />
-      <List>
+        <Divider />
         <ListItem button disabled component='a' href='/TITO'>
           <ListItemText primary="TITO" />
         </ListItem>
-      </List>
-      <Divider />
-      <List>
+        <Divider />
         <ListItem button disabled component='a' href='/TIKAPE'>
           <ListItemText primary="TIKAPE" />
         </ListItem>
+        <Divider />
       </List>
     </div>
   )

@@ -21,9 +21,6 @@ describe('FrontPage', () => {
     wrapper = shallow(<FrontPage {...props} />)
   })
   describe('componentDidMount', () => {
-    it('calls loggedUserInitialization()', async () => {
-      expect(props.loggedUserInitialization).toHaveBeenCalledTimes(1)
-    })
     it('calls getRandomQuestion()', () => {
       expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
     })
@@ -32,12 +29,6 @@ describe('FrontPage', () => {
     })
   })
   describe('componentWillReceiveProps', () => {
-    it('calls loggedUserInitialization if nextProps.loggedUser === null', () => {
-      expect(props.loggedUserInitialization).toHaveBeenCalledTimes(1)
-      wrapper.setProps({ loggedUser: { loggedUser: null }, loggedUserInitialization: props.loggedUserInitialization })
-      // 2 times, because the first one is called in componentDidMount()
-      expect(props.loggedUserInitialization).toHaveBeenCalledTimes(2)
-    })
     it('calls getRandomQuestion if nextProps.loggedUser === null', () => {
       expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
       wrapper.setProps({ loggedUser: { loggedUser: null }, getRandomQuestion: props.getRandomQuestion })
@@ -51,18 +42,6 @@ describe('FrontPage', () => {
       // 2 times, because the first one is called in componentDidMount()
       // Enkä tätä
       // expect(props.initializeGame).toHaveBeenCalledTimes(2)
-    })
-    it('does not call loggedUserInitialization if nextProps.loggedUser is different than null, undefined or false', () => {
-      expect(props.loggedUserInitialization).toHaveBeenCalledTimes(1)
-      wrapper.setProps({
-        loggedUser: {
-          loggedUser: {
-            id: 2324, token: 4345
-          }
-        },
-        loggedUserInitialization: props.loggedUserInitialization
-      })
-      expect(props.loggedUserInitialization).toHaveBeenCalledTimes(1)
     })
     it('does not call getRandomQuestion if nextProps.loggedUser is different than null, undefined or false', () => {
       expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)

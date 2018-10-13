@@ -1,4 +1,6 @@
 import axios from 'axios'
+import userManager from '../utilities/userManager'
+
 let baseUrl = ''
 // This can not be tested. It's ok tho
 if (process.env.NODE_ENV === 'production') {
@@ -26,4 +28,14 @@ const generateNewUnregisteredUser = async () => {
   return response.data
 }
 
-export default { generateNewUnregisteredUser, setToken, getToken }
+const login = async (username, password) => {
+  try {
+    await userManager.login(username, password)
+    const response = await axios.post(`${baseUrl}${apiUrl}/login`, { user: userManager.getUser() })
+    return response.data
+  } catch (e) {
+    return { error: 'Väärä käyttäjätunnus tai salasana!' }
+  }
+}
+
+export default { generateNewUnregisteredUser, setToken, getToken, login }
