@@ -34,9 +34,9 @@ export class QuestionAnswer extends Component {
 
   determineStyle = () => {
     const { userAnswer, value, selected } = this.props
-    const selectedStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'blue', backgroundColor: 'rgb(0, 55, 255, 0.3)' }
-    const correctStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'green', backgroundColor: 'rgb(68, 255, 0, 0.5)' }
-    const wrongStyle = { borderStyle: 'solid', borderWidth: 2, borderColor: 'red', backgroundColor: 'rgb(255, 0, 0, 0.5)' }
+    const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)' }
+    const correctStyle = { backgroundColor: 'rgb(113, 218, 113)' }
+    const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)' }
     if (userAnswer && userAnswer.isCorrect && selected) {
       return correctStyle
     } else if (userAnswer && userAnswer.correctAnswer === value) {
