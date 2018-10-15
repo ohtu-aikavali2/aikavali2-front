@@ -4,7 +4,10 @@ import authConstants from '../../app/reducers/constants/authConstants'
 describe('authReducer', () => {
   it('should return initial state', () => {
     expect(authReducer(undefined, {})).toEqual({
-      loggedUser: null
+      loggedUser: null,
+      loadingUser: true,
+      loggingIn: false,
+      error: ''
     })
   })
   it('should handle INITIALIZE_USER', () => {
