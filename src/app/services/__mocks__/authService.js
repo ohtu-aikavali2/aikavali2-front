@@ -2,18 +2,21 @@ const loggedUser = {
   id: 123,
   token: 12345
 }
-let tokenSet = false
 
-const generateNewUnregisteredUser = () => {
+const login = (username, password) => {
+  if (!username || !password) {
+    return Promise.resolve({ error: 'error' })
+  }
   return Promise.resolve(loggedUser)
 }
 
-const setToken = () => {
-  tokenSet = true
+const getLoggedUser = () => {
+  return loggedUser
 }
 
-const tokenIsSet = () => {
-  return tokenSet
+export default {
+  loggedUser,
+  setToken: jest.fn(),
+  login,
+  getLoggedUser
 }
-
-export default { generateNewUnregisteredUser, loggedUser, setToken, tokenIsSet }

@@ -19,15 +19,6 @@ const getToken = () => {
   return token
 }
 
-const generateNewUnregisteredUser = async () => {
-  // No need for config here. Just here to get lint through
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  const response = await axios.post(`${baseUrl}${apiUrl}/generate`, config)
-  return response.data
-}
-
 const login = async (username, password) => {
   try {
     await userManager.login(username, password)
@@ -38,4 +29,4 @@ const login = async (username, password) => {
   }
 }
 
-export default { generateNewUnregisteredUser, setToken, getToken, login }
+export default { setToken, getToken, login }
