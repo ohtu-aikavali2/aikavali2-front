@@ -48,6 +48,10 @@ export class Question extends Component {
     }
   }
 
+  componentWillUnmount () {
+    clearInterval(this.state.timer)
+  }
+
   getNewQuestion = async () => {
     if (!this.props.userAnswer) {
       // If the question has not been answered
@@ -71,12 +75,6 @@ export class Question extends Component {
     }
   }
 
-  renderUserAnswer = (userAnswer) => {
-    const { isCorrect, correctAnswer } = userAnswer
-    const message = isCorrect ? 'Correct!' : `Wrong! Correct answer is '${correctAnswer}'`
-    return (<AlertWindow title={message} positive={isCorrect} negative={!isCorrect} />)
-  }
-
   selectOption = (id, value) => {
     this.setState({ selected: { id, value } })
   }
@@ -91,7 +89,6 @@ export class Question extends Component {
     const { question, userAnswer, questionMessage } = this.props
     return (
       <div className='questionContainer'>
-        {userAnswer && this.renderUserAnswer(userAnswer)}
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
             <p>New questions will be available soon, all you need to do is wait a few seconds</p>

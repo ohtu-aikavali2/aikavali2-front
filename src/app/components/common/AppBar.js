@@ -19,12 +19,15 @@ export const ButtonAppBar = (props) => {
           </div>
           <div className='appBarTitle'>
             <Typography variant='title' color='inherit' className='typography'>
-              Aikavälikertaus
+              {!props.user && 'Aikavälikertaus'}
+              {props.user && props.user.username}
             </Typography>
           </div>
-          <div className='appBarLoginButton'>
-            <Button onClick={() => console.log('login pressed')} color='inherit' className='appBar_login_button'>Login</Button>
-          </div>
+          {props.user && (
+            <div className='appBarLoginContainer'>
+              <Button onClick={() => props.logout()} color='inherit' className='appBar_login_button'>Logout</Button>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </div>
