@@ -24,7 +24,7 @@ describe('<PrintQuestion />', () => {
     expect(printQuestion.find('.typography').length > 0).toBe(true)
     const typography = printQuestion.find('.typography').first()
     const text = typography.text()
-    expect(text).toContain(props.value)
+    expect(text).toContain('Mitä koodi tulostaa?')
     const typographyProps = typography.props()
     expect(typographyProps).toEqual({
       className: 'typography',
