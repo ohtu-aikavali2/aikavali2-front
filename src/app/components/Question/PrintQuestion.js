@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import QuestionAnswer from './QuestionAnswer'
+import ReactMarkdown from 'react-markdown'
 
 const styles = ({
   card: {
@@ -20,11 +21,20 @@ const styles = ({
 })
 
 const PrintQuestion = ({ question, handleSelect, handleConfirm, selected }) => {
+  let source = '```\n '
+  question.value.split('\n').forEach((line) => source += line + '\n')
+  source += '```'
   return (
     <div className='printQuestion'>
       <Typography className='typography' variant="headline" align="center" color="default" gutterBottom>
-        {question.value}
+        Mitä koodi tulostaa?
       </Typography>
+      <div className='titleContainer'>
+        <div className='rowContainer'>
+          <ReactMarkdown source={source} />
+
+        </div>
+      </div>
       {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleConfirm={handleConfirm} selected={selected && selected.value === option} />)}
     </div>
   )
