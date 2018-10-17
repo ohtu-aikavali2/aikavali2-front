@@ -32,7 +32,6 @@ const PrintQuestion = ({ question, handleSelect, handleConfirm, selected }) => {
       <div className='titleContainer'>
         <div className='rowContainer'>
           <ReactMarkdown source={source} />
-
         </div>
       </div>
       {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleConfirm={handleConfirm} selected={selected && selected.value === option} />)}
