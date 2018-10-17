@@ -19,13 +19,13 @@ const styles = ({
   }
 })
 
-const PrintQuestion = ({ question, handleSelect, handleConfirm, selected }) => {
+const PrintQuestion = ({ question, handleSelect, handleConfirm, handleSkip, selected }) => {
   return (
     <div className='printQuestion'>
       <Typography className='typography' variant="headline" align="center" color="default" gutterBottom>
         {question.value}
       </Typography>
-      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleConfirm={handleConfirm} selected={selected && selected.value === option} />)}
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleConfirm={handleConfirm} handleSkip={handleSkip} selected={selected && selected.value === option} />)}
     </div>
   )
 }
