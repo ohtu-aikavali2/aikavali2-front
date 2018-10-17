@@ -13,13 +13,11 @@ class LoginPage extends Component {
   constructor(props) {
     super(props)
 
-    this.initialState = {
+    this.state = {
       username: '',
       password: '',
       error: false
     }
-
-    this.state = { ...this.initialState }
   }
 
   handleLogin = (e) => {

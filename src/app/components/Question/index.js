@@ -6,6 +6,7 @@ import AlertWindow from '../common/AlertWindow'
 import { connect } from 'react-redux'
 import { getRandomQuestion, answerQuestion } from '../../reducers/actions/questionActions'
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
+import './question.css'
 
 export class Question extends Component {
   constructor () {
@@ -91,7 +92,7 @@ export class Question extends Component {
       <div className='questionContainer'>
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
-            <p>New questions will be available soon, all you need to do is wait a few seconds</p>
+            <p>New questions will be available later</p>
           </AlertWindow>
         )}
         {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}

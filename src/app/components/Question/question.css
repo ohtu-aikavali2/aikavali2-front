@@ -1,0 +1,8 @@
+.titleContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.rowContainer {
+  font-size: 16px;
+}
