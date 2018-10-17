@@ -21,30 +21,36 @@ describe('FrontPage', () => {
     wrapper = shallow(<FrontPage {...props} />)
   })
   describe('componentDidMount', () => {
-    it('calls getRandomQuestion()', () => {
-      expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+    it('calls getRandomQuestion() (THIS TEST USES A 50 ms TIMEOUT, MIGHT FAIL BECAUSE OF THAT)', () => {
+      setTimeout(() => {
+        expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+      }, 50)
     })
     it('calls intializeGame()', () => {
       expect(props.initializeGame).toHaveBeenCalledTimes(1)
     })
   })
   describe('componentWillReceiveProps', () => {
-    it('calls getRandomQuestion if nextProps.loggedUser === null', () => {
-      expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+    it('calls getRandomQuestion if nextProps.loggedUser === null (THIS TEST USES A 50 ms TIMEOUT, MIGHT FAIL BECAUSE OF THAT)', () => {
+      setTimeout(() => {
+        expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+      }, 50)
       wrapper.setProps({ loggedUser: { loggedUser: null }, getRandomQuestion: props.getRandomQuestion })
+      setTimeout(() => {
+        expect(props.getRandomQuestion).toHaveBeenCalledTimes(2)
+      }, 50)
       // 2 times, because the first one is called in componentDidMount()
-      // Tätä en sit taas vittu voi ymmärtää
-      // expect(props.getRandomQuestion).toHaveBeenCalledTimes(2)
     })
     it('calls initializeGame if nextProps.loggedUser === null', () => {
       expect(props.initializeGame).toHaveBeenCalledTimes(1)
       wrapper.setProps({ loggedUser: { loggedUser: null }, initializeGame: props.initializeGame })
       // 2 times, because the first one is called in componentDidMount()
-      // Enkä tätä
-      // expect(props.initializeGame).toHaveBeenCalledTimes(2)
+      expect(props.initializeGame).toHaveBeenCalledTimes(2)
     })
-    it('does not call getRandomQuestion if nextProps.loggedUser is different than null, undefined or false', () => {
-      expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+    it('does not call getRandomQuestion if nextProps.loggedUser is different than null, undefined or false (THIS TEST USES A 50 ms TIMEOUT, MIGHT FAIL BECAUSE OF THAT)', () => {
+      setTimeout(() => {
+        expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+      }, 50)
       wrapper.setProps({
         loggedUser: {
           loggedUser: {
@@ -53,7 +59,9 @@ describe('FrontPage', () => {
         },
         getRandomQuestion: props.getRandomQuestion
       })
-      expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+      setTimeout(() => {
+        expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
+      }, 50)
     })
     it('does not call initializeGame if nextProps.loggedUser is different than null, undefined or false', () => {
       expect(props.initializeGame).toHaveBeenCalledTimes(1)

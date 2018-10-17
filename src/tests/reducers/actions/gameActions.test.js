@@ -28,4 +28,9 @@ describe('gameActions', () => {
       expect(reduxStore.getActions()[0].type).toEqual(gameConstant.END_GAME)
     })
   })
+  it('pauseGame dispatches PAUSE_GAME', () => {
+    return reduxStore.dispatch(actions.pauseGame()).then(() => {
+      expect(reduxStore.getActions()[0].type).toEqual(gameConstant.PAUSE_GAME)
+    })
+  })
 })
