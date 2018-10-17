@@ -10,7 +10,9 @@ const styles = theme => ({
   wrapper: {
     maxWidth: '365px',
     margin: '0 auto',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    'user-select': 'none',
+    'tap-highlight-color': 'rgba(0,0,0,0)'
   },
 
   paper: {
