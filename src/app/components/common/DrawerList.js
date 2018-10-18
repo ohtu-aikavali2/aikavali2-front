@@ -4,23 +4,23 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
 
-function DrawerList() {
+const DrawerList = () => {
   return (
     <div className='drawerList'>
       <List>
-        <ListItem button component='a' href='/'>
+        <ListItem button onClick={() => console.log('OHPE')}>
           <ListItemText primary="OHPE" />
         </ListItem>
         <Divider />
-        <ListItem button disabled component='a' href='/OHJA'>
+        <ListItem button disabled>
           <ListItemText primary="OHJA" />
         </ListItem>
         <Divider />
-        <ListItem button disabled component='a' href='/TITO'>
+        <ListItem button disabled>
           <ListItemText primary="TITO" />
         </ListItem>
         <Divider />
-        <ListItem button disabled component='a' href='/TIKAPE'>
+        <ListItem button disabled>
           <ListItemText primary="TIKAPE" />
         </ListItem>
         <Divider />

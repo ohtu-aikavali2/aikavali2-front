@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 // import Avatar from '@material-ui/core/Avatar'
@@ -11,7 +10,9 @@ const styles = theme => ({
   wrapper: {
     maxWidth: '365px',
     margin: '0 auto',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    'user-select': 'none',
+    'tap-highlight-color': 'rgba(0,0,0,0)'
   },
 
   paper: {
@@ -27,6 +28,8 @@ export class QuestionAnswer extends Component {
       this.props.handleSelect(id, value)
     } else if (!userAnswer && selected) {
       this.props.handleConfirm(id, value)
+    } else if ((userAnswer && userAnswer.correctAnswer === value) || (selected && userAnswer.isCorrect)) {
+      this.props.handleSkip()
     } else {
       console.log('already answered!')
     }
@@ -36,7 +39,8 @@ export class QuestionAnswer extends Component {
     const { userAnswer, value, selected } = this.props
     const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)' }
     const correctStyle = { backgroundColor: 'rgb(113, 218, 113)' }
-    const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)' }
+    const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)', cursor: 'default'}
+    const notSelectedWrongStyle = {cursor: 'default'}
     if (userAnswer && userAnswer.isCorrect && selected) {
       return correctStyle
     } else if (userAnswer && userAnswer.correctAnswer === value) {
@@ -45,19 +49,25 @@ export class QuestionAnswer extends Component {
       return wrongStyle
     } else if (selected && !userAnswer) {
       return selectedStyle
+    } else if (userAnswer && userAnswer.correctAnswer !== value) {
+      return notSelectedWrongStyle
     }
     return null
   }
 
   render () {
-    const { classes, value } = this.props
+    const { classes, value, userAnswer, selected } = this.props
     const style = this.determineStyle()
+    const textStyle = {}
+    if (!selected && userAnswer && userAnswer.correctAnswer !== value) {
+      textStyle['color'] = 'grey'
+    }
     return (
       <div className={classes.wrapper} id='container' onClick={this.handleClick}>
         <Paper className={classes.paper} id='paper' style={style}>
           <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
             <Grid item className='itemGrid'>
-              <Typography className='typography' align="center">{value}</Typography>
+              <Typography style={textStyle} className='typography' align="center">{value}</Typography>
             </Grid>
           </Grid>
         </Paper>
@@ -70,10 +80,6 @@ const mapStateToProps = (state) => {
   return {
     userAnswer: state.question.userAnswer
   }
-}
-
-QuestionAnswer.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(QuestionAnswer))

@@ -49,7 +49,8 @@ describe('<QuestionAnswer />', () => {
     expect(typography.props()).toEqual({
       className: 'typography',
       align: 'center',
-      children: 'Option'
+      children: 'Option',
+      style: {}
     })
   })
   it('container <div> click calls the method handleClick() which calls the prop handleSelect() if userAnswer is null AND selected === false (user has not yet selected any option)', () => {

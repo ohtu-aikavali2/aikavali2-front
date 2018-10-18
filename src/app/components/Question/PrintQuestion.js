@@ -20,10 +20,11 @@ const styles = ({
   }
 })
 
-const PrintQuestion = ({ question, handleSelect, handleConfirm, selected }) => {
+const PrintQuestion = ({ question, handleSelect, handleConfirm, handleSkip, selected }) => {
   let source = '```\n '
   question.value.split('\n').forEach((line) => source += line + '\n')
   source += '```'
+
   return (
     <div className='printQuestion'>
       <Typography className='typography' variant="headline" align="center" color="default" gutterBottom>
@@ -34,7 +35,7 @@ const PrintQuestion = ({ question, handleSelect, handleConfirm, selected }) => {
           <ReactMarkdown source={source} />
         </div>
       </div>
-      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleConfirm={handleConfirm} selected={selected && selected.value === option} />)}
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleConfirm={handleConfirm} handleSkip={handleSkip} selected={selected && selected.value === option} />)}
     </div>
   )
 }
