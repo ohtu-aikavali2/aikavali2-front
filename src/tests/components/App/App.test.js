@@ -1,30 +1,76 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import App from '../../../app/App'
-/* import FrontPage from '../../../app/components/FrontPage' */
+import { App } from '../../../app/App'
+import FrontPage from '../../../app/components/FrontPage'
 import { Provider } from 'react-redux'
 import store from '../../../app/reducers'
-// import authService from '../../../app/services/authService'
-/* import AppBar from '../../../app/components/common/AppBar'
+import AppBar from '../../../app/components/common/AppBar'
 import TemporaryDrawer from '../../../app/components/common/TemporaryDrawer'
-import ButtonBar from '../../../app/components/common/ButtonBar' */
 import { MemoryRouter } from 'react-router'
-/* import AdminPage from '../../../app/components/Admin' */
+import AdminPage from '../../../app/components/Admin'
+import LoginPage from '../../../app/components/LoginPage'
+/*import configureStore from 'redux-mock-store'
+
+const initialState = {
+  ui: {
+    drawerOpen: false
+  },
+  loggedUser: {
+    loggedUser: {
+      id: 123,
+      token: 12345,
+      username: 'Pate1337'
+    },
+    loadingUser: false
+  }
+}
+const mockStore = configureStore()
+const store = mockStore(initialState)*/
 
 describe('<App />', () => {
-  let app
+  let app, props
   beforeAll(() => {
+    props = {
+      loggedUserInitialization: jest.fn(),
+      initializeGame: jest.fn(),
+      pauseGame: jest.fn(),
+      toggleDrawer: jest.fn(),
+      logout: jest.fn(),
+      loggedUser: {
+        id: 123,
+        token: 12345,
+        username: 'Pate1337'
+      },
+      loadingUser: false,
+      ui: {
+        drawerOpen: false
+      }
+    }
     app = mount(
       <MemoryRouter initialEntries={[ '/' ]}>
-        <Provider store={store}><App /></Provider>
+        <Provider store={store}><App {...props} /></Provider>
       </MemoryRouter>
     )
+  })
+  afterEach(() => {
+    props.loggedUserInitialization.mockClear()
+    props.initializeGame.mockClear()
+    props.pauseGame.mockClear()
+    props.toggleDrawer.mockClear()
+    props.logout.mockClear()
   })
   afterAll(() => {
     app.unMount()
   })
-  // DEPRECATED TESTS
-  /* it('renders AppBar', () => {
+  describe('componentWillMount', () => {
+    it('calls loggedUserInitialization()', () => {
+      expect(props.loggedUserInitialization).toHaveBeenCalledTimes(1)
+    })
+  })
+  it('renders self', () => {
+    expect(app.find('.App').length).toBe(1)
+  })
+  it('renders AppBar', () => {
     const appBarComponents = app.find(AppBar)
     expect(appBarComponents.length).toBe(1)
   })
@@ -32,30 +78,86 @@ describe('<App />', () => {
     const temporaryDrawerComponents = app.find(TemporaryDrawer)
     expect(temporaryDrawerComponents.length).toBe(1)
   })
-  it('renders ButtonBar', () => {
-    const buttonBarComponents = app.find(ButtonBar)
-    expect(buttonBarComponents.length).toBe(1)
-  }) */
 
   /* ------------ ROUTES ------------- */
 
-  it('path \'/\' renders FrontPage', () => {
-    /* const wrapper = mount(
-      <MemoryRouter initialEntries={[ '/' ]}>
-        <Provider store={store}><App /></Provider>
-      </MemoryRouter>
-    )
-    expect(wrapper.find(FrontPage).length).toBe(1)
-    expect(wrapper.find(AdminPage).length).toBe(0) */
-    expect(true).toBe(true)
+  describe('path \'/\'', () => {
+    it('renders FrontPage when loggedUser !== null', () => {
+      app = mount(
+        <MemoryRouter initialEntries={[ '/' ]}>
+          <Provider store={store}><App {...props} /></Provider>
+        </MemoryRouter>
+      )
+      expect(app.find(FrontPage).length).toBe(1)
+      expect(app.find(AdminPage).length).toBe(0)
+    })
+    it('renders FrontPage when loadingUser === true', () => {
+      let newProps = { ...props, loggedUser: null, loadingUser: true }
+      app = mount(
+        <MemoryRouter initialEntries={[ '/' ]}>
+          <Provider store={store}><App {...newProps} /></Provider>
+        </MemoryRouter>
+      )
+      expect(app.find(FrontPage).length).toBe(1)
+      expect(app.find(AdminPage).length).toBe(0)
+    })
+    it('renders LoginPage when loggedUser === null AND loadingUser === false', () => {
+      let newProps = { ...props, loggedUser: null }
+      app = mount(
+        <MemoryRouter initialEntries={[ '/' ]}>
+          <Provider store={store}><App {...newProps} /></Provider>
+        </MemoryRouter>
+      )
+      expect(app.find(FrontPage).length).toBe(0)
+      expect(app.find(AdminPage).length).toBe(0)
+      expect(app.find(LoginPage).length).toBe(1)
+    })
   })
-/*   it('path \'/admin\' renders AdminPage', () => {
-    const wrapper = mount(
-      <MemoryRouter initialEntries={[ '/admin' ]}>
-        <Provider store={store}><App /></Provider>
-      </MemoryRouter>
-    )
-    expect(wrapper.find(FrontPage).length).toBe(0)
-    expect(wrapper.find(AdminPage).length).toBe(1)
-  }) */
+  describe('path \'/login\'', () => {
+    it('renders LoginPage when loggedUser === null', () => {
+      let newProps = { ...props, loggedUser: null }
+      app = mount(
+        <MemoryRouter initialEntries={[ '/login' ]}>
+          <Provider store={store}><App {...newProps} /></Provider>
+        </MemoryRouter>
+      )
+      expect(app.find(FrontPage).length).toBe(0)
+      expect(app.find(AdminPage).length).toBe(0)
+      expect(app.find(LoginPage).length).toBe(1)
+    })
+    it('renders FrontPage when loggedUser !== null', () => {
+      let newProps = { ...props }
+      app = mount(
+        <MemoryRouter initialEntries={[ '/login' ]}>
+          <Provider store={store}><App {...newProps} /></Provider>
+        </MemoryRouter>
+      )
+      expect(app.find(FrontPage).length).toBe(1)
+      expect(app.find(AdminPage).length).toBe(0)
+      expect(app.find(LoginPage).length).toBe(0)
+    })
+  })
+  describe('path \'/admin\'', () => {
+    it('renders AdminPage when loggedUser !== null', () => {
+      app = mount(
+        <MemoryRouter initialEntries={[ '/admin' ]}>
+          <Provider store={store}><App {...props} /></Provider>
+        </MemoryRouter>
+      )
+      expect(app.find(FrontPage).length).toBe(0)
+      expect(app.find(AdminPage).length).toBe(1)
+      expect(app.find(LoginPage).length).toBe(0)
+    })
+    it('renders LoginPage when loggedUser === null AND loadingUser === false', () => {
+      let newProps = { ...props, loggedUser: null }
+      app = mount(
+        <MemoryRouter initialEntries={[ '/admin' ]}>
+          <Provider store={store}><App {...newProps} /></Provider>
+        </MemoryRouter>
+      )
+      expect(app.find(FrontPage).length).toBe(0)
+      expect(app.find(AdminPage).length).toBe(0)
+      expect(app.find(LoginPage).length).toBe(1)
+    })
+  })
 })

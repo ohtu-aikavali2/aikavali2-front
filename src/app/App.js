@@ -11,7 +11,7 @@ import { pauseGame, initializeGame } from './reducers/actions/gameActions'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import ProtectedRoute from './components/common/ProtectedRoute'
 
-class App extends React.Component {
+export class App extends React.Component {
   componentWillMount = async () => await this.props.loggedUserInitialization()
 
   handleSidebarToggle = async () => {
