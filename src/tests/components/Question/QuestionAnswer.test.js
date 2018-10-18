@@ -121,7 +121,7 @@ describe('<QuestionAnswer />', () => {
       }
       question = shallow(<QuestionAnswer {...props} />)
       const paperStyle = question.find(Paper).props().style
-      expect(paperStyle).toEqual({ backgroundColor: 'rgb(255, 128, 128)' })
+      expect(paperStyle).toEqual({ backgroundColor: 'rgb(255, 128, 128)', cursor: 'default' })
     })
     it('is set to selectedStyle when option is selected but not yet answered', () => {
       props = {
