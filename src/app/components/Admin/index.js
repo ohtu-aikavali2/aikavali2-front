@@ -1,22 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { loggedUserInitialization, logout } from '../../reducers/actions/authActions'
+import { logout } from '../../reducers/actions/authActions'
 import QuestionForm from './QuestionForm'
 
 // export for testing without having to worry about connected component
 export class AdminPage extends Component {
 
-  async componentDidMount() {
-    await this.props.loggedUserInitialization()
-  }
-
-  async componentWillReceiveProps(nextProps) {
-    if (!nextProps.loggedUser.loggedUser) {
-      await this.props.loggedUserInitialization()
-    }
-  }
-
-  render() {
+  render () {
     const user = this.props.loggedUser.loggedUser
     return (
       <div className='adminPageContainer'>
@@ -29,7 +19,7 @@ export class AdminPage extends Component {
           )
           : <p>Ei käyttäjää, refreshaa sivu generoidaksesi uuden käyttäjän</p>
         }
-        <button onClick={this.props.logout}>Tyhjennä localStorage</button>
+        {false && <button onClick={this.props.logout}>Tyhjennä localStorage</button>}
         <h1>Admin page</h1>
         <QuestionForm />
       </div>
@@ -44,7 +34,6 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  loggedUserInitialization,
   logout
 }
 

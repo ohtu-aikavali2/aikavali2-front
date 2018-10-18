@@ -101,6 +101,7 @@ describe('authActions', () => {
         expect(containsLoginSuccess).toBe(true)
         expect(authService.setToken).toHaveBeenCalledTimes(1)
         expect(questionService.setToken).toHaveBeenCalledTimes(1)
+        expect(localStore.get('user')).toEqual(authService.getLoggedUser())
         authService.setToken.mockClear()
         questionService.setToken.mockClear()
       })
