@@ -95,8 +95,8 @@ export class Question extends Component {
             <p>New questions will be available later</p>
           </AlertWindow>
         )}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} selected={this.state.selected} />}
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
       </div>
     )
