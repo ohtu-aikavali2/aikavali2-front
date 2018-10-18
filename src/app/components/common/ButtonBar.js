@@ -12,8 +12,7 @@ const styles = {
     width: '100%',
     position: 'fixed',
     bottom: 10,
-    backgroundColor: 'white',
-    marginHorizontal: '50%'
+    backgroundColor: 'white'
   },
 
   icon: {
