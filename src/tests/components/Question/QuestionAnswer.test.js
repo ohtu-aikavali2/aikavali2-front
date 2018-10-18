@@ -12,6 +12,7 @@ describe('<QuestionAnswer />', () => {
     props = {
       handleSelect: jest.fn(),
       handleConfirm: jest.fn(),
+      handleSkip: jest.fn(),
       userAnswer: null,
       selected: false,
       value: 'Option',
@@ -53,32 +54,58 @@ describe('<QuestionAnswer />', () => {
       style: {}
     })
   })
-  it('container <div> click calls the method handleClick() which calls the prop handleSelect() if userAnswer is null AND selected === false (user has not yet selected any option)', () => {
+  it('container <div> click calls the method handleClick()', () => {
     const spy = jest.spyOn(question.instance(), 'handleClick')
-
     // forceUpdate for instance() is NEEDED!!
     question.instance().forceUpdate()
     let containerDiv = question.find('div').first()
     containerDiv.simulate('click')
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(props.handleSelect).toHaveBeenCalledTimes(1)
-    expect(props.handleConfirm).toHaveBeenCalledTimes(0)
   })
-  it('container <div> click calls the method handleClick() which calls the prop handleConfirm() if userAnswer is null and selected === true (user has already selected that specific option)', () => {
-    props = {
-      ...props,
-      selected: true
-    }
-    question = shallow(<QuestionAnswer {...props} />)
-    const spy = jest.spyOn(question.instance(), 'handleClick')
+  describe('handleClick()', () => {
+    it('calls the prop handleSelect() if userAnswer is null AND selected === false (user has not yet selected any option)', () => {
+      question.instance().handleClick()
+      expect(props.handleSelect).toHaveBeenCalledTimes(1)
+      expect(props.handleConfirm).toHaveBeenCalledTimes(0)
+    })
+    it('calls the prop handleConfirm() if userAnswer is null and selected === true (user has already selected that specific option)', () => {
+      props = {
+        ...props,
+        selected: true
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      question.instance().handleClick()
+      expect(props.handleSelect).toHaveBeenCalledTimes(0)
+      expect(props.handleConfirm).toHaveBeenCalledTimes(1)
+    })
+    it('calls the prop handleSkip() if user clicks on the right answer when already answered', () => {
+      props = {
+        ...props,
+        userAnswer: {
+          isCorrect: false,
+          correctAnswer: 'Option'
+        }
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      question.instance().handleClick()
+      expect(props.handleSelect).toHaveBeenCalledTimes(0)
+      expect(props.handleConfirm).toHaveBeenCalledTimes(0)
+      expect(props.handleSkip).toHaveBeenCalledTimes(1)
+      props.handleSkip.mockClear()
 
-    // forceUpdate for instance() is NEEDED!!
-    question.instance().forceUpdate()
-    let containerDiv = question.find('div').first()
-    containerDiv.simulate('click')
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(props.handleSelect).toHaveBeenCalledTimes(0)
-    expect(props.handleConfirm).toHaveBeenCalledTimes(1)
+      props = {
+        ...props,
+        userAnswer: {
+          isCorrect: true
+        },
+        selected: true
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      question.instance().handleClick()
+      expect(props.handleSelect).toHaveBeenCalledTimes(0)
+      expect(props.handleConfirm).toHaveBeenCalledTimes(0)
+      expect(props.handleSkip).toHaveBeenCalledTimes(1)
+    })
   })
   it('calls determineStyle() when rendered', () => {
     const spy = jest.spyOn(question.instance(), 'determineStyle')
@@ -131,6 +158,23 @@ describe('<QuestionAnswer />', () => {
       question = shallow(<QuestionAnswer {...props} />)
       const paperStyle = question.find(Paper).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)' })
+    })
+    it('is set to notSelectedWrongStyle when question has been answered, and option is not right or wrong. ALSO Typographys text color is turned grey', () => {
+      props = {
+        ...props,
+        userAnswer: {
+          isCorrect: false,
+          correctAnswer: 'something else'
+        }
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      const paperStyle = question.find(Paper).props().style
+      expect(paperStyle).toEqual({ cursor: 'default' })
+
+      // typography
+      expect(question.find(Typography).props().style).toEqual({
+        color: 'grey'
+      })
     })
     it('if user has not selected any option, style is null', () => {
       const paperStyle = question.find(Paper).props().style
