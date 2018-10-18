@@ -9,10 +9,11 @@ import ForwardIcon from '@material-ui/icons/Forward'
 
 const styles = {
   style: {
-    width: 500,
-    position: 'relative',
-    top: 150,
-    margin: 'auto'
+    width: '100%',
+    position: 'fixed',
+    bottom: 10,
+    backgroundColor: 'white',
+    marginHorizontal: '50%'
   },
 
   icon: {
