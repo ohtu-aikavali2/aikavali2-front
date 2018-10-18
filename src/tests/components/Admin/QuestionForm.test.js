@@ -66,6 +66,15 @@ describe('QuestionForm', () => {
       expect(wrapper.state().question).toEqual('PASKA')
     })
   })
+  it('addButton click calls handleAdd method', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'handleAdd')
+
+    // forceUpdate for instance() is NEEDED!!
+    wrapper.instance().forceUpdate()
+    let addButton = wrapper.find(Button).at(0)
+    addButton.simulate('click')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
   it('saveButton click calls handleSave method', () => {
     const spy = jest.spyOn(wrapper.instance(), 'handleSave')
 

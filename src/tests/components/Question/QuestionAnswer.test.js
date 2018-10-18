@@ -79,17 +79,61 @@ describe('<QuestionAnswer />', () => {
     expect(props.handleSelect).toHaveBeenCalledTimes(0)
     expect(props.handleConfirm).toHaveBeenCalledTimes(1)
   })
+  it('calls determineStyle() when rendered', () => {
+    const spy = jest.spyOn(question.instance(), 'determineStyle')
+    question.instance().forceUpdate()
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+  describe('Paper style (determineStyle())', () => {
+    it('is correctStyle when question is answered correct and option is selected', () => {
+      props = {
+        ...props,
+        userAnswer: {
+          isCorrect: true
+        },
+        selected: true
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      const paperStyle = question.find(Paper).props().style
+      expect(paperStyle).toEqual({ backgroundColor: 'rgb(113, 218, 113)' })
+    })
+    it('is set to correctStyle when question has been answered wrong (shows the correct answer)', () => {
+      props = {
+        ...props,
+        userAnswer: {
+          isCorrect: false,
+          correctAnswer: 'Option'
+        }
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      const paperStyle = question.find(Paper).props().style
+      expect(paperStyle).toEqual({ backgroundColor: 'rgb(113, 218, 113)' })
+    })
+    it('is set to wrongStyle when option is selected and the answer is wrong', () => {
+      props = {
+        ...props,
+        userAnswer: {
+          isCorrect: false,
+          correctAnswer: 'Something else'
+        },
+        selected: true
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      const paperStyle = question.find(Paper).props().style
+      expect(paperStyle).toEqual({ backgroundColor: 'rgb(255, 128, 128)' })
+    })
+    it('is set to selectedStyle when option is selected but not yet answered', () => {
+      props = {
+        ...props,
+        selected: true
+      }
+      question = shallow(<QuestionAnswer {...props} />)
+      const paperStyle = question.find(Paper).props().style
+      expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)' })
+    })
+    it('if user has not selected any option, style is null', () => {
+      const paperStyle = question.find(Paper).props().style
+      expect(paperStyle).toEqual(null)
+    })
+  })
 })
-/*
-const mapStateToProps = (state) => {
-  return {
-    selectedAnswer: state.question.selectedAnswer,
-    userAnswer: state.question.userAnswer
-  }
-}
-
-const mapDispatchToProps = {
-  answerQuestion,
-  selectAnswer
-}
-*/
