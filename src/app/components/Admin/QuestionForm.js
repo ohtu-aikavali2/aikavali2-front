@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -8,6 +9,8 @@ import SaveIcon from '@material-ui/icons/Save'
 import AddIcon from '@material-ui/icons/Add'
 import DeleteIcon from '@material-ui/icons/Delete'
 import './admin.css'
+
+import { postCompileQuestion, postPrintQuestion } from '../../reducers/actions/questionActions'
 
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
@@ -60,7 +63,29 @@ class QuestionForm extends Component {
   }
 
   handleSave = () => {
-    console.log('Save pressed')
+    if (this.state.questionType === '') {
+      console.log('Question Type not set!')
+    } else if (this.state.question === '' && this.state.questionType !== 'kääntyy') {
+      console.log('Question is empty!')
+    } else if (this.state.correctAnswer === '') {
+      console.log('Correct answer is empty')
+    } else if (this.state.incorrectAnswers.includes('')) {
+      console.log('Atleast one of incorrect answers are empty')
+    } else {
+      // If the question is valid
+      if (this.state.questionType === 'tulostaa') {
+        this.props.postPrintQuestion(this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
+      } else if (this.state.questionType === 'kääntyy') {
+        this.props.postCompileQuestion(this.state.correctAnswer, this.state.incorrectAnswers)
+      }
+      this.setState({
+        questionType: '',
+        question: '',
+        correctAnswer: '',
+        incorrectAnswers: ['', '', '']
+      })
+      console.log('Post succesful')
+    }
   }
 
   render() {
@@ -145,4 +170,11 @@ class QuestionForm extends Component {
   }
 }
 
-export default QuestionForm
+const mapDispatchToProps = {
+  postCompileQuestion,
+  postPrintQuestion
+}
+
+const ConnectedQuestionForm = connect(null, mapDispatchToProps)(QuestionForm)
+
+export default ConnectedQuestionForm

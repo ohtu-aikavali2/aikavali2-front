@@ -39,3 +39,15 @@ export const answerQuestion = (id, value, time) => {
     })
   }
 }
+
+export const postCompileQuestion = (correctAnswer, options) => {
+  return async () => {
+    await questionService.postCompileQuestion(correctAnswer, options)
+  }
+}
+
+export const postPrintQuestion = (value, correctAnswer, options) => {
+  return async () => {
+    await questionService.postPrintQuestion(value, correctAnswer, options)
+  }
+}
