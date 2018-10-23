@@ -23,9 +23,9 @@ const reload = () => {
 
 const getRandomQuestion = async () => {
   const config = {
-    headers: { 'Authorization': token }
+    headers: { 'Authorization': token}
     // USED FOR DEV PURPOSES
-    // params: { force: true }
+    //params: { force: true }
   }
   const response = await axios.get(`${baseUrl}${apiUrl}/random`, config)
   return response.data
@@ -39,4 +39,22 @@ const answerQuestion = async (id, answer) => {
   return response.data
 }
 
-export default { getRandomQuestion, answerQuestion, setToken, getToken, reload }
+const postCompileQuestion = async (correctAnswer, options) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  const response = await axios.post(`${baseUrl}${apiUrl}/compile`, { correctAnswer, options }, config)
+
+  return response.data
+}
+
+const postPrintQuestion = async (value, correctAnswer, options) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  const response = await axios.post(`${baseUrl}${apiUrl}/print`, { value, correctAnswer, options }, config)
+
+  return response.data
+}
+
+export default { getRandomQuestion, answerQuestion, postCompileQuestion, postPrintQuestion, setToken, getToken, reload }
