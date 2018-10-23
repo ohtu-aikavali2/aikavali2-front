@@ -32,6 +32,7 @@ class QuestionForm extends Component {
     }
   }
 
+  //handles change of questionType, question and correctAnswer in state
   handleChange = (name) => event => {
     this.setState({
       [name]: event.target.value
@@ -43,11 +44,11 @@ class QuestionForm extends Component {
     })
   }
 
+  //handles changes of incorrectAnswers in state
   handleArrayChange = (option, i) => event => {
     let newArray = this.state.incorrectAnswers.slice(0, i)
     newArray.push(event.target.value)
     newArray = newArray.concat(this.state.incorrectAnswers.slice(i + 1))
-    console.log(newArray)
     this.setState({
       incorrectAnswers: newArray
     })
