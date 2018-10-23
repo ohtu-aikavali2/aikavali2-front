@@ -1,7 +1,6 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import AppBar from '../../../app/components/common/AppBar'
-/* import Button from '@material-ui/core/Button' */
 import IconButton from '@material-ui/core/IconButton'
 import AppBarMaterial from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'

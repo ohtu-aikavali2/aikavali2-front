@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import { QuestionAnswer } from '../../../app/components/Question/QuestionAnswer'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
-//import Typography from '@material-ui/core/Typography'
+import ReactMarkdown from 'react-markdown'
 
 describe('<QuestionAnswer />', () => {
   let question, props
@@ -11,7 +11,6 @@ describe('<QuestionAnswer />', () => {
     // Component requires propTypes classes
     props = {
       handleSelect: jest.fn(),
-      handleConfirm: jest.fn(),
       handleSkip: jest.fn(),
       userAnswer: null,
       selected: false,
@@ -24,10 +23,10 @@ describe('<QuestionAnswer />', () => {
     }
     question = shallow(<QuestionAnswer {...props} />)
   })
-  /*afterEach(() => {
+  afterEach(() => {
     props.handleSelect.mockClear()
-    props.handleConfirm.mockClear()
-  })*/
+    props.handleSkip.mockClear()
+  })
   it('renders self and subcomponents', () => {
     const containerDiv = question.find('div').first()
     expect(containerDiv.props().id).toEqual('container')
@@ -47,13 +46,16 @@ describe('<QuestionAnswer />', () => {
       style: {},
       children: itemGrid.props().children
     })
-    //const //typography = question.find(Typography)
-    //expect(typography.props()).toEqual({
-    //  className: 'typography',
-    //  align: 'center',
-    //  children: 'Option',
-    //  style: {}
-    //})
+    const markDown = question.find(ReactMarkdown)
+    expect(markDown.props().source).toEqual("```\nOption")
+  })
+  it('Options are rendered correct', () => {
+    props = {
+      ...props,
+      value: 'Eka rivi\nToka rivi\nKolmas rivi'
+    }
+    question = shallow(<QuestionAnswer {...props} />)
+    expect(question.find(ReactMarkdown).props().source).toEqual("```\nEka rivi\nToka rivi\nKolmas rivi")
   })
   it('container <div> click calls the method handleClick()', () => {
     const spy = jest.spyOn(question.instance(), 'handleClick')
@@ -67,17 +69,6 @@ describe('<QuestionAnswer />', () => {
     it('calls the prop handleSelect() if userAnswer is null AND selected === false (user has not yet selected any option)', () => {
       question.instance().handleClick()
       expect(props.handleSelect).toHaveBeenCalledTimes(1)
-      expect(props.handleConfirm).toHaveBeenCalledTimes(0)
-    })
-    it('calls the prop handleConfirm() if userAnswer is null and selected === true (user has already selected that specific option)', () => {
-      props = {
-        ...props,
-        selected: true
-      }
-      question = shallow(<QuestionAnswer {...props} />)
-      question.instance().handleClick()
-      expect(props.handleSelect).toHaveBeenCalledTimes(0)
-      expect(props.handleConfirm).toHaveBeenCalledTimes(1)
     })
     it('calls the prop handleSkip() if user clicks on the right answer when already answered', () => {
       props = {
@@ -90,7 +81,6 @@ describe('<QuestionAnswer />', () => {
       question = shallow(<QuestionAnswer {...props} />)
       question.instance().handleClick()
       expect(props.handleSelect).toHaveBeenCalledTimes(0)
-      expect(props.handleConfirm).toHaveBeenCalledTimes(0)
       expect(props.handleSkip).toHaveBeenCalledTimes(1)
       props.handleSkip.mockClear()
 
@@ -104,7 +94,6 @@ describe('<QuestionAnswer />', () => {
       question = shallow(<QuestionAnswer {...props} />)
       question.instance().handleClick()
       expect(props.handleSelect).toHaveBeenCalledTimes(0)
-      expect(props.handleConfirm).toHaveBeenCalledTimes(0)
       expect(props.handleSkip).toHaveBeenCalledTimes(1)
     })
   })
@@ -160,7 +149,7 @@ describe('<QuestionAnswer />', () => {
       const paperStyle = question.find(Paper).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)' })
     })
-    /*it('is set to notSelectedWrongStyle when question has been answered, and option is not right or wrong. ALSO Typographys text color is turned grey', () => {
+    it('is set to notSelectedWrongStyle when question has been answered, and option is not right or wrong. ALSO text color is turned grey', () => {
       props = {
         ...props,
         userAnswer: {
@@ -171,12 +160,9 @@ describe('<QuestionAnswer />', () => {
       question = shallow(<QuestionAnswer {...props} />)
       const paperStyle = question.find(Paper).props().style
       expect(paperStyle).toEqual({ cursor: 'default' })
-
-      // typography
-      expect(question.find(Typography).props().style).toEqual({
-        color: 'grey'
-      })
-    })*/
+      const gridStyle = question.find(Grid).at(1).props().style
+      expect(gridStyle).toEqual({ color: 'grey' })
+    })
     it('if user has not selected any option, style is null', () => {
       const paperStyle = question.find(Paper).props().style
       expect(paperStyle).toEqual(null)

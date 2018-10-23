@@ -68,17 +68,10 @@ export class Question extends Component {
     }
   }
 
-  handleConfirm = async () => {
-    const { selected } = this.state
-    if (selected) {
-      // Otetaan talteen vastauaika, joka lähetetään backendiin
-      const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
-      await this.props.answerQuestion(selected.id, selected.value, time)
-    }
-  }
-
-  selectOption = (id, value) => {
+  handleAnswer = async (id, value) => {
     this.setState({ selected: { id, value } })
+    const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
+    await this.props.answerQuestion(id, value, time)
   }
 
   skipQuestion = async () => {
@@ -99,9 +92,10 @@ export class Question extends Component {
             <Typography style={text} component="p">New questions will be available later</Typography>
           </AlertWindow>
         )}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
+        <div style={{ width: '100%', height: 70 }} />
       </div>
     )
   }

@@ -9,23 +9,6 @@ import TemporaryDrawer from '../../../app/components/common/TemporaryDrawer'
 import { MemoryRouter } from 'react-router'
 import AdminPage from '../../../app/components/Admin'
 import LoginPage from '../../../app/components/LoginPage'
-/*import configureStore from 'redux-mock-store'
-
-const initialState = {
-  ui: {
-    drawerOpen: false
-  },
-  loggedUser: {
-    loggedUser: {
-      id: 123,
-      token: 12345,
-      username: 'Pate1337'
-    },
-    loadingUser: false
-  }
-}
-const mockStore = configureStore()
-const store = mockStore(initialState)*/
 
 describe('<App />', () => {
   let app, props

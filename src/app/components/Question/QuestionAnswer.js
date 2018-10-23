@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
-// import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import ReactMarkdown from 'react-markdown'
@@ -22,12 +21,11 @@ const styles = theme => ({
 })
 
 export class QuestionAnswer extends Component {
+
   handleClick = () => {
     const { id, value, userAnswer, selected } = this.props
-    if (!userAnswer && !selected) {
+    if (!userAnswer) {
       this.props.handleSelect(id, value)
-    } else if (!userAnswer && selected) {
-      this.props.handleConfirm(id, value)
     } else if ((userAnswer && userAnswer.correctAnswer === value) || (selected && userAnswer.isCorrect)) {
       this.props.handleSkip()
     } else {

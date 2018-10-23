@@ -7,7 +7,7 @@ import HomeIcon from '@material-ui/icons/Home'
 import SkipNextIcon from '@material-ui/icons/SkipNext'
 import ForwardIcon from '@material-ui/icons/Forward'
 
-const styles = {
+export const styles = {
   style: {
     width: '100%',
     position: 'fixed',
@@ -20,8 +20,8 @@ const styles = {
     height: 40
   }
 }
-
-class ButtonBar extends Component {
+// exported for tests
+export class ButtonBar extends Component {
   state = {
     value: 0
   }
