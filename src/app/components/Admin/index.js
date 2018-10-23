@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import QuestionForm from './QuestionForm'
+import ConnectedQuestionForm from './QuestionForm'
 
 export class AdminPage extends Component {
 
@@ -7,7 +7,7 @@ export class AdminPage extends Component {
     return (
       <div className='adminPageContainer'>
         <h1>Admin page</h1>
-        <QuestionForm />
+        <ConnectedQuestionForm />
       </div>
     )
   }
