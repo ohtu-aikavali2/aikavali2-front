@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import PrintQuestion from '../../../app/components/Question/PrintQuestion'
 import CompileQuestion from '../../../app/components/Question/CompileQuestion'
 import { Question } from '../../../app/components/Question'
-import AlertWindow from '../../../app/components/common/AlertWindow'
+// import AlertWindow from '../../../app/components/common/AlertWindow'
 import ButtonBar from '../../../app/components/common/ButtonBar'
 
 describe('<Question />', () => {
@@ -54,7 +54,7 @@ describe('<Question />', () => {
   it('renders self', () => {
     expect(question.find('.questionContainer').length).toBe(1)
   })
-  it('renders AlertWindow with correct props when question.message is defined', () => {
+  /*it('renders AlertWindow with correct props when question.message is defined', () => {
     props = {
       ...props,
       questionMessage: 'Message from backend'
@@ -67,7 +67,7 @@ describe('<Question />', () => {
       neutral: true,
       children: <p>New questions will be available later</p>
     })
-  })
+  })*/
   it('renders only PrintQuestion when question.kind is PrintQuestion', () => {
     expect(question.find(CompileQuestion).length).toBe(0)
     expect(question.find(PrintQuestion).length).toBe(1)
