@@ -2,13 +2,15 @@ language: node_js
 node_js:
 - '8'
 script:
+- npm run build
 - npm run lint
 - npm run test-coverage
 - npm run codecov
 deploy:
-  provider: heroku
-  api_key:
-    secure: I7TrFQa1wDp+24V1pKRf+osybfYSxRVQrUZcVaZv+zA/4IbJZURz505PHWvhXo4KnwMk56lRBSfHNK17H8slMjwuvrh97txK1J5MdV+zJUjUhSRirDbuz8pAaIt7fmYI9f4v5TgMRPbAxyJ3GWFUl/RTAoIZReL6yq11MAzEpZuU3Oee8ieVLrdrCM5bcD+ClA8gCCYoAQAMdN5XnPnQCf4cgmVR1BpehyzprebcAosfcFPLA4fIPbKT/LphsaxG7U4ANvzMGTyxzDii40Y+Err1B128REWJCq/Fz04Lvq+gMIgVNdRxAFS3OZsJDKCxTspXn8cpL2FjAxPiMS7fn2gwLoizjZ9foibxHCwossnNZcsbST9LLieVh3+uH1sEuzbQp18a5XMzzcpNDkGgZ9IbD628NhNMYzN0AW3rSXGsnEr+mCq6SOw8YuPGlOtmJfE4YVvP/O2ty/C39L+mKpaVjpOAl7ldVhY2B6vZKhi7nwdLYQdGA4rMdKQrbVA5BIssh2T+HAeucyg56iFw+lQJrU03ELEGlggTRf42Hq4qRDD+GUhA52WagJ9d/OmfZ2lrkdtp3Wo8r8C63oRTAWQOLlfwGQHFC1I7ggWqo1Nk73WiXfsq18SjK/xTVdn0dJ8G7PSpKzMY/WVPSNfY5D00wnf1qFvCGNIdU1wlMxo=
-  app: aikavali-front
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local_dir: build
+  target-branch: gh-pages
   on:
     branch: master
