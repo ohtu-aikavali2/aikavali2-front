@@ -25,7 +25,7 @@ export const ButtonAppBar = (props) => {
           </div>
           {props.user && (
             <div className='appBarLoginContainer'>
-              <Button onClick={() => props.logout()} color='inherit' className='appBar_login_button'>Logout</Button>
+              <Button onClick={() => props.logout()} color='inherit' className='appBar_login_button'>Kirjaudu ulos</Button>
             </div>
           )}
         </Toolbar>
