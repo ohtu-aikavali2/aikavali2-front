@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import PrintQuestion from '../../../app/components/Question/PrintQuestion'
 import CompileQuestion from '../../../app/components/Question/CompileQuestion'
 import { Question } from '../../../app/components/Question'
-import AlertWindow from '../../../app/components/common/AlertWindow'
+// import AlertWindow from '../../../app/components/common/AlertWindow'
 import ButtonBar from '../../../app/components/common/ButtonBar'
 
 describe('<Question />', () => {
@@ -54,12 +54,12 @@ describe('<Question />', () => {
   it('renders self', () => {
     expect(question.find('.questionContainer').length).toBe(1)
   })
-  it('renders AlertWindow with correct props when question.message is defined', () => {
+  /*it('renders AlertWindow with correct props when question.message is defined', () => {
     props = {
       ...props,
       questionMessage: 'Message from backend'
     }
-    let newQuestion = shallow(<Question {...props} />)
+    let newQuestion = shallow(<Question {...newProps} />)
     expect(newQuestion.find(AlertWindow).length).toBe(1)
     let alertWindowProps = newQuestion.find(AlertWindow).props()
     expect(alertWindowProps).toEqual({
@@ -67,13 +67,13 @@ describe('<Question />', () => {
       neutral: true,
       children: <p>New questions will be available later</p>
     })
-  })
+  })*/
   it('renders only PrintQuestion when question.kind is PrintQuestion', () => {
     expect(question.find(CompileQuestion).length).toBe(0)
     expect(question.find(PrintQuestion).length).toBe(1)
   })
   it('renders only CompileQuestion when question.kind is CompileQuestion', () => {
-    props = {
+    let newProps = {
       ...props,
       question: questions[1],
       game: {
@@ -81,7 +81,7 @@ describe('<Question />', () => {
         ended: false
       }
     }
-    question = shallow(<Question {...props} />)
+    question = shallow(<Question {...newProps} />)
     expect(question.find(CompileQuestion).length).toBe(1)
     expect(question.find(PrintQuestion).length).toBe(0)
   })
@@ -95,4 +95,3 @@ describe('<Question />', () => {
     })
   })
 })
-// <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
