@@ -43,6 +43,7 @@ describe('<QuestionAnswer />', () => {
     expect(itemGrid.props()).toEqual({
       item: true,
       className: 'itemGrid',
+      style: {},
       children: itemGrid.props().children
     })
     //const //typography = question.find(Typography)
