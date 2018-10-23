@@ -4,8 +4,10 @@
 .addButtonContainer {
     float: left;
 }
-.saveButtonContainer {
-    bottom: 5px;
-    right: 5px;
-    position: fixed;
+.saveButtonContainer {  
+    float: right;
+}
+.removeButtonContainer {
+    float: left;
+    margin-left: 5px;
 }

@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 // import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
+import ReactMarkdown from 'react-markdown'
 
 const styles = theme => ({
   wrapper: {
@@ -62,12 +62,15 @@ export class QuestionAnswer extends Component {
     if (!selected && userAnswer && userAnswer.correctAnswer !== value) {
       textStyle['color'] = 'grey'
     }
+
+    const answer_lines = '```\n' + value + ''
+
     return (
       <div className={classes.wrapper} id='container' onClick={this.handleClick}>
         <Paper className={classes.paper} id='paper' style={style}>
           <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
             <Grid item className='itemGrid'>
-              <Typography style={textStyle} className='typography' align="center">{value}</Typography>
+              <ReactMarkdown source={answer_lines} />
             </Grid>
           </Grid>
         </Paper>

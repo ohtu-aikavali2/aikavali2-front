@@ -3,6 +3,7 @@ import PrintQuestion from './PrintQuestion'
 import CompileQuestion from './CompileQuestion'
 import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
+import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import { getRandomQuestion, answerQuestion } from '../../reducers/actions/questionActions'
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
@@ -87,12 +88,15 @@ export class Question extends Component {
   }
 
   render() {
+    const text = {
+      fontSize: 16
+    }
     const { question, userAnswer, questionMessage } = this.props
     return (
       <div className='questionContainer'>
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
-            <p>New questions will be available later</p>
+            <Typography style={text} component="p">New questions will be available later</Typography>
           </AlertWindow>
         )}
         {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
