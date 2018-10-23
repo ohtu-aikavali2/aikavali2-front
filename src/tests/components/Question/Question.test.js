@@ -59,7 +59,7 @@ describe('<Question />', () => {
       ...props,
       questionMessage: 'Message from backend'
     }
-    let newQuestion = shallow(<Question {...props} />)
+    let newQuestion = shallow(<Question {...newProps} />)
     expect(newQuestion.find(AlertWindow).length).toBe(1)
     let alertWindowProps = newQuestion.find(AlertWindow).props()
     expect(alertWindowProps).toEqual({
@@ -73,7 +73,7 @@ describe('<Question />', () => {
     expect(question.find(PrintQuestion).length).toBe(1)
   })
   it('renders only CompileQuestion when question.kind is CompileQuestion', () => {
-    props = {
+    let newProps = {
       ...props,
       question: questions[1],
       game: {
@@ -81,7 +81,7 @@ describe('<Question />', () => {
         ended: false
       }
     }
-    question = shallow(<Question {...props} />)
+    question = shallow(<Question {...newProps} />)
     expect(question.find(CompileQuestion).length).toBe(1)
     expect(question.find(PrintQuestion).length).toBe(0)
   })
@@ -95,4 +95,3 @@ describe('<Question />', () => {
     })
   })
 })
-// <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
