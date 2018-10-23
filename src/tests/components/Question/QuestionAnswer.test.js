@@ -47,7 +47,7 @@ describe('<QuestionAnswer />', () => {
       children: itemGrid.props().children
     })
     const markDown = question.find(ReactMarkdown)
-    expect(markDown.props().source).toEqual("```\nOption")
+    expect(markDown.props().source).toEqual('```\nOption')
   })
   it('Options are rendered correct', () => {
     props = {
@@ -55,7 +55,7 @@ describe('<QuestionAnswer />', () => {
       value: 'Eka rivi\nToka rivi\nKolmas rivi'
     }
     question = shallow(<QuestionAnswer {...props} />)
-    expect(question.find(ReactMarkdown).props().source).toEqual("```\nEka rivi\nToka rivi\nKolmas rivi")
+    expect(question.find(ReactMarkdown).props().source).toEqual('```\nEka rivi\nToka rivi\nKolmas rivi')
   })
   it('container <div> click calls the method handleClick()', () => {
     const spy = jest.spyOn(question.instance(), 'handleClick')
