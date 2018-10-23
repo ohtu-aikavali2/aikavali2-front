@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
 import { pauseGame, initializeGame } from './reducers/actions/gameActions'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import ProtectedRoute from './components/common/ProtectedRoute'
 
 export class App extends React.Component {
