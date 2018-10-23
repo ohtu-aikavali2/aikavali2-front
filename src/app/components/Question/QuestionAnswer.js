@@ -69,7 +69,7 @@ export class QuestionAnswer extends Component {
       <div className={classes.wrapper} id='container' onClick={this.handleClick}>
         <Paper className={classes.paper} id='paper' style={style}>
           <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
-            <Grid item className='itemGrid'>
+            <Grid style={textStyle} item className='itemGrid'>
               <ReactMarkdown source={answer_lines} />
             </Grid>
           </Grid>
