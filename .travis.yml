@@ -10,6 +10,5 @@ deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
-  target_branch: master
   on:
     branch: master
