@@ -29,7 +29,7 @@ export class QuestionAnswer extends Component {
     } else if ((userAnswer && userAnswer.correctAnswer === value) || (selected && userAnswer.isCorrect)) {
       this.props.handleSkip()
     } else {
-      console.log('already answered!')
+      console.log('Vastasit jo!')
     }
   }
 

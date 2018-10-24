@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
 import { pauseGame, initializeGame } from './reducers/actions/gameActions'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import ProtectedRoute from './components/common/ProtectedRoute'
 
 export class App extends React.Component {
@@ -31,7 +31,7 @@ export class App extends React.Component {
       <div className="App">
         <AppBar toggleDrawer={this.handleSidebarToggle} user={this.props.loggedUser} logout={this.logout} />
         <TemporaryDrawer toggleDrawer={this.handleSidebarToggle} isOpen={this.props.ui.drawerOpen} />
-        <Router basename='/aikavali-front'>
+        <Router>
           <Switch>
             <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)}/>
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>

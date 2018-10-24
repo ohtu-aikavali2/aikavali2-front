@@ -89,7 +89,7 @@ export class Question extends Component {
       <div className='questionContainer'>
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
-            <Typography style={text} component="p">New questions will be available later</Typography>
+            <Typography style={text} component="p">Uusia kysymykset saatavilla myöhemmin</Typography>
           </AlertWindow>
         )}
         {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
