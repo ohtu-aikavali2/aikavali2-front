@@ -41,9 +41,9 @@ class ButtonBar extends Component {
         showLabels
         className={classes.style}
       >
-        <BottomNavigationAction disabled={this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Skip" icon={<SkipNextIcon className={classes.icon}/>}/>
-        <BottomNavigationAction label="Home" icon={<HomeIcon className={classes.icon}/>} />
-        <BottomNavigationAction disabled={!this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Next" icon={<ForwardIcon className={classes.icon}/>}/>
+        <BottomNavigationAction disabled={this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Ohita" icon={<SkipNextIcon className={classes.icon}/>}/>
+        <BottomNavigationAction label="Koti" icon={<HomeIcon className={classes.icon}/>} />
+        <BottomNavigationAction disabled={!this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Seuraava" icon={<ForwardIcon className={classes.icon}/>}/>
       </BottomNavigation>
     )
   }
