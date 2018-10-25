@@ -28,7 +28,7 @@ export class Question extends Component {
       // Paussi päättyi, muutetaan vain startTimea
       this.setState({
         startTime: this.state.startTime + (Date.now() - this.state.pauseStart),
-        pauseStart: null
+        pauseStart: 0
       })
     }
     if (!nextProps.loggedUser.loggedUser) {
@@ -95,7 +95,7 @@ export class Question extends Component {
         {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
         {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
-        <div style={{ width: '100%', height: 70 }} />
+        <div style={{ width: '100%', height: 70 }} className='offset' />
       </div>
     )
   }

@@ -2,7 +2,7 @@ import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import QuestionAnswer from './QuestionAnswer'
 
-const CompileQuestion = ({ question, handleSelect, handleSkip, selected }) => {
+export const CompileQuestion = ({ question, handleSelect, handleSkip, selected }) => {
   return (
     <div className='compileQuestion'>
       <Typography className='typography' variant="headline" align="center" color="default" gutterBottom>

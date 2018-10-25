@@ -155,7 +155,7 @@ describe('<App />', () => {
     })
   })
   describe('path \'/admin\'', () => {
-    it('renders AdminPage when loggedUser !== null', () => {
+    /*it('renders AdminPage when loggedUser !== null', () => {
       app = mount(
         <MemoryRouter initialEntries={[ '/admin' ]}>
           <Provider store={store}><App {...props} /></Provider>
@@ -164,7 +164,7 @@ describe('<App />', () => {
       expect(app.find(FrontPage).length).toBe(0)
       expect(app.find(AdminPage).length).toBe(1)
       expect(app.find(LoginPage).length).toBe(0)
-    })
+    })*/
     it('renders LoginPage when loggedUser === null AND loadingUser === false', () => {
       let newProps = { ...props, loggedUser: null }
       app = mount(
