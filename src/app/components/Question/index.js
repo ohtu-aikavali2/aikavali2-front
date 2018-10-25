@@ -67,6 +67,14 @@ export class Question extends Component {
     }
   }
 
+  handleQuestionReview = async (question, review) => {
+    // Handle reviewing a question in addition to just getting an new question
+    console.log(question)
+    console.log('Sending review: ' + review)
+    await this.props.getRandomQuestion()
+    this.setState({ selected: null, startTime:Date.now() })
+  }
+
   handleConfirm = async () => {
     const { selected } = this.state
     if (selected) {
@@ -95,8 +103,8 @@ export class Question extends Component {
             <p>New questions will be available later</p>
           </AlertWindow>
         )}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} handleQuestionReview={this.handleQuestionReview} selected={this.state.selected} userAnswer={userAnswer}/>}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} handleQuestionReview={this.handleQuestionReview} selected={this.state.selected} userAnswer={userAnswer}/>}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
       </div>
     )
@@ -112,6 +120,7 @@ const mapStateToProps = (state) => {
     loggedUser: state.loggedUser
   }
 }
+
 const mapDispatchToProps = {
   getRandomQuestion,
   answerQuestion,
