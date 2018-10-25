@@ -25,17 +25,17 @@ const getRandomQuestion = async () => {
   const config = {
     headers: { 'Authorization': token}
     // USED FOR DEV PURPOSES
-    //params: { force: true }
+    // params: { force: true }
   }
   const response = await axios.get(`${baseUrl}${apiUrl}/random`, config)
   return response.data
 }
 
-const answerQuestion = async (id, answer) => {
+const answerQuestion = async (id, answer, time) => {
   const config = {
     headers: { 'Authorization': token }
   }
-  const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer }, config)
+  const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer, time }, config)
   return response.data
 }
 
