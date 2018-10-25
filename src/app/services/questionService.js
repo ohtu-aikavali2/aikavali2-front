@@ -57,4 +57,14 @@ const postPrintQuestion = async (value, correctAnswer, options) => {
   return response.data
 }
 
-export default { getRandomQuestion, answerQuestion, postCompileQuestion, postPrintQuestion, setToken, getToken, reload }
+const sendReviewForQuestion = async (id, review) => {
+  console.log('id: ' + id + ', review: ' + review)
+  console.log('Go to services/questionService and implement the method sendReviewForQuestion to backend')
+  /* const config = {
+    headers: { 'Authorization': token }
+  }*/
+  // No need for response (IMPELEMNT TO BACKEND)
+  // await axios.post(`${baseUrl}${apiUrl}/questionreview`, { id, review }, config)
+}
+
+export default { getRandomQuestion, answerQuestion, postCompileQuestion, postPrintQuestion, setToken, getToken, reload, sendReviewForQuestion }

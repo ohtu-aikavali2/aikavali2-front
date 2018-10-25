@@ -24,6 +24,9 @@ describe('questionService', () => {
         })
       )
     })
+    afterAll(() => {
+      mockAxios.get.mockClear()
+    })
     it('calls axios get', async () => {
       question = await questionService.getRandomQuestion()
       expect(mockAxios.get).toHaveBeenCalledTimes(1)
@@ -78,6 +81,9 @@ describe('questionService', () => {
         })
       )
     })
+    afterAll(() => {
+      mockAxios.post.mockClear()
+    })
     it('calls axios post', async () => {
       answer = await questionService.answerQuestion()
       expect(mockAxios.post).toHaveBeenCalledTimes(1)
@@ -117,6 +123,123 @@ describe('questionService', () => {
       expect(answer).toEqual({
         isCorrect: false,
         correctAnswer: 'Option1'
+      })
+    })
+  })
+  describe('postCompileQuestion', () => {
+    let response
+    beforeEach(() => {
+      mockAxios.post.mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            fieldOne: 'fieldOne',
+            fieldTwo: 'fieldTwo'
+          }
+        })
+      )
+    })
+    afterAll(() => {
+      mockAxios.post.mockClear()
+    })
+    it('calls axios post', async () => {
+      response = await questionService.postCompileQuestion('correctAnswer', 'options')
+      expect(mockAxios.post).toHaveBeenCalledTimes(1)
+    })
+    describe('calls axios post with /api/v1/questions/compile, {correctAnswer, options} object and configs', () => {
+      it('when token is not set', async () => {
+        questionService.reload()
+        response = await questionService.postCompileQuestion('correctAnswer', 'options')
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          '/api/v1/questions/compile',
+          {
+            correctAnswer: 'correctAnswer',
+            options: 'options'
+          },
+          {
+            headers: { 'Authorization': null }
+          }
+        )
+      })
+      it('when token is set', async () => {
+        questionService.setToken(1337)
+        response = await questionService.postCompileQuestion('correctAnswer', 'options')
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          '/api/v1/questions/compile',
+          {
+            correctAnswer: 'correctAnswer',
+            options: 'options'
+          },
+          {
+            headers: { 'Authorization': 'bearer 1337' }
+          }
+        )
+      })
+    })
+    it('returns response object from axios', async () => {
+      response = await questionService.postCompileQuestion()
+      expect(response).toEqual({
+        fieldOne: 'fieldOne',
+        fieldTwo: 'fieldTwo'
+      })
+    })
+  })
+
+  describe('postPrintQuestion', () => {
+    let response
+    beforeEach(() => {
+      mockAxios.post.mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            fieldOne: 'fieldOne',
+            fieldTwo: 'fieldTwo'
+          }
+        })
+      )
+    })
+    afterAll(() => {
+      mockAxios.post.mockClear()
+    })
+    it('calls axios post', async () => {
+      response = await questionService.postPrintQuestion('value', 'correctAnswer', 'options')
+      expect(mockAxios.post).toHaveBeenCalledTimes(1)
+    })
+    describe('calls axios post with /api/v1/questions/print, {value, correctAnswer, options} object and configs', () => {
+      it('when token is not set', async () => {
+        questionService.reload()
+        response = await questionService.postPrintQuestion('value', 'correctAnswer', 'options')
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          '/api/v1/questions/print',
+          {
+            value: 'value',
+            correctAnswer: 'correctAnswer',
+            options: 'options'
+          },
+          {
+            headers: { 'Authorization': null }
+          }
+        )
+      })
+      it('when token is set', async () => {
+        questionService.setToken(1337)
+        response = await questionService.postPrintQuestion('value', 'correctAnswer', 'options')
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          '/api/v1/questions/print',
+          {
+            value: 'value',
+            correctAnswer: 'correctAnswer',
+            options: 'options'
+          },
+          {
+            headers: { 'Authorization': 'bearer 1337' }
+          }
+        )
+      })
+    })
+    it('returns response object from axios', async () => {
+      response = await questionService.postPrintQuestion()
+      expect(response).toEqual({
+        fieldOne: 'fieldOne',
+        fieldTwo: 'fieldTwo'
       })
     })
   })

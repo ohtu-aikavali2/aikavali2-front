@@ -51,3 +51,9 @@ export const postPrintQuestion = (value, correctAnswer, options) => {
     await questionService.postPrintQuestion(value, correctAnswer, options)
   }
 }
+
+export const sendReviewForQuestion = (id, review) => {
+  return async () => {
+    await questionService.sendReviewForQuestion(id, review)
+  }
+}

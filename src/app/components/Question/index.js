@@ -3,10 +3,12 @@ import PrintQuestion from './PrintQuestion'
 import CompileQuestion from './CompileQuestion'
 import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
+import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
-import { getRandomQuestion, answerQuestion } from '../../reducers/actions/questionActions'
+import { getRandomQuestion, answerQuestion, sendReviewForQuestion } from '../../reducers/actions/questionActions'
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
 import './question.css'
+import ReviewPopup from '../common/ReviewPopup'
 
 export class Question extends Component {
   constructor () {
@@ -15,7 +17,9 @@ export class Question extends Component {
       selected: null,
       startTime: 0,
       pauseStart: 0,
-      timer: null
+      timer: null,
+      showReview: false,
+      reviewed: false
     }
   }
 
@@ -27,7 +31,7 @@ export class Question extends Component {
       // Paussi päättyi, muutetaan vain startTimea
       this.setState({
         startTime: this.state.startTime + (Date.now() - this.state.pauseStart),
-        pauseStart: null
+        pauseStart: 0
       })
     }
     if (!nextProps.loggedUser.loggedUser) {
@@ -63,29 +67,19 @@ export class Question extends Component {
       // setState() after async function, so that new question is
       // rendered (almost) at the same time that option selections are removed
       // Asetetaan myös startTime
-      this.setState({ selected: null, startTime: Date.now() })
+      this.setState({ selected: null, startTime: Date.now(), reviewed: false })
     }
   }
 
   handleQuestionReview = async (question, review) => {
-    // Handle reviewing a question in addition to just getting an new question
-    console.log(question)
-    console.log('Sending review: ' + review)
-    await this.props.getRandomQuestion()
-    this.setState({ selected: null, startTime:Date.now() })
+    this.setState({ reviewed: true, showReview: false })
+    await this.props.sendReviewForQuestion(this.state.selected.id, review)
   }
 
-  handleConfirm = async () => {
-    const { selected } = this.state
-    if (selected) {
-      // Otetaan talteen vastauaika, joka lähetetään backendiin
-      const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
-      await this.props.answerQuestion(selected.id, selected.value, time)
-    }
-  }
-
-  selectOption = (id, value) => {
+  handleAnswer = async (id, value) => {
     this.setState({ selected: { id, value } })
+    const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
+    await this.props.answerQuestion(id, value, time)
   }
 
   skipQuestion = async () => {
@@ -94,18 +88,35 @@ export class Question extends Component {
     this.setState({ selected: null })
   }
 
+  toggleReviewWindow = () => {
+    this.setState({ showReview: !this.state.showReview })
+  }
+
   render() {
+    const text = {
+      fontSize: 16
+    }
     const { question, userAnswer, questionMessage } = this.props
     return (
       <div className='questionContainer'>
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
-            <p>New questions will be available later</p>
+            <Typography style={text} component="p">Uusia kysymykset saatavilla myöhemmin</Typography>
           </AlertWindow>
         )}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} handleQuestionReview={this.handleQuestionReview} selected={this.state.selected} userAnswer={userAnswer}/>}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.selectOption} handleConfirm={this.handleConfirm} handleSkip={this.getNewQuestion} handleQuestionReview={this.handleQuestionReview} selected={this.state.selected} userAnswer={userAnswer}/>}
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {userAnswer && (
+          <div style={{ textAlign: 'center' }}>
+            {!this.state.reviewed
+              ? <p style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleReviewWindow}>Oliko kysymys mielestäsi hyvä? - Arvostele</p>
+              : <p>Kiitos palautteesta!</p>
+            }
+          </div>
+        )}
+        {this.state.showReview && <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} />}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
+        <div style={{ width: '100%', height: 70 }} className='offset' />
       </div>
     )
   }
@@ -126,7 +137,8 @@ const mapDispatchToProps = {
   answerQuestion,
   initializeGame,
   startGame,
-  endGame
+  endGame,
+  sendReviewForQuestion
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Question)

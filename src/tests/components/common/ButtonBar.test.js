@@ -1,126 +1,127 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ButtonBar } from '../../../app/components/common/ButtonBar'
-import Button from '@material-ui/core/Button'
-import SkipNext from '@material-ui/icons/SkipNext'
+import { ButtonBar, styles } from '../../../app/components/common/ButtonBar'
+import BottomNavigation from '@material-ui/core/BottomNavigation'
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 
 describe('<ButtonBar />', () => {
   let buttonBar, props
-  beforeEach(() => {
+  beforeAll(() => {
     props = {
       handleSkip: jest.fn(),
       showNext: false,
-      noMoreQuestions: false
+      noMoreQuestions: false,
+      classes: {
+        style: styles.style,
+        icon: styles.icon
+      }
     }
     buttonBar = shallow(<ButtonBar {...props} />)
   })
   it('renders self', () => {
-    expect(buttonBar.find('.buttonBarContainer').length).toBe(1)
-  })
-  it('skipButton enabled on the left side, when showNext === false AND noMoreQuestions === false', () => {
-    const button = buttonBar.find(Button).first()
-    const buttonProps = button.props()
-    expect(buttonProps).toEqual({
-      onClick: props.handleSkip,
-      variant: 'contained',
-      color: 'secondary',
-      disabled: false,
-      className: 'skipButton',
-      children: buttonProps.children
+    const bottomNavigation = buttonBar.find(BottomNavigation)
+    expect(bottomNavigation.length).toBe(1)
+    expect(bottomNavigation.props()).toEqual({
+      value: 0,
+      className: props.classes.style,
+      showLabels: true,
+      onChange: bottomNavigation.props().onChange,
+      children: bottomNavigation.props().children
     })
-    expect(buttonProps.children).toContain('Skip')
-    expect(buttonBar.find(SkipNext).length).toBe(1)
   })
-  it('nextButton disabled on the right side, when showNext === false OR noMoreQuestions === true', () => {
-    let button = buttonBar.find(Button).last()
-    let buttonProps = button.props()
-
-    const expectedProps = {
-      onClick: props.handleSkip,
-      variant: 'contained',
-      color: 'primary',
-      disabled: true,
-      className: 'nextButton',
-      children: buttonProps.children
-    }
-    expect(buttonProps).toEqual(expectedProps)
-    expect(buttonProps.children).toContain('Next')
-    expect(buttonBar.find(SkipNext).length).toBe(1)
-
-    props = {
-      ...props,
-      showNext: true,
-      noMoreQuestions: true
-    }
-    buttonBar = shallow(<ButtonBar {...props} />)
-    button = buttonBar.find(Button).last()
-    buttonProps = button.props()
-
-    expect(buttonProps).toEqual(expectedProps)
-    expect(buttonProps.children).toContain('Next')
-    expect(buttonBar.find(SkipNext).length).toBe(1)
+  it('renders the navigation options', () => {
+    expect(buttonBar.find(BottomNavigationAction).length).toBe(3)
   })
-  it('skipButton disabled on the left side, when showNext === true OR noMoreQuestions === true', () => {
-    props = {
+  it('leftButton disabled when showNext == true or noMoreQuestions == true', () => {
+    // Both are false
+    let leftButton = buttonBar.find(BottomNavigationAction).at(0)
+    expect(leftButton.props().disabled).toBe(false)
+
+    // showNext == true, noMoreQuestions == false
+    let tempProps = {
       ...props,
       showNext: true
     }
-    buttonBar = shallow(<ButtonBar {...props} />)
-    let button = buttonBar.find(Button).first()
-    let buttonProps = button.props()
+    let tempButtonBar = shallow(<ButtonBar {...tempProps} />)
+    leftButton = tempButtonBar.find(BottomNavigationAction).at(0)
+    expect(leftButton.props().disabled).toBe(true)
 
-    const expectedProps = {
-      onClick: props.handleSkip,
-      variant: 'contained',
-      color: 'secondary',
-      disabled: true,
-      className: 'skipButton',
-      children: buttonProps.children
-    }
-
-    expect(buttonProps).toEqual(expectedProps)
-    expect(buttonProps.children).toContain('Skip')
-    expect(buttonBar.find(SkipNext).length).toBe(1)
-
-    props = {
+    // showNext == false, noMoreQuestions == true
+    tempProps = {
       ...props,
-      showNext: false,
       noMoreQuestions: true
     }
-    buttonBar = shallow(<ButtonBar {...props} />)
-    button = buttonBar.find(Button).first()
-    buttonProps = button.props()
+    tempButtonBar = shallow(<ButtonBar {...tempProps} />)
+    leftButton = tempButtonBar.find(BottomNavigationAction).at(0)
+    expect(leftButton.props().disabled).toBe(true)
 
-    expect(buttonProps).toEqual(expectedProps)
-    expect(buttonProps.children).toContain('Skip')
-    expect(buttonBar.find(SkipNext).length).toBe(1)
+    // Both are true
+    tempProps = {
+      ...props,
+      noMoreQuestions: true,
+      showNext: true
+    }
+    tempButtonBar = shallow(<ButtonBar {...tempProps} />)
+    leftButton = tempButtonBar.find(BottomNavigationAction).at(0)
+    expect(leftButton.props().disabled).toBe(true)
   })
-  it('nextButton enabled on the right side, when showNext === true AND noMoreQuestions === false', () => {
-    props = {
+  it('middleButton is always enabled', () => {
+    // If disabled == undefined, it is always enabled
+    let middleButton = buttonBar.find(BottomNavigationAction).at(1)
+    expect(middleButton.props().disabled).toBe(undefined)
+  })
+  it('rightButton disabled when showNext == false or noMoreQuestions == true', () => {
+    // Both are false
+    let rightButton = buttonBar.find(BottomNavigationAction).at(2)
+    expect(rightButton.props().disabled).toBe(true)
+
+    // showNext == true, noMoreQuestions == false
+    let tempProps = {
       ...props,
       showNext: true
     }
-    buttonBar = shallow(<ButtonBar {...props} />)
-    const button = buttonBar.find(Button).last()
-    const buttonProps = button.props()
-    expect(buttonProps).toEqual({
-      onClick: props.handleSkip,
-      variant: 'contained',
-      color: 'primary',
-      disabled: false,
-      className: 'nextButton',
-      children: buttonProps.children
-    })
-    expect(buttonProps.children).toContain('Next')
-    expect(buttonBar.find(SkipNext).length).toBe(1)
+    let tempButtonBar = shallow(<ButtonBar {...tempProps} />)
+    rightButton = tempButtonBar.find(BottomNavigationAction).at(2)
+    expect(rightButton.props().disabled).toBe(false)
+
+    // showNext == false, noMoreQuestions == true
+    tempProps = {
+      ...props,
+      noMoreQuestions: true
+    }
+    tempButtonBar = shallow(<ButtonBar {...tempProps} />)
+    rightButton = tempButtonBar.find(BottomNavigationAction).at(2)
+    expect(rightButton.props().disabled).toBe(true)
+
+    // Both are true
+    tempProps = {
+      ...props,
+      noMoreQuestions: true,
+      showNext: true
+    }
+    tempButtonBar = shallow(<ButtonBar {...tempProps} />)
+    rightButton = tempButtonBar.find(BottomNavigationAction).at(2)
+    expect(rightButton.props().disabled).toBe(true)
   })
-  it('skip button press should call prop handleSkip', () => {
+  /*
+  <BottomNavigation
+        value={value}
+        onChange={this.handleChange}
+        showLabels
+        className={classes.style}
+      >
+        <BottomNavigationAction disabled={this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Skip" icon={<SkipNextIcon className={classes.icon}/>}/>
+        <BottomNavigationAction label="Home" icon={<HomeIcon className={classes.icon}/>} />
+        <BottomNavigationAction disabled={!this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Next" icon={<ForwardIcon className={classes.icon}/>}/>
+      </BottomNavigation>
+  */
+  /*it('skip button press should call prop handleSkip', () => {
     const button = buttonBar.find(Button).first()
     expect(props.handleSkip.mock.calls.length).toBe(0)
     button.simulate('click')
     expect(props.handleSkip.mock.calls.length).toBe(1)
-  })
-  it('next button press should call prop handleSkip', () => {
+  })*/
+  /*it('next button press should call prop handleSkip', () => {
     props = {
       ...props,
       showNext: true
@@ -130,5 +131,5 @@ describe('<ButtonBar />', () => {
     expect(props.handleSkip.mock.calls.length).toBe(0)
     button.simulate('click')
     expect(props.handleSkip.mock.calls.length).toBe(1)
-  })
+  })*/
 })

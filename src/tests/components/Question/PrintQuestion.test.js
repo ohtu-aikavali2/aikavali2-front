@@ -1,31 +1,32 @@
 import React from 'react'
-import { mount } from 'enzyme'
-import PrintQuestion from '../../../app/components/Question/PrintQuestion'
+import { shallow } from 'enzyme'
+import { PrintQuestion } from '../../../app/components/Question/PrintQuestion'
 import QuestionAnswer from '../../../app/components/Question/QuestionAnswer'
-import { Provider } from 'react-redux'
-import store from '../../../app/reducers'
+import ReactMarkdown from 'react-markdown'
+import Typography from '@material-ui/core/Typography'
 
 describe('<PrintQuestion />', () => {
   let printQuestion
   const props = {
-    kind: 'PrintQuestion',
-    options: [
-      'option1',
-      'option2',
-      'option3'
-    ],
-    value: 'testi kysymys'
+    question: {
+      kind: 'PrintQuestion',
+      options: [
+        'option1',
+        'option2',
+        'option3'
+      ],
+      value: 'testi kysymys'
+    }
   }
   beforeAll(() => {
-    printQuestion = mount(<Provider store={store}><PrintQuestion question={props} /></Provider>)
+    printQuestion = shallow(<PrintQuestion {...props} />)
   })
   it('renders self and subcomponents', () => {
     expect(printQuestion.find('.printQuestion').length).toBe(1)
-    expect(printQuestion.find('.typography').length > 0).toBe(true)
-    const typography = printQuestion.find('.typography').first()
-    const text = typography.text()
-    expect(text).toContain('Mitä koodi tulostaa?')
-    const typographyProps = typography.props()
+    const typo = printQuestion.find(Typography)
+    expect(typo.length).toBe(1)
+    expect(typo.props().children).toEqual('Mitä koodi tulostaa?')
+    const typographyProps = typo.props()
     expect(typographyProps).toEqual({
       className: 'typography',
       variant: 'headline',
@@ -34,14 +35,36 @@ describe('<PrintQuestion />', () => {
       gutterBottom: true,
       children: typographyProps.children
     })
+    expect(printQuestion.find('.titleContainer').length).toBe(1)
+    expect(printQuestion.find('.rowContainer').length).toBe(1)
+    expect(printQuestion.find(ReactMarkdown).length).toBe(1)
+  })
+  it('renders question in multiple lines if required', () => {
+    expect(printQuestion.find(ReactMarkdown).props().source).toEqual('```\n testi kysymys\n```')
+    let newProps = {
+      ...props,
+      question: {
+        ...props.question,
+        value: 'eka rivi\ntoka rivi\nkolmas rivi'
+      }
+    }
+    let testComponent = shallow(<PrintQuestion {...newProps} />)
+    const markDownValue = testComponent.find(ReactMarkdown).props().source
+    expect(markDownValue).toEqual('```\n eka rivi\ntoka rivi\nkolmas rivi\n```')
   })
   it('renders as many QuestionAnswers as there are question options', () => {
     expect(printQuestion.find(QuestionAnswer).length).toBe(3)
     let newProps = {
       ...props,
-      options: [ ...props.options, 'option4' ]
+      question: {
+        ...props.question,
+        options: [
+          ...props.question.options,
+          'option4'
+        ]
+      }
     }
-    let testComponent = mount(<Provider store={store}><PrintQuestion question={newProps} /></Provider>)
+    let testComponent = shallow(<PrintQuestion {...newProps} />)
     expect(testComponent.find(QuestionAnswer).length).toBe(4)
   })
 })

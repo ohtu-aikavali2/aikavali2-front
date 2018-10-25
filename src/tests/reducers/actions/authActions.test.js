@@ -131,16 +131,3 @@ describe('authActions', () => {
     })
   })
 })
-/*
-export const logout = () => {
-  return async (dispatch) => {
-    userManager.logout()
-    store.remove('user')
-    await questionService.setToken(null)
-    await authService.setToken(null)
-    dispatch({
-      type: authConstants.LOGOUT
-    })
-  }
-}
-*/

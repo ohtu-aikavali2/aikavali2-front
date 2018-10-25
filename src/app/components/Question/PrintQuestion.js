@@ -1,32 +1,12 @@
 import React from 'react'
-// import Card from '@material-ui/core/Card'
-// import CardContent from '@material-ui/core/CardContent'
-import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
-import LikertScale from 'likert-react'
 import QuestionAnswer from './QuestionAnswer'
 import ReactMarkdown from 'react-markdown'
 
-const styles = ({
-  card: {
-    height: '100%',
-    width: '350px',
-    margin: '0 auto'
-  },
-
-  question: {
-    width: '350px',
-    margin: '0 auto'
-  }
-})
-
-const PrintQuestion = ({ question, handleSelect, handleConfirm, handleSkip, handleQuestionReview, selected, userAnswer }) => {
+export const PrintQuestion = ({ question, handleSelect, handleSkip, selected }) => {
   let source = '```\n '
   question.value.split('\n').forEach((line) => source += line + '\n')
   source += '```'
-
-  const questions = [{question: 'Mitä mieltä olit kysymyksestä?'}]
 
   return (
     <div className='printQuestion'>
@@ -38,14 +18,9 @@ const PrintQuestion = ({ question, handleSelect, handleConfirm, handleSkip, hand
           <ReactMarkdown source={source} />
         </div>
       </div>
-      {userAnswer && <div className='likertScale'> <LikertScale reviews={questions} onClick={handleQuestionReview} /> </div>}
-      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleConfirm={handleConfirm} handleSkip={handleSkip} selected={selected && selected.value === option} />)}
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selected={selected && selected.value === option} />)}
     </div>
   )
 }
 
-PrintQuestion.propTypes = {
-  classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles)(PrintQuestion)
+export default PrintQuestion
