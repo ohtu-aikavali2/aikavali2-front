@@ -9,23 +9,6 @@ import TemporaryDrawer from '../../../app/components/common/TemporaryDrawer'
 import { MemoryRouter } from 'react-router'
 import AdminPage from '../../../app/components/Admin'
 import LoginPage from '../../../app/components/LoginPage'
-/*import configureStore from 'redux-mock-store'
-
-const initialState = {
-  ui: {
-    drawerOpen: false
-  },
-  loggedUser: {
-    loggedUser: {
-      id: 123,
-      token: 12345,
-      username: 'Pate1337'
-    },
-    loadingUser: false
-  }
-}
-const mockStore = configureStore()
-const store = mockStore(initialState)*/
 
 describe('<App />', () => {
   let app, props
@@ -172,7 +155,7 @@ describe('<App />', () => {
     })
   })
   describe('path \'/admin\'', () => {
-    it('renders AdminPage when loggedUser !== null', () => {
+    /*it('renders AdminPage when loggedUser !== null', () => {
       app = mount(
         <MemoryRouter initialEntries={[ '/admin' ]}>
           <Provider store={store}><App {...props} /></Provider>
@@ -181,7 +164,7 @@ describe('<App />', () => {
       expect(app.find(FrontPage).length).toBe(0)
       expect(app.find(AdminPage).length).toBe(1)
       expect(app.find(LoginPage).length).toBe(0)
-    })
+    })*/
     it('renders LoginPage when loggedUser === null AND loadingUser === false', () => {
       let newProps = { ...props, loggedUser: null }
       app = mount(

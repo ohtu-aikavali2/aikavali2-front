@@ -31,5 +31,7 @@ export default {
   answerQuestion,
   setToken: jest.fn(),
   question,
-  answer
+  answer,
+  postCompileQuestion: jest.fn(),
+  postPrintQuestion: jest.fn()
 }

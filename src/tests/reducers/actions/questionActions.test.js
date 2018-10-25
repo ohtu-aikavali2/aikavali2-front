@@ -15,6 +15,9 @@ describe('questionActions', () => {
     // mockStore is required for async functions
     reduxStore = mockStore({ question: null, answer: null })
   })
+  afterAll(() => {
+    jest.unmock('../../../app/services/questionService')
+  })
   it('getRandomQuestion dispatches GET_RANDOM_QUESTION with a random question when there are questions available (item defined)', () => {
     return reduxStore.dispatch(actions.getRandomQuestion()).then(() => {
       // return of async actions
@@ -42,6 +45,18 @@ describe('questionActions', () => {
       const store = reduxStore.getActions()[0].data
       expect(store.isCorrect).toBe(questionService.answer.isCorrect)
       expect(store.correctAnswer).toEqual(questionService.answer.correctAnswer)
+    })
+  })
+  it('postCompileQuestion calls questionServices method postCompileQuestion with correct parameters', () => {
+    return reduxStore.dispatch(actions.postCompileQuestion('correctAnswer', 'options')).then(() => {
+      expect(questionService.postCompileQuestion).toHaveBeenCalledTimes(1)
+      expect(questionService.postCompileQuestion).toHaveBeenCalledWith('correctAnswer', 'options')
+    })
+  })
+  it('postPrintQuestion calls questionServices method postPrintQuestion with correct parameters', () => {
+    return reduxStore.dispatch(actions.postPrintQuestion('value', 'correctAnswer', 'options')).then(() => {
+      expect(questionService.postPrintQuestion).toHaveBeenCalledTimes(1)
+      expect(questionService.postPrintQuestion).toHaveBeenCalledWith('value', 'correctAnswer', 'options')
     })
   })
 })
