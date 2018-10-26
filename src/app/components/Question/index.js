@@ -77,9 +77,13 @@ export class Question extends Component {
   }
 
   handleAnswer = async (id, value) => {
-    this.setState({ selected: { id, value } })
-    const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
-    await this.props.answerQuestion(id, value, time)
+    if (this.state.selected && !this.props.userAnswer) {
+      console.log('cant press now lol')
+    } else {
+      this.setState({ selected: { id, value } })
+      const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
+      await this.props.answerQuestion(id, value, time)
+    }
   }
 
   skipQuestion = async () => {
