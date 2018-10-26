@@ -58,16 +58,15 @@ export class Question extends Component {
   }
 
   getNewQuestion = async () => {
-    if (!this.props.userAnswer) {
+    if (!this.props.userAnswer && !this.state.selected) {
       // If the question has not been answered
       this.skipQuestion()
       // Do nothing else
-    } else {
-      await this.props.getRandomQuestion()
-      // setState() after async function, so that new question is
-      // rendered (almost) at the same time that option selections are removed
-      // Asetetaan myös startTime
+    } else if (this.props.userAnswer && this.state.selected) {
       this.setState({ selected: null, startTime: Date.now(), reviewed: false })
+      await this.props.getRandomQuestion()
+    } else {
+      console.log('Ei voi painaa nyt!')
     }
   }
 
@@ -76,8 +75,10 @@ export class Question extends Component {
     await this.props.sendReviewForQuestion(this.state.selected.id, review)
   }
 
+  // Ensimmäinen painallus kysymysvaihtoehtoon
   handleAnswer = async (id, value) => {
     if (this.state.selected && !this.props.userAnswer) {
+      // Tänne voidaan sit laittaa indikaattori sille et vastausta ootetaan servulta
       console.log('cant press now lol')
     } else {
       this.setState({ selected: { id, value } })
@@ -86,10 +87,12 @@ export class Question extends Component {
     }
   }
 
+  // Tätä kutsutaan painetaan skip ekan kerran
   skipQuestion = async () => {
+    // ON tärkeää että setState on ekana, jotta saadaan välittömästi asetettua selected
+    this.setState({ selected: { id: this.props.question.item._id, value: 'Note: questionSkipped' } })
     // Lähetetään vastaus, jossa value = 'Note: questionSkipped'
     await this.props.answerQuestion(this.props.question.item._id, 'Note: questionSkipped', null)
-    this.setState({ selected: null })
   }
 
   toggleReviewWindow = () => {
