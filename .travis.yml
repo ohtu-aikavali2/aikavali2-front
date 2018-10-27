@@ -12,5 +12,6 @@ deploy:
   github-token: $GITHUB_TOKEN
   local_dir: build
   target-branch: gh-pages
+  fqdn: opi.mooc.fi
   on:
     branch: master
