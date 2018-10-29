@@ -175,7 +175,9 @@ describe('<Question />', () => {
         selected: null,
         startTime: 0,
         pauseStart: 0,
-        timer: null
+        timer: null,
+        showReview: false,
+        reviewed: false
       })
       expect(props.initializeGame).toHaveBeenCalledTimes(1)
     })
@@ -214,6 +216,7 @@ describe('<Question />', () => {
   describe('getNewQuestion()', () => {
     it('calls components method skipQuestion() if question has not been answered', () => {
       question.setProps({ userAnswer: null })
+      question.setState({ selected: null })
       const spy = jest.spyOn(question.instance(), 'skipQuestion')
       expect(spy).toHaveBeenCalledTimes(0)
 
@@ -223,6 +226,7 @@ describe('<Question />', () => {
     })
     it('calls props.getRandomQuestion if question has been answered', () => {
       question.setProps({ userAnswer: 'not null' })
+      question.setState({ selected: 'not null' })
       question.instance().getNewQuestion()
       expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
     })
@@ -239,8 +243,8 @@ describe('<Question />', () => {
     it('calls props.answerQuestion with the correct parameters', () => {
       expect(props.answerQuestion).toHaveBeenCalledWith('12345', 'Note: questionSkipped', null)
     })
-    it('sets selected: null to state', () => {
-      expect(question.state().selected).toBe(null)
+    it('sets selected: { id: props.question._id, value: } to state', () => {
+      expect(question.state().selected).toEqual({ id: '12345', value: 'Note: questionSkipped' })
     })
   })
   it('componentWillUnmount clears interval', () => {

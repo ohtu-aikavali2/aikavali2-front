@@ -5,9 +5,10 @@ import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
-import { getRandomQuestion, answerQuestion } from '../../reducers/actions/questionActions'
+import { getRandomQuestion, answerQuestion, sendReviewForQuestion } from '../../reducers/actions/questionActions'
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
 import './question.css'
+import ReviewPopup from '../common/ReviewPopup'
 
 export class Question extends Component {
   constructor () {
@@ -16,7 +17,9 @@ export class Question extends Component {
       selected: null,
       startTime: 0,
       pauseStart: 0,
-      timer: null
+      timer: null,
+      showReview: false,
+      reviewed: false
     }
   }
 
@@ -55,29 +58,45 @@ export class Question extends Component {
   }
 
   getNewQuestion = async () => {
-    if (!this.props.userAnswer) {
+    if (!this.props.userAnswer && !this.state.selected) {
       // If the question has not been answered
       this.skipQuestion()
       // Do nothing else
-    } else {
+    } else if (this.props.userAnswer && this.state.selected) {
+      this.setState({ selected: null, startTime: Date.now(), reviewed: false })
       await this.props.getRandomQuestion()
-      // setState() after async function, so that new question is
-      // rendered (almost) at the same time that option selections are removed
-      // Asetetaan myös startTime
-      this.setState({ selected: null, startTime: Date.now() })
+    } else {
+      console.log('Ei voi painaa nyt!')
     }
   }
 
-  handleAnswer = async (id, value) => {
-    this.setState({ selected: { id, value } })
-    const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
-    await this.props.answerQuestion(id, value, time)
+  handleQuestionReview = async (question, review) => {
+    this.setState({ reviewed: true, showReview: false })
+    await this.props.sendReviewForQuestion(this.state.selected.id, review)
   }
 
+  // Ensimmäinen painallus kysymysvaihtoehtoon
+  handleAnswer = async (id, value) => {
+    if (this.state.selected && !this.props.userAnswer) {
+      // Tänne voidaan sit laittaa indikaattori sille et vastausta ootetaan servulta
+      console.log('cant press now lol')
+    } else {
+      this.setState({ selected: { id, value } })
+      const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
+      await this.props.answerQuestion(id, value, time)
+    }
+  }
+
+  // Tätä kutsutaan painetaan skip ekan kerran
   skipQuestion = async () => {
+    // ON tärkeää että setState on ekana, jotta saadaan välittömästi asetettua selected
+    this.setState({ selected: { id: this.props.question.item._id, value: 'Note: questionSkipped' } })
     // Lähetetään vastaus, jossa value = 'Note: questionSkipped'
     await this.props.answerQuestion(this.props.question.item._id, 'Note: questionSkipped', null)
-    this.setState({ selected: null })
+  }
+
+  toggleReviewWindow = () => {
+    this.setState({ showReview: !this.state.showReview })
   }
 
   render() {
@@ -92,8 +111,17 @@ export class Question extends Component {
             <Typography style={text} component="p">Uusia kysymykset saatavilla myöhemmin</Typography>
           </AlertWindow>
         )}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {userAnswer && (
+          <div style={{ textAlign: 'center' }}>
+            {!this.state.reviewed
+              ? <p style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleReviewWindow}>Oliko kysymys mielestäsi hyvä? - Arvostele</p>
+              : <p>Kiitos palautteesta!</p>
+            }
+          </div>
+        )}
+        {this.state.showReview && <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} />}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div>
@@ -110,12 +138,14 @@ const mapStateToProps = (state) => {
     loggedUser: state.loggedUser
   }
 }
+
 const mapDispatchToProps = {
   getRandomQuestion,
   answerQuestion,
   initializeGame,
   startGame,
-  endGame
+  endGame,
+  sendReviewForQuestion
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Question)
