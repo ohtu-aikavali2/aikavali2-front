@@ -23,9 +23,9 @@ const reload = () => {
 
 const getRandomQuestion = async () => {
   const config = {
-    headers: { 'Authorization': token},
+    headers: { 'Authorization': token}
     // USED FOR DEV PURPOSES
-    params: { force: true }
+    //params: { force: true }
   }
   const response = await axios.get(`${baseUrl}${apiUrl}/random`, config)
   return response.data
