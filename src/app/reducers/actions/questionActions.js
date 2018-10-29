@@ -29,10 +29,8 @@ export const getRandomQuestion = () => {
 }
 
 export const answerQuestion = (id, value, time) => {
-  console.log('vastausaika: ' + (time / 1000) + ' sekuntia')
-  // Nyt tarvii enää backendiin toteuttaa tuo ajan vastaanottaminen
   return async (dispatch) => {
-    const data = await questionService.answerQuestion(id, value)
+    const data = await questionService.answerQuestion(id, value, time)
     dispatch({
       type: questionConstants.QUESTION_ANSWERED,
       data
