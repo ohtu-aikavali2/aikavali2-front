@@ -109,7 +109,7 @@ export class Question extends Component {
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
             <Typography style={text} component="p">Uusia kysymyksiä saatavilla myöhemmin</Typography>
-            <a href="https://goo.gl/forms/GGU02CHM2bZcShhy2">Anna palautetta</a>
+            <a href="https://goo.gl/forms/GGU02CHM2bZcShhy2" target="_blank" rel="noopener noreferrer">Anna palautetta</a>
           </AlertWindow>
         )}
         {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
