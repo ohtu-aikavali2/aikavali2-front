@@ -108,7 +108,8 @@ export class Question extends Component {
       <div className='questionContainer'>
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
-            <Typography style={text} component="p">Uusia kysymykset saatavilla myöhemmin</Typography>
+            <Typography style={text} component="p">Uusia kysymyksiä saatavilla myöhemmin</Typography>
+            <a href="https://goo.gl/forms/GGU02CHM2bZcShhy2">Anna palautetta</a>
           </AlertWindow>
         )}
         {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
