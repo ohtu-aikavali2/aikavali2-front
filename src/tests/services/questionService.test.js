@@ -243,6 +243,48 @@ describe('questionService', () => {
       })
     })
   })
+  describe('sendReviewForQuestion', () => {
+    beforeEach(() => {
+      mockAxios.post.mockImplementationOnce()
+    })
+    afterAll(() => {
+      mockAxios.post.mockClear()
+    })
+    it('calls axios post', () => {
+      questionService.sendReviewForQuestion('12345', '3')
+      expect(mockAxios.post).toHaveBeenCalledTimes(1)
+    })
+    describe('calls axios post with /api/v1/questions/review, {questionId, review} object and configs', () => {
+      it('when token is not set', async () => {
+        questionService.reload()
+        await questionService.sendReviewForQuestion('123', '3')
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          '/api/v1/questions/review',
+          {
+            questionId: '123',
+            review: '3'
+          },
+          {
+            headers: { 'Authorization': null }
+          }
+        )
+      })
+      it('when token is set', async () => {
+        questionService.setToken(1337)
+        await questionService.sendReviewForQuestion('12345', '1')
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          '/api/v1/questions/review',
+          {
+            questionId: '12345',
+            review: '1'
+          },
+          {
+            headers: { 'Authorization': 'bearer 1337' }
+          }
+        )
+      })
+    })
+  })
   it ('sets token', () => {
     questionService.setToken(8783)
     expect(questionService.getToken()).toBe('bearer 8783')

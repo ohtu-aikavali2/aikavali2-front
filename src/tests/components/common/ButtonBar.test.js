@@ -103,33 +103,23 @@ describe('<ButtonBar />', () => {
     rightButton = tempButtonBar.find(BottomNavigationAction).at(2)
     expect(rightButton.props().disabled).toBe(true)
   })
-  /*
-  <BottomNavigation
-        value={value}
-        onChange={this.handleChange}
-        showLabels
-        className={classes.style}
-      >
-        <BottomNavigationAction disabled={this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Skip" icon={<SkipNextIcon className={classes.icon}/>}/>
-        <BottomNavigationAction label="Home" icon={<HomeIcon className={classes.icon}/>} />
-        <BottomNavigationAction disabled={!this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Next" icon={<ForwardIcon className={classes.icon}/>}/>
-      </BottomNavigation>
-  */
-  /*it('skip button press should call prop handleSkip', () => {
-    const button = buttonBar.find(Button).first()
-    expect(props.handleSkip.mock.calls.length).toBe(0)
-    button.simulate('click')
-    expect(props.handleSkip.mock.calls.length).toBe(1)
-  })*/
-  /*it('next button press should call prop handleSkip', () => {
-    props = {
-      ...props,
-      showNext: true
-    }
-    buttonBar = shallow(<ButtonBar {...props} />)
-    const button = buttonBar.find(Button).first()
-    expect(props.handleSkip.mock.calls.length).toBe(0)
-    button.simulate('click')
-    expect(props.handleSkip.mock.calls.length).toBe(1)
-  })*/
+  it('on left button click the prop handleSkip is called', () => {
+    let leftButton = buttonBar.find(BottomNavigationAction).at(0)
+    expect(props.handleSkip).toHaveBeenCalledTimes(0)
+    leftButton.simulate('click')
+    expect(props.handleSkip).toHaveBeenCalledTimes(1)
+    props.handleSkip.mockClear()
+  })
+  // The disabled prop should be on, but still able to click it in test
+  it('on right button click the props handleSkip is called', () => {
+    let rightButton = buttonBar.find(BottomNavigationAction).at(2)
+    expect(props.handleSkip).toHaveBeenCalledTimes(0)
+    rightButton.simulate('click')
+    expect(props.handleSkip).toHaveBeenCalledTimes(1)
+    props.handleSkip.mockClear()
+  })
+  it('handleChange should set state.value to the on in param', () => {
+    buttonBar.instance().handleChange('eventti', '3')
+    expect(buttonBar.state().value).toEqual('3')
+  })
 })
