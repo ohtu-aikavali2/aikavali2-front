@@ -25,7 +25,7 @@ const getRandomQuestion = async () => {
   const config = {
     headers: { 'Authorization': token}
     // USED FOR DEV PURPOSES
-    // params: { force: true }
+    //params: { force: true }
   }
   const response = await axios.get(`${baseUrl}${apiUrl}/random`, config)
   return response.data
@@ -58,13 +58,10 @@ const postPrintQuestion = async (value, correctAnswer, options) => {
 }
 
 const sendReviewForQuestion = async (id, review) => {
-  console.log('id: ' + id + ', review: ' + review)
-  console.log('Go to services/questionService and implement the method sendReviewForQuestion to backend')
-  /* const config = {
+  const config = {
     headers: { 'Authorization': token }
-  }*/
-  // No need for response (IMPELEMNT TO BACKEND)
-  // await axios.post(`${baseUrl}${apiUrl}/questionreview`, { id, review }, config)
+  }
+  await axios.post(`${baseUrl}${apiUrl}/review`, { questionId:id, review }, config)
 }
 
 export default { getRandomQuestion, answerQuestion, postCompileQuestion, postPrintQuestion, setToken, getToken, reload, sendReviewForQuestion }
