@@ -3,19 +3,23 @@
     left: 5px;
     position: fixed;
 }
+
 .next {
     bottom: 5px;
     right: 5px;
     position: fixed;
 }
+
 .appBarTitle {
     left: 10px;
     position: relative;
 }
+
 .appBarLoginContainer {
     right: 10px;
     position: absolute;
 }
+
 .drawerList {
     width: 250px;
 }

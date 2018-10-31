@@ -5,6 +5,9 @@ import { shuffle } from '../../utilities/shuffleArray'
 export const getRandomQuestion = () => {
   console.log('getRandomQuestion')
   return async (dispatch) => {
+    dispatch({
+      type: questionConstants.FETCHING_QUESTION
+    })
     let random = await questionService.getRandomQuestion()
     if (random.item) {
       // shuffle the options and hold all the fields
@@ -30,6 +33,9 @@ export const getRandomQuestion = () => {
 
 export const answerQuestion = (id, value, time) => {
   return async (dispatch) => {
+    dispatch({
+      type: questionConstants.ANSWER_QUESTION
+    })
     const data = await questionService.answerQuestion(id, value, time)
     dispatch({
       type: questionConstants.QUESTION_ANSWERED,

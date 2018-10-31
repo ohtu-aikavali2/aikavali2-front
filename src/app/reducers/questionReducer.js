@@ -2,6 +2,8 @@ import questionConstants from './constants/questionConstants'
 
 const initialState = {
   question: null,
+  loading: false,
+  answering: false,
   userAnswer: null,
   message: null
 }
@@ -12,15 +14,33 @@ const questionReducer = (state = initialState, action) => {
       return {
         ...state,
         question: action.data,
-        userAnswer: null,
-        message: null
+        loading: false,
+        message: null,
+        userAnswer: null
+      }
+    }
+
+    case questionConstants.FETCHING_QUESTION: {
+      return {
+        ...state,
+        loading: true,
+        question: null,
+        userAnswer: null
+      }
+    }
+
+    case questionConstants.ANSWER_QUESTION: {
+      return {
+        ...state,
+        answering: true
       }
     }
 
     case questionConstants.QUESTION_ANSWERED: {
       return {
         ...state,
-        userAnswer: action.data
+        userAnswer: action.data,
+        answering: false
       }
     }
 

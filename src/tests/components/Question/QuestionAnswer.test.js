@@ -147,7 +147,7 @@ describe('<QuestionAnswer />', () => {
       }
       question = shallow(<QuestionAnswer {...props} />)
       const paperStyle = question.find(Paper).props().style
-      expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)' })
+      expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' })
     })
     it('is set to notSelectedWrongStyle when question has been answered, and option is not right or wrong. ALSO text color is turned grey', () => {
       props = {
