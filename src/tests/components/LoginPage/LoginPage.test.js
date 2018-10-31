@@ -111,4 +111,5 @@ describe('<LoginPage />', () => {
     expect(props.login).toHaveBeenCalledWith('Pate1337', 'salasana')
     props.login.mockClear()
   })
+  // Some occasions could be tested here. For example if user does not type username => error is shown (needs mounting)
 })
