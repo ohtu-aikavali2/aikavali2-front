@@ -7,7 +7,9 @@ describe('questionReducer', () => {
     INITIAL_STATE = {
       question: null,
       userAnswer: null,
-      message: null
+      message: null,
+      answering: false,
+      loading: false
     }
     questionData = {
       type: 'test',
@@ -26,7 +28,9 @@ describe('questionReducer', () => {
     expect(questionReducer(undefined, {})).toEqual({
       question: null,
       userAnswer: null,
-      message: null
+      message: null,
+      loading: false,
+      answering: false
     })
   })
   it('GET_RANDOM_QUESTION should set question to action.data, userAnswer: null and message: null', () => {
@@ -36,9 +40,11 @@ describe('questionReducer', () => {
       data
     })
     expect(returnedQuestion).toEqual({
+      ...INITIAL_STATE,
       question: questionData,
       userAnswer: null,
-      message: null
+      message: null,
+      loading: false
     })
   })
   it('QUESTION_ANSWERED should set userAnswer to action.data and keep other fields as they are', () => {

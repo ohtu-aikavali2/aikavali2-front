@@ -9,6 +9,7 @@ import { getRandomQuestion, answerQuestion, sendReviewForQuestion } from '../../
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
 import './question.css'
 import ReviewPopup from '../common/ReviewPopup'
+import Loading from '../common/Loading'
 
 export class Question extends Component {
   constructor () {
@@ -77,10 +78,7 @@ export class Question extends Component {
 
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleAnswer = async (id, value) => {
-    if (this.state.selected && !this.props.userAnswer) {
-      // Tänne voidaan sit laittaa indikaattori sille et vastausta ootetaan servulta
-      console.log('cant press now lol')
-    } else {
+    if (!(this.state.selected && !this.props.userAnswer)) {
       this.setState({ selected: { id, value } })
       const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
       await this.props.answerQuestion(id, value, time)
@@ -103,7 +101,8 @@ export class Question extends Component {
     const text = {
       fontSize: 16
     }
-    const { question, userAnswer, questionMessage } = this.props
+    const { question, userAnswer, questionMessage, loading, answering } = this.props
+    console.log('answering', answering)
     return (
       <div className='questionContainer'>
         {questionMessage && (
@@ -112,6 +111,7 @@ export class Question extends Component {
             <a href="https://goo.gl/forms/GGU02CHM2bZcShhy2" target="_blank" rel="noopener noreferrer">Anna palautetta</a>
           </AlertWindow>
         )}
+        {loading && <Loading className='questionLoading' />}
         {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
         {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
         {userAnswer && (
@@ -136,7 +136,9 @@ const mapStateToProps = (state) => {
     question: state.question.question,
     questionMessage: state.question.message,
     game: state.game,
-    loggedUser: state.loggedUser
+    loggedUser: state.loggedUser,
+    loading: state.question.loading,
+    answering: state.question.answering
   }
 }
 

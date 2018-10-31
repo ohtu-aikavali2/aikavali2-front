@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import ReactMarkdown from 'react-markdown'
+import Loading from '../common/Loading'
 
 const styles = theme => ({
   wrapper: {
@@ -16,7 +17,8 @@ const styles = theme => ({
 
   paper: {
     margin: theme.spacing.unit,
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
+    position: 'relative'
   }
 })
 
@@ -35,7 +37,7 @@ export class QuestionAnswer extends Component {
 
   determineStyle = () => {
     const { userAnswer, value, selected } = this.props
-    const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)' }
+    const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' }
     const correctStyle = { backgroundColor: 'rgb(113, 218, 113)' }
     const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)', cursor: 'default'}
     const notSelectedWrongStyle = {cursor: 'default'}
@@ -54,10 +56,10 @@ export class QuestionAnswer extends Component {
   }
 
   render () {
-    const { classes, value, userAnswer, selected } = this.props
+    const { classes, value, userAnswer, selected, answering } = this.props
     const style = this.determineStyle()
     const textStyle = {}
-    if (!selected && userAnswer && userAnswer.correctAnswer !== value) {
+    if (answering || (!selected && userAnswer && userAnswer.correctAnswer !== value)) {
       textStyle['color'] = 'grey'
     }
 
@@ -71,6 +73,7 @@ export class QuestionAnswer extends Component {
               <ReactMarkdown source={answer_lines} />
             </Grid>
           </Grid>
+          {answering && selected && <Loading className='answerLoading' bar />}
         </Paper>
       </div>
     )
@@ -79,7 +82,8 @@ export class QuestionAnswer extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    userAnswer: state.question.userAnswer
+    userAnswer: state.question.userAnswer,
+    answering: state.question.answering
   }
 }
 
