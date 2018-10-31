@@ -48,6 +48,7 @@ describe('<Question />', () => {
       initializeGame: jest.fn(),
       startGame: jest.fn(),
       endGame: jest.fn(),
+      sendReviewForQuestion: jest.fn(),
       loggedUser: {
         loggedUser: 'not null'
       }
@@ -287,5 +288,31 @@ describe('<Question />', () => {
       newQuestion.instance().getNewQuestion()
       expect(newProps.answerQuestion).toHaveBeenCalledTimes(1)
     })
+  })
+  describe('handleQuestionReview', () => {
+    beforeAll(() => {
+      question.setState({
+        selected: { id: '1337', value: 'whatever' }
+      })
+      question.instance().handleQuestionReview('question', 'review')
+    })
+    it('sets correct state', () => {
+      const { reviewed, showReview } = question.state()
+      expect(reviewed).toBe(true)
+      expect(showReview).toBe(false)
+    })
+    it('calls prop sendReviewForQuestion with the correct params', () => {
+      expect(props.sendReviewForQuestion).toHaveBeenCalledTimes(1)
+      expect(props.sendReviewForQuestion).toHaveBeenCalledWith('1337', 'review')
+    })
+  })
+  it('toggleReviewWindow sets correct state', () => {
+    question.setState({
+      showReview: false
+    })
+    question.instance().toggleReviewWindow()
+    expect(question.state().showReview).toBe(true)
+    question.instance().toggleReviewWindow()
+    expect(question.state().showReview).toBe(false)
   })
 })
