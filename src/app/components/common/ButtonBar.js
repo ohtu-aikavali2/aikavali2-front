@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
-import HomeIcon from '@material-ui/icons/Home'
 import SkipNextIcon from '@material-ui/icons/SkipNext'
 import ForwardIcon from '@material-ui/icons/Forward'
+import AccountBoxIcon from '@material-ui/icons/AccountBox'
 
 export const styles = {
   style: {
@@ -42,7 +42,7 @@ export class ButtonBar extends Component {
         className={classes.style}
       >
         <BottomNavigationAction disabled={this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Ohita" icon={<SkipNextIcon className={classes.icon}/>}/>
-        <BottomNavigationAction label="Koti" icon={<HomeIcon className={classes.icon}/>} />
+        <BottomNavigationAction label="Profiili" icon={<AccountBoxIcon className={classes.icon}/>} />
         <BottomNavigationAction disabled={!this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Seuraava" icon={<ForwardIcon className={classes.icon}/>}/>
       </BottomNavigation>
     )
