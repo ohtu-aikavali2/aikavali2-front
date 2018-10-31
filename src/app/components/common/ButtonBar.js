@@ -1,56 +1,59 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import SkipNextIcon from '@material-ui/icons/SkipNext'
 import ForwardIcon from '@material-ui/icons/Forward'
-import AccountBoxIcon from '@material-ui/icons/AccountBox'
+/* import AccountBoxIcon from '@material-ui/icons/AccountBox' */
+import './common.css'
 
 export const styles = {
-  style: {
+  bottomNav: {
     width: '100%',
     position: 'fixed',
-    bottom: 10,
+    bottom: 0,
+    paddingBottom: 10,
     backgroundColor: 'white'
   },
 
   icon: {
     width: 40,
     height: 40
+  },
+
+  activeButton: {
+    color: '#3f51b5'
+  },
+
+  disabledButton: {
+    color: 'grey'
   }
+
 }
 // exported for tests
 export class ButtonBar extends Component {
-  state = {
-    value: 0
-  }
 
   handleChange = (event, value) => {
     this.setState({ value })
   }
 
   render() {
-    const { classes } = this.props
-    const { value } = this.state
-
+    const skipDisabled = this.props.showNext || this.props.noMoreQuestions
+    const nextDisabled = !this.props.showNext || this.props.noMoreQuestions
+    const skipStyle = skipDisabled ? styles.disabledButton : styles.activeButton
+    const nextStyle = nextDisabled ? styles.disabledButton : styles.activeButton
     return (
       <BottomNavigation
-        value={value}
         onChange={this.handleChange}
         showLabels
-        className={classes.style}
+        style={styles.bottomNav}
       >
-        <BottomNavigationAction disabled={this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Ohita" icon={<SkipNextIcon className={classes.icon}/>}/>
-        <BottomNavigationAction label="Profiili" icon={<AccountBoxIcon className={classes.icon}/>} />
-        <BottomNavigationAction disabled={!this.props.showNext || this.props.noMoreQuestions} onClick={this.props.handleSkip} label="Seuraava" icon={<ForwardIcon className={classes.icon}/>}/>
+        <BottomNavigationAction style={skipStyle} disabled={skipDisabled} onClick={this.props.handleSkip} label="Ohita" icon={<SkipNextIcon style={styles.icon} />} />
+        <BottomNavigationAction disabled />
+        {/* <BottomNavigationAction style={styles.activeButton} label="Profiili" icon={<AccountBoxIcon style={styles.icon} />} /> */}
+        <BottomNavigationAction style={nextStyle} disabled={nextDisabled} onClick={this.props.handleSkip} label="Seuraava" icon={<ForwardIcon style={styles.icon} />} />
       </BottomNavigation>
     )
   }
 }
 
-ButtonBar.propTypes = {
-  classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles)(ButtonBar)
+export default ButtonBar
