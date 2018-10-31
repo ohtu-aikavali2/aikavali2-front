@@ -4,7 +4,6 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import SkipNextIcon from '@material-ui/icons/SkipNext'
 import ForwardIcon from '@material-ui/icons/Forward'
 /* import AccountBoxIcon from '@material-ui/icons/AccountBox' */
-import './common.css'
 
 export const styles = {
   bottomNav: {
