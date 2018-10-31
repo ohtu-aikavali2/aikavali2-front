@@ -101,8 +101,7 @@ export class Question extends Component {
     const text = {
       fontSize: 16
     }
-    const { question, userAnswer, questionMessage, loading, answering } = this.props
-    console.log('answering', answering)
+    const { question, userAnswer, questionMessage, loading } = this.props
     return (
       <div className='questionContainer'>
         {questionMessage && (

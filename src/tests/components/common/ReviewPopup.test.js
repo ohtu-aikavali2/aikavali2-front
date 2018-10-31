@@ -16,19 +16,13 @@ describe ('<ReviewPopup />', () => {
   it('renders self', () => {
     expect(popup.find('.popupContainer').length).toBe(1)
   })
-  it('renders fullScreen background', () => {
-    const background = popup.find('.background')
-    expect(background.length).toBe(1)
-    expect(background.props().style.width).toEqual('100%')
-    expect(background.props().style.height).toEqual('100%')
-  })
   it('renders AlertWindow with LikertScale component inside it', () => {
     const alertWindow = popup.find(AlertWindow)
     expect(alertWindow.length).toBe(1)
     expect(alertWindow.children().find(LikertScale).length).toBe(1)
   })
   it('background press calls props.toggle', () => {
-    const background = popup.find('.background')
+    const background = popup.find('.popupContainer')
     expect(props.toggle).toHaveBeenCalledTimes(0)
     background.simulate('click')
     expect(props.toggle).toHaveBeenCalledTimes(1)
