@@ -10,11 +10,7 @@ describe('<ButtonBar />', () => {
     props = {
       handleSkip: jest.fn(),
       showNext: false,
-      noMoreQuestions: false,
-      classes: {
-        style: styles.style,
-        icon: styles.icon
-      }
+      noMoreQuestions: false
     }
     buttonBar = shallow(<ButtonBar {...props} />)
   })
@@ -22,8 +18,7 @@ describe('<ButtonBar />', () => {
     const bottomNavigation = buttonBar.find(BottomNavigation)
     expect(bottomNavigation.length).toBe(1)
     expect(bottomNavigation.props()).toEqual({
-      value: 0,
-      className: props.classes.style,
+      style: styles.bottomNav,
       showLabels: true,
       onChange: bottomNavigation.props().onChange,
       children: bottomNavigation.props().children
@@ -65,11 +60,12 @@ describe('<ButtonBar />', () => {
     leftButton = tempButtonBar.find(BottomNavigationAction).at(0)
     expect(leftButton.props().disabled).toBe(true)
   })
-  it('middleButton is always enabled', () => {
+  // Uncomment when middleButton exists
+  /*it('middleButton is always enabled', () => {
     // If disabled == undefined, it is always enabled
     let middleButton = buttonBar.find(BottomNavigationAction).at(1)
     expect(middleButton.props().disabled).toBe(undefined)
-  })
+  })*/
   it('rightButton disabled when showNext == false or noMoreQuestions == true', () => {
     // Both are false
     let rightButton = buttonBar.find(BottomNavigationAction).at(2)
@@ -119,7 +115,7 @@ describe('<ButtonBar />', () => {
     props.handleSkip.mockClear()
   })
   it('handleChange should set state.value to the on in param', () => {
-    buttonBar.instance().handleChange('eventti', '3')
+    buttonBar.instance().handleChange('3')
     expect(buttonBar.state().value).toEqual('3')
   })
 })
