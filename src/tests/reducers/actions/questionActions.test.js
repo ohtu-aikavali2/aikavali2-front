@@ -21,8 +21,8 @@ describe('questionActions', () => {
   it('getRandomQuestion dispatches GET_RANDOM_QUESTION with a random question when there are questions available (item defined)', () => {
     return reduxStore.dispatch(actions.getRandomQuestion()).then(() => {
       // return of async actions
-      expect(reduxStore.getActions()[0].type).toEqual(questionConstant.GET_RANDOM_QUESTION)
-      const store = reduxStore.getActions()[0].data
+      expect(reduxStore.getActions()[1].type).toEqual(questionConstant.GET_RANDOM_QUESTION)
+      const store = reduxStore.getActions()[1].data
       expect(store.kind).toBe(questionService.question.kind)
       // toEqual, because options are shuffled
       expect(store.item).toEqual(questionService.question.item)
@@ -33,16 +33,16 @@ describe('questionActions', () => {
   it('getRandomQuestion dipatches ADD_MESSAGE_FROM_BACKEND with a message when there are no questions available (message defined)', () => {
     questionService.getRandomQuestion = jest.fn(() => Promise.resolve({ message: 'No more questions' }))
     return reduxStore.dispatch(actions.getRandomQuestion()).then(() => {
-      expect(reduxStore.getActions()[0].type).toEqual(questionConstant.ADD_MESSAGE_FROM_BACKEND)
-      const store = reduxStore.getActions()[0].data
+      expect(reduxStore.getActions()[1].type).toEqual(questionConstant.ADD_MESSAGE_FROM_BACKEND)
+      const store = reduxStore.getActions()[1].data
       expect(store).toEqual('No more questions')
     })
   })
   it('answerQuestion dispatches QUESTION_ANSWERED with answer object', () => {
     return reduxStore.dispatch(actions.answerQuestion()).then(() => {
       // return of async actions
-      expect(reduxStore.getActions()[0].type).toEqual(questionConstant.QUESTION_ANSWERED)
-      const store = reduxStore.getActions()[0].data
+      expect(reduxStore.getActions()[1].type).toEqual(questionConstant.QUESTION_ANSWERED)
+      const store = reduxStore.getActions()[1].data
       expect(store.isCorrect).toBe(questionService.answer.isCorrect)
       expect(store.correctAnswer).toEqual(questionService.answer.correctAnswer)
     })
