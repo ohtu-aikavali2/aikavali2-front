@@ -48,6 +48,7 @@ describe('<Question />', () => {
       initializeGame: jest.fn(),
       startGame: jest.fn(),
       endGame: jest.fn(),
+      sendReviewForQuestion: jest.fn(),
       loggedUser: {
         loggedUser: 'not null'
       }
@@ -252,5 +253,66 @@ describe('<Question />', () => {
     question.instance().componentWillUnmount()
     expect(clearInterval).toHaveBeenCalledTimes(1)
     jest.useRealTimers()
+  })
+  // Nää on ehkä enemminkin integraationtestausta
+  describe('double clicks', () => {
+    it('when user clicks answer option twice, only one answer is sent to backend (Taking into account, that the response from backend will take 20ms to arrive)', () => {
+      let newProps = {
+        ...props,
+        answerQuestion: jest.fn(() => {
+          setTimeout(() => {
+            newQuestion.setProps({ userAnswer: 'not null' })
+          }, 20)
+        })
+      }
+      let newQuestion = shallow(<Question {...newProps} />)
+      expect(newProps.answerQuestion).toHaveBeenCalledTimes(0)
+      newQuestion.instance().handleAnswer('12', 'value')
+      expect(newProps.answerQuestion).toHaveBeenCalledTimes(1)
+      newQuestion.instance().handleAnswer('12', 'value')
+      expect(newProps.answerQuestion).toHaveBeenCalledTimes(1)
+    })
+    it('when user clicks skip button twice, answer is sent to backend just once (Taking into account, that the response from backend will take 20ms to arrive)', () => {
+      let newProps = {
+        ...props,
+        answerQuestion: jest.fn(() => {
+          setTimeout(() => {
+            newQuestion.setProps({ userAnswer: 'not null' })
+          }, 20)
+        })
+      }
+      let newQuestion = shallow(<Question {...newProps} />)
+      expect(newProps.answerQuestion).toHaveBeenCalledTimes(0)
+      newQuestion.instance().getNewQuestion()
+      expect(newProps.answerQuestion).toHaveBeenCalledTimes(1)
+      newQuestion.instance().getNewQuestion()
+      expect(newProps.answerQuestion).toHaveBeenCalledTimes(1)
+    })
+  })
+  describe('handleQuestionReview', () => {
+    beforeAll(() => {
+      question.setState({
+        selected: { id: '1337', value: 'whatever' }
+      })
+      question.instance().handleQuestionReview('question', 'review')
+    })
+    it('sets correct state', () => {
+      const { reviewed, showReview } = question.state()
+      expect(reviewed).toBe(true)
+      expect(showReview).toBe(false)
+    })
+    it('calls prop sendReviewForQuestion with the correct params', () => {
+      expect(props.sendReviewForQuestion).toHaveBeenCalledTimes(1)
+      expect(props.sendReviewForQuestion).toHaveBeenCalledWith('1337', 'review')
+    })
+  })
+  it('toggleReviewWindow sets correct state', () => {
+    question.setState({
+      showReview: false
+    })
+    question.instance().toggleReviewWindow()
+    expect(question.state().showReview).toBe(true)
+    question.instance().toggleReviewWindow()
+    expect(question.state().showReview).toBe(false)
   })
 })

@@ -9,7 +9,7 @@ import CardContent from '@material-ui/core/CardContent'
 import './loginPage.css'
 import { login } from '../../reducers/actions/authActions'
 
-class LoginPage extends Component {
+export class LoginPage extends Component {
   constructor(props) {
     super(props)
 
@@ -84,7 +84,6 @@ class LoginPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    loggedUser: state.loggedUser.loggedUser,
     loggingIn: state.loggedUser.loggingIn,
     error: state.loggedUser.error
   }

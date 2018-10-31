@@ -33,5 +33,6 @@ export default {
   question,
   answer,
   postCompileQuestion: jest.fn(),
-  postPrintQuestion: jest.fn()
+  postPrintQuestion: jest.fn(),
+  sendReviewForQuestion: jest.fn()
 }

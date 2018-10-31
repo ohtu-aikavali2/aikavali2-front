@@ -13,25 +13,21 @@ export const styles = {
     paddingBottom: 10,
     backgroundColor: 'white'
   },
-
   icon: {
     width: 40,
     height: 40
   },
-
   activeButton: {
     color: '#3f51b5'
   },
-
   disabledButton: {
     color: 'grey'
   }
-
 }
 // exported for tests
 export class ButtonBar extends Component {
 
-  handleChange = (event, value) => {
+  handleChange = (value) => {
     this.setState({ value })
   }
 

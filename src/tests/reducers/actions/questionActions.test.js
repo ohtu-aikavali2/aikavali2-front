@@ -59,4 +59,10 @@ describe('questionActions', () => {
       expect(questionService.postPrintQuestion).toHaveBeenCalledWith('value', 'correctAnswer', 'options')
     })
   })
+  it('sendReviewForQuestion calls questionServices method sendReviewForQuestion with correct parameters', () => {
+    return reduxStore.dispatch(actions.sendReviewForQuestion('12345', '5')).then(() => {
+      expect(questionService.sendReviewForQuestion).toHaveBeenCalledTimes(1)
+      expect(questionService.sendReviewForQuestion).toHaveBeenCalledWith('12345', '5')
+    })
+  })
 })

@@ -1,43 +1,67 @@
 import React from 'react'
-import { mount } from 'enzyme'
-import AppBar from '../../../app/components/common/AppBar'
+import { shallow } from 'enzyme'
+import { ButtonAppBar } from '../../../app/components/common/AppBar'
 import IconButton from '@material-ui/core/IconButton'
-import AppBarMaterial from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
 import MenuIcon from '@material-ui/icons/Menu'
-import Typography from '@material-ui/core/Typography'
+import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
 
 describe('<AppBar />', () => {
   let appBar
   const props = {
-    toggleDrawer: jest.fn()
+    toggleDrawer: jest.fn(),
+    logout: jest.fn(),
+    user: {
+      id: '123',
+      username: 'Pate1337'
+    }
   }
   beforeAll(() => {
-    appBar = mount(<AppBar {...props} />)
+    appBar = shallow(<ButtonAppBar {...props} />)
   })
   it('renders self and subcomponents', () => {
-    expect(appBar.find('.appBar').text()).toContain('Aikavälikertaus')
-    const appBarComponent = appBar.find(AppBarMaterial)
-    expect(appBarComponent.hasClass('appBar_material')).toBe(true)
-    expect(appBarComponent.props().position).toBe('static')
-    const toolBarComponent = appBar.find(Toolbar)
-    expect(toolBarComponent.hasClass('toolbar_material')).toBe(true)
-    const iconButtonComponent = appBar.find(IconButton).find('.appBar_menu_button').find('button')
-    const iconButtonProps = iconButtonComponent.props()
-    expect(typeof iconButtonProps.onClick).toBe('function')
-    expect(appBar.find(MenuIcon).hasClass('menuicon_material')).toBe(true)
-    const typographyComponent = appBar.find(Typography)
-    expect(typographyComponent.hasClass('typography')).toBe(true)
-    const typographyProps = typographyComponent.props()
-    expect(typographyProps.variant).toBe('title')
-    expect(typographyComponent.text()).toContain('Aikavälikertaus')
+    expect(appBar.find('.appBar').length).toBe(1)
+    expect(appBar.find(AppBar).length).toBe(1)
+  })
+  it('renders menu button', () => {
+    const menuButtonContainer = appBar.find('.appBarMenuButton')
+    expect(menuButtonContainer.length).toBe(1)
+    expect(menuButtonContainer.children().find(IconButton).length).toBe(1)
+    expect(menuButtonContainer.children().find(MenuIcon).length).toBe(1)
+  })
+  it('renders app title', () => {
+    const titleContainer = appBar.find('.appBarTitle')
+    expect(titleContainer.length).toBe(1)
+  })
+  it('renders logout button if user is logged in', () => {
+    const logoutContainer = appBar.find('.appBarLoginContainer')
+    expect(logoutContainer.length).toBe(1)
+    expect(logoutContainer.children().find(Button).length).toBe(1)
+  })
+  it('does not render logout button is user is not logged in', () => {
+    appBar.setProps({
+      user: null
+    })
+    const logoutContainer = appBar.find('.appBarLoginContainer')
+    expect(logoutContainer.length).toBe(0)
+    expect(logoutContainer.children().find(Button).length).toBe(0)
   })
   it('Menu button click should call given prop ToggleDrawer', () => {
-    const button = appBar.find(IconButton)
-    const menuButton = button.find('.appBar_menu_button')
-    const finalButton = menuButton.find('button')
-    expect(props.toggleDrawer.mock.calls.length).toBe(0)
-    finalButton.simulate('click')
-    expect(props.toggleDrawer.mock.calls.length).toBe(1)
+    const menuButton = appBar.find(IconButton)
+    expect(props.toggleDrawer).toHaveBeenCalledTimes(0)
+    menuButton.simulate('click')
+    expect(props.toggleDrawer).toHaveBeenCalledTimes(1)
+    props.toggleDrawer.mockClear()
+  })
+  it('Logout button click should call given prop logout', () => {
+    appBar.setProps({
+      user: props.user
+    })
+    const logoutContainer = appBar.find('.appBarLoginContainer')
+    const logoutButton = logoutContainer.children().find(Button)
+    expect(props.logout).toHaveBeenCalledTimes(0)
+    logoutButton.simulate('click')
+    expect(props.logout).toHaveBeenCalledTimes(1)
+    props.logout.mockClear()
   })
 })
