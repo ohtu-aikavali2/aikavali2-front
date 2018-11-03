@@ -4,7 +4,7 @@ import QuestionAnswer from './QuestionAnswer'
 import ReactMarkdown from 'react-markdown'
 
 export const PrintQuestion = ({ question, handleSelect, handleSkip, selected }) => {
-  let source = '```\n '
+  let source = '```\n'
   question.value.split('\n').forEach((line) => source += line + '\n')
   source += '```'
 
