@@ -40,7 +40,7 @@ describe('<PrintQuestion />', () => {
     expect(printQuestion.find(ReactMarkdown).length).toBe(1)
   })
   it('renders question in multiple lines if required', () => {
-    expect(printQuestion.find(ReactMarkdown).props().source).toEqual('```\n testi kysymys\n```')
+    expect(printQuestion.find(ReactMarkdown).props().source).toEqual('```\ntesti kysymys\n```')
     let newProps = {
       ...props,
       question: {
@@ -50,7 +50,7 @@ describe('<PrintQuestion />', () => {
     }
     let testComponent = shallow(<PrintQuestion {...newProps} />)
     const markDownValue = testComponent.find(ReactMarkdown).props().source
-    expect(markDownValue).toEqual('```\n eka rivi\ntoka rivi\nkolmas rivi\n```')
+    expect(markDownValue).toEqual('```\neka rivi\ntoka rivi\nkolmas rivi\n```')
   })
   it('renders as many QuestionAnswers as there are question options', () => {
     expect(printQuestion.find(QuestionAnswer).length).toBe(3)
