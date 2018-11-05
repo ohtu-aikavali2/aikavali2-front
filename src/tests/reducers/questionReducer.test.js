@@ -47,16 +47,17 @@ describe('questionReducer', () => {
       loading: false
     })
   })
-  it('QUESTION_ANSWERED should set userAnswer to action.data and keep other fields as they are', () => {
+  it('QUESTION_ANSWERED should set userAnswer to action.data, answering to false and keep other fields as they are', () => {
     const data = userAnswerData
-    const returnedAnswer = questionReducer({ ...INITIAL_STATE, question: 'Something' }, {
+    const returnedAnswer = questionReducer({ ...INITIAL_STATE, question: 'Something', answering: true }, {
       type: questionConstants.QUESTION_ANSWERED,
       data
     })
     expect(returnedAnswer).toEqual({
       ...INITIAL_STATE,
       question: 'Something',
-      userAnswer: userAnswerData
+      userAnswer: userAnswerData,
+      answering: false
     })
   })
   it('ADD_MESSAGE_FROM_BACKEND should set message to action.data, userAnswer: null and question: null', () => {
@@ -70,6 +71,14 @@ describe('questionReducer', () => {
       userAnswer: null,
       question: null,
       message: messageData
+    })
+  })
+  it('ANSWER_QUESTION should set answering: true', () => {
+    expect(questionReducer({ ...INITIAL_STATE, answering: false }, {
+      type: questionConstants.ANSWER_QUESTION
+    })).toEqual({
+      ...INITIAL_STATE,
+      answering: true
     })
   })
 })

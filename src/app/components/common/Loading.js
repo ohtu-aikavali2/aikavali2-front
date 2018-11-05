@@ -2,9 +2,9 @@ import React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import LinearProgress from '@material-ui/core/LinearProgress'
 
-const Loading = ({ bar, ...rest }) => {
+export const Loading = ({ bar, ...rest }) => {
   return (
-    <div {...rest}>
+    <div {...rest} className='loadingContainer'>
       {!bar && <CircularProgress />}
       {bar && <LinearProgress />}
     </div>
