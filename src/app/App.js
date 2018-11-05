@@ -36,6 +36,12 @@ export class App extends React.Component {
             <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)}/>
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
               <Route exact path='/' render={() => <FrontPage />} />
+              <ProtectedRoute
+                exact path='/admin'
+                redirectTo='/'
+                render={() => <AdminPage />}
+                pred={loggedUser && loggedUser.administrator}
+              />
               <Route exact path='/admin' render={() => <AdminPage />} />
             </ProtectedRoute>
           </Switch>
