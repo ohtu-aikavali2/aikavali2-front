@@ -12,9 +12,6 @@ describe('<Loading />', () => {
     }
     wrapper = shallow(<Loading {...props} />)
   })
-  it('renders self', () => {
-    expect(wrapper.find('.loadingContainer').length).toBe(1)
-  })
   it('renders Circular loading screen if bar === false', () => {
     expect(wrapper.find(CircularProgress).length).toBe(1)
     expect(wrapper.find(LinearProgress).length).toBe(0)

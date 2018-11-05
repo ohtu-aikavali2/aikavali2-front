@@ -4,7 +4,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 
 export const Loading = ({ bar, ...rest }) => {
   return (
-    <div {...rest} className='loadingContainer'>
+    <div {...rest}>
       {!bar && <CircularProgress />}
       {bar && <LinearProgress />}
     </div>
