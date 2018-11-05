@@ -24,7 +24,7 @@ const questionTypes = [
   }
 ]
 
-class QuestionForm extends Component {
+export class QuestionForm extends Component {
   constructor() {
     super()
     this.state = {
