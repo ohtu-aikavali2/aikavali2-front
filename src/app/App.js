@@ -42,7 +42,6 @@ export class App extends React.Component {
                 render={() => <AdminPage />}
                 pred={loggedUser && loggedUser.administrator}
               />
-              <Route exact path='/admin' render={() => <AdminPage />} />
             </ProtectedRoute>
           </Switch>
         </Router>
