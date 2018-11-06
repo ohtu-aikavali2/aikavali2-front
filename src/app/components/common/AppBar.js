@@ -20,7 +20,6 @@ export const ButtonAppBar = (props) => {
           <div className='appBarTitle'>
             <Typography variant='title' color='inherit' className='typography'>
               {!props.user && 'Aikavälikertaus'}
-              {props.user && props.user.username}
             </Typography>
           </div>
           {props.user && (
