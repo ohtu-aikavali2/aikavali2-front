@@ -1,6 +1,7 @@
 import React from 'react'
 import FrontPage from './components/FrontPage'
 import AdminPage from './components/Admin'
+import CoursePage from './components/CoursePage'
 import AppBar from './components/common/AppBar'
 import TemporaryDrawer from './components/common/TemporaryDrawer'
 import LoginPage from './components/LoginPage'
@@ -25,7 +26,7 @@ export class App extends React.Component {
 
   logout = () => this.props.logout()
 
-  render () {
+  render() {
     const { loggedUser, loadingUser } = this.props
     return (
       <div className="App">
@@ -33,9 +34,10 @@ export class App extends React.Component {
         <TemporaryDrawer toggleDrawer={this.handleSidebarToggle} isOpen={this.props.ui.drawerOpen} />
         <Router>
           <Switch>
-            <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)}/>
+            <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)} />
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
               <Route exact path='/' render={() => <FrontPage />} />
+              <Route exact path='/courses' render={() => <CoursePage />} />
               <ProtectedRoute
                 exact path='/admin'
                 redirectTo='/'
