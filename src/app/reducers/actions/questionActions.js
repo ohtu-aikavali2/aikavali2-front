@@ -46,13 +46,13 @@ export const answerQuestion = (id, value, time) => {
 
 export const postCompileQuestion = (correctAnswer, options) => {
   return async () => {
-    await questionService.postCompileQuestion(correctAnswer, options)
+    await questionService.postQuestion({ type: 'compile', correctAnswer, options })
   }
 }
 
 export const postPrintQuestion = (value, correctAnswer, options) => {
   return async () => {
-    await questionService.postPrintQuestion(value, correctAnswer, options)
+    await questionService.postQuestion({ type: 'print', value, correctAnswer, options })
   }
 }
 
