@@ -13,7 +13,7 @@ export class CoursePage extends Component {
     const { courses } = this.props
     return (
       <div className='course-page'>
-        {courses !== undefined && courses.map(course => (
+        {courses && courses.map(course => (
           <Course key={course.name} title={course.name} />
         ))}
       </div>
