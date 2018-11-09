@@ -10,19 +10,22 @@ import Question from '../Question'
 export class FrontPage extends Component {
 
   async componentDidMount () {
+    const { course } = this.props
     await this.props.initializeGame()
-    await this.props.getRandomQuestion()
+    await this.props.getRandomQuestion(course)
   }
 
   async componentWillReceiveProps (nextProps) {
+    const { course } = this.props
     if (!nextProps.loggedUser.loggedUser) {
       await this.props.initializeGame()
-      await this.props.getRandomQuestion()
+      await this.props.getRandomQuestion(course)
     }
   }
 
   render () {
     const user = this.props.loggedUser.loggedUser
+    const { course } = this.props
     return (
       <div className='frontPageContainer' style={{ marginTop: 50 }}>
         {false && user &&
@@ -33,7 +36,7 @@ export class FrontPage extends Component {
             </div>
           )
         }
-        <Question />
+        <Question course={course} />
       </div>
     )
   }

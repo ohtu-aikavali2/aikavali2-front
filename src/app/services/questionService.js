@@ -21,13 +21,17 @@ const reload = () => {
   token = null
 }
 
-const getRandomQuestion = async () => {
+const getRandomQuestion = async (course) => {
   const config = {
     headers: { 'Authorization': token}
     // USED FOR DEV PURPOSES
     // params: { force: true }
   }
-  const response = await axios.get(`${baseUrl}${apiUrl}/random`, config)
+  let params = ''
+  if (course) {
+    params = `?course=${course}`
+  }
+  const response = await axios.get(`${baseUrl}${apiUrl}/random${params}`, config)
   return response.data
 }
 

@@ -5,3 +5,7 @@
     margin: 2%;
     cursor: pointer;
 }
+
+.course-link {
+  all: unset;
+}

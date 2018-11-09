@@ -1,39 +1,34 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { fetchCourses } from '../../reducers/actions/courseActions'
 import Course from './Course'
 import './coursePage.css'
 
-const courses = [
-  {
-    title: 'Ohjelmoinnin perusteet'
-  },
-  {
-    title: 'Ohjelmoinnin jatkokurssi'
-  },
-  {
-    title: 'Tietokantojen perusteet'
-  },
-  {
-    title: 'Tietorakenteet ja algoritmit'
-  }
-]
-
 export class CoursePage extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-    }
+  componentDidMount() {
+    this.props.fetchCourses()
   }
 
   render() {
+    const { courses } = this.props
     return (
       <div className='course-page'>
         {courses.map(course => (
-          <Course key={course.title} title={course.title} />
+          <Course key={course.name} title={course.name} />
         ))}
       </div>
     )
   }
 }
 
-export default CoursePage
+const mapStateToProps = (state) => {
+  return {
+    courses: state.course.courses
+  }
+}
+
+const mapDispatchToProps = {
+  fetchCourses
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoursePage)

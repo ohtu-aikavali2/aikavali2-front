@@ -38,6 +38,7 @@ export class App extends React.Component {
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
               <Route exact path='/' render={() => <FrontPage />} />
               <Route exact path='/courses' render={() => <CoursePage />} />
+              <Route exact path='/courses/:name' render={({ match }) => <FrontPage course={match.params.name} />} />
               <ProtectedRoute
                 exact path='/admin'
                 redirectTo='/'
