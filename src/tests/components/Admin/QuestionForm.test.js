@@ -9,7 +9,8 @@ describe('<QuestionForm />', () => {
     questionType: '',
     question: '',
     correctAnswer: '',
-    incorrectAnswers: ['', '', '']
+    incorrectAnswers: ['', '', ''],
+    redirect: false
   }
   let props, wrapper
   beforeAll(() => {
@@ -162,7 +163,8 @@ describe('<QuestionForm />', () => {
       questionType: 'tulostaa',
       question: 'not null',
       correctAnswer: 'eka',
-      incorrectAnswers: ['1', '2', '3']
+      incorrectAnswers: ['1', '2', '3'],
+      redirect: false
     }
     beforeEach(() => {
       props.postCompileQuestion.mockClear()
@@ -219,7 +221,7 @@ describe('<QuestionForm />', () => {
       expect(props.postCompileQuestion).toHaveBeenCalledTimes(0)
       expect(props.postPrintQuestion).toHaveBeenCalledTimes(1)
       expect(props.postPrintQuestion).toHaveBeenCalledWith(fieldsFilled.question, fieldsFilled.correctAnswer, fieldsFilled.incorrectAnswers)
-      expect(wrapper.state()).toEqual(initialState)
+      expect(wrapper.state()).toEqual({ ...initialState, redirect: true })
     })
     it('calls postCompileQuestion when state is correct and initializes state', () => {
       wrapper.setState({
@@ -230,7 +232,7 @@ describe('<QuestionForm />', () => {
       expect(props.postPrintQuestion).toHaveBeenCalledTimes(0)
       expect(props.postCompileQuestion).toHaveBeenCalledTimes(1)
       expect(props.postCompileQuestion).toHaveBeenCalledWith(fieldsFilled.correctAnswer, fieldsFilled.incorrectAnswers)
-      expect(wrapper.state()).toEqual(initialState)
+      expect(wrapper.state()).toEqual({ ...initialState, redirect: true })
     })
   })
 })

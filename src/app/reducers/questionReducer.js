@@ -5,7 +5,8 @@ const initialState = {
   loading: false,
   answering: false,
   userAnswer: null,
-  message: null
+  message: null,
+  flaggedQuestions: []
 }
 
 const questionReducer = (state = initialState, action) => {
@@ -51,6 +52,13 @@ const questionReducer = (state = initialState, action) => {
         question: null,
         userAnswer: null,
         message: action.data
+      }
+    }
+
+    case questionConstants.GET_ALL_FLAGGED_QUESTIONS: {
+      return {
+        ...state,
+        flaggedQuestions: action.data
       }
     }
 

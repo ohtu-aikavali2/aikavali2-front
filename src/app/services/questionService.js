@@ -23,7 +23,7 @@ const reload = () => {
 
 const getRandomQuestion = async () => {
   const config = {
-    headers: { 'Authorization': token}
+    headers: { 'Authorization': token }
     // USED FOR DEV PURPOSES
     // params: { force: true }
   }
@@ -61,7 +61,70 @@ const sendReviewForQuestion = async (id, review) => {
   const config = {
     headers: { 'Authorization': token }
   }
-  await axios.post(`${baseUrl}${apiUrl}/review`, { questionId:id, review }, config)
+  await axios.post(`${baseUrl}${apiUrl}/review`, { questionId: id, review }, config)
 }
 
-export default { getRandomQuestion, answerQuestion, postCompileQuestion, postPrintQuestion, setToken, getToken, reload, sendReviewForQuestion }
+/* ------------ Flagged questions ------------- */
+
+// Kovakoodattu toistaiseksi
+
+const date = Date.now() - 100000
+const flaggedQuestions = [
+  {
+    kind: 'PrintQuestion',
+    item: {
+      options: [ 'juu', 'jaa', 'jii', 'joo' ],
+      _id: '5be3fb4707cbe10ab7f93f7d',
+      value: 'moi',
+      __v: 0
+    },
+    flags: 5,
+    recentFlag: date + 2000,
+    course: 'Ohjelmoinnin perusteet',
+    group: 'Viikko 1'
+  },
+  {
+    kind: 'CompileQuestion',
+    item: {
+      options: [ '2', '3', 'THIS!', '1' ],
+      _id: '5be1e731267a84086c6356d5',
+      __v: 0
+    },
+    flags: 2,
+    recentFlag: date + 4000,
+    course: 'Tietokantojen perusteet',
+    group: 'Viikko 3'
+  },
+  {
+    kind: 'PrintQuestion',
+    item: {
+      options: [ 'juu', 'jaa', 'jii', 'joo' ],
+      _id: '5be3fb4307cbe10ab7f93f7d',
+      value: 'Kysymys',
+      __v: 0
+    },
+    flags: 3,
+    recentFlag: date + 6000,
+    course: 'Ohjelmoinnin perusteet',
+    group: 'Viikko 4'
+  }
+]
+
+const getAllFlaggedQuestions = async () => {
+  /*const config = {
+    headers: { 'Authorization': token }
+  }*/
+  return flaggedQuestions
+}
+
+export default {
+  getRandomQuestion,
+  answerQuestion,
+  postCompileQuestion,
+  postPrintQuestion,
+  setToken,
+  getToken,
+  reload,
+  sendReviewForQuestion,
+  getAllFlaggedQuestions
+}

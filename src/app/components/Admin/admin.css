@@ -1,5 +1,8 @@
 .adminPageContainer {
     margin: 5%;
+    margin-right: '5%';
+    margin-left: '5%';
+    margin-bottom: 0;
 }
 .addButtonContainer {
     float: left;

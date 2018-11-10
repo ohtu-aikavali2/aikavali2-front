@@ -61,3 +61,15 @@ export const sendReviewForQuestion = (id, review) => {
     await questionService.sendReviewForQuestion(id, review)
   }
 }
+
+/* ---------- Flagged questions ----------- */
+
+export const getAllFlaggedQuestions = () => {
+  return async (dispatch) => {
+    const data = await questionService.getAllFlaggedQuestions()
+    dispatch({
+      type: questionConstants.GET_ALL_FLAGGED_QUESTIONS,
+      data
+    })
+  }
+}

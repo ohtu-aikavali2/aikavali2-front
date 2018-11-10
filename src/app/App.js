@@ -4,6 +4,8 @@ import AdminPage from './components/Admin'
 import AppBar from './components/common/AppBar'
 import TemporaryDrawer from './components/common/TemporaryDrawer'
 import LoginPage from './components/LoginPage'
+import ConnectedQuestionForm from './components/Admin/QuestionForm'
+import FlaggedQuestions from './components/Admin/FlaggedQuestions'
 import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
@@ -37,10 +39,18 @@ export class App extends React.Component {
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
               <Route exact path='/' render={() => <FrontPage />} />
               <ProtectedRoute
-                exact path='/admin'
+                path='/admin'
                 redirectTo='/'
-                render={() => <AdminPage />}
+                render={({history}) => <AdminPage history={history} />}
                 pred={loggedUser && loggedUser.administrator}
+              />
+              <Route
+                exact path='/admin/addquestion'
+                render={() => <ConnectedQuestionForm />}
+              />
+              <Route
+                exact path='/admin/flags'
+                render={() => <FlaggedQuestions />}
               />
             </ProtectedRoute>
           </Switch>
