@@ -21,13 +21,17 @@ const reload = () => {
   token = null
 }
 
-const getRandomQuestion = async () => {
+const getRandomQuestion = async (course) => {
   const config = {
     headers: { 'Authorization': token}
     // USED FOR DEV PURPOSES
     // params: { force: true }
   }
-  const response = await axios.get(`${baseUrl}${apiUrl}/random`, config)
+  let params = ''
+  if (course) {
+    params = `?course=${course}`
+  }
+  const response = await axios.get(`${baseUrl}${apiUrl}/random${params}`, config)
   return response.data
 }
 
@@ -39,21 +43,11 @@ const answerQuestion = async (id, answer, time) => {
   return response.data
 }
 
-const postCompileQuestion = async (correctAnswer, options) => {
+const postQuestion = async (question) => {
   const config = {
     headers: { 'Authorization': token }
   }
-  const response = await axios.post(`${baseUrl}${apiUrl}/compile`, { correctAnswer, options }, config)
-
-  return response.data
-}
-
-const postPrintQuestion = async (value, correctAnswer, options) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  const response = await axios.post(`${baseUrl}${apiUrl}/print`, { value, correctAnswer, options }, config)
-
+  const response = await axios.post(`${baseUrl}${apiUrl}`, question, config)
   return response.data
 }
 
@@ -64,4 +58,12 @@ const sendReviewForQuestion = async (id, review) => {
   await axios.post(`${baseUrl}${apiUrl}/review`, { questionId:id, review }, config)
 }
 
-export default { getRandomQuestion, answerQuestion, postCompileQuestion, postPrintQuestion, setToken, getToken, reload, sendReviewForQuestion }
+export default {
+  getRandomQuestion,
+  answerQuestion,
+  postQuestion,
+  setToken,
+  getToken,
+  reload,
+  sendReviewForQuestion
+}
