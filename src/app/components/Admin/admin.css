@@ -1,8 +1,8 @@
 .adminPageContainer {
-    margin: 5%;
-    margin-right: '5%';
-    margin-left: '5%';
+    margin-right: 5%;
+    margin-left: 5%;
     margin-bottom: 0;
+    padding: 0;
 }
 .addButtonContainer {
     float: left;
@@ -13,4 +13,14 @@
 .removeButtonContainer {
     float: left;
     margin-left: 5px;
+}
+
+.questionFormContainer {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.flaggedQuestionsContainer {
+    margin-left: 5%;
+    margin-right: 5%;
 }

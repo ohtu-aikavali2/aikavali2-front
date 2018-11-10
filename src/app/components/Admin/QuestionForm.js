@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -32,8 +31,7 @@ export class QuestionForm extends Component {
       questionType: '',
       question: '',
       correctAnswer: '',
-      incorrectAnswers: ['', '', ''],
-      redirect: false
+      incorrectAnswers: ['', '', '']
     }
   }
 
@@ -85,16 +83,10 @@ export class QuestionForm extends Component {
         questionType: '',
         question: '',
         correctAnswer: '',
-        incorrectAnswers: ['', '', ''],
-        redirect: true
+        incorrectAnswers: ['', '', '']
       })
       console.log('Post succesful')
-    }
-  }
-
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to='/admin' />
+      this.props.history.push('/admin')
     }
   }
 
@@ -106,7 +98,6 @@ export class QuestionForm extends Component {
 
     return (
       <div className='questionFormContainer'>
-        {this.renderRedirect()}
         <form noValidate autoComplete="off" className='form'>
           <InputLabel style={{ fontSize: 13 }}>Question type</InputLabel>
           <Select

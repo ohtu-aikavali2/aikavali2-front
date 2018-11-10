@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAllFlaggedQuestions } from '../../reducers/actions/questionActions'
+import ClickBox from '../common/ClickBox'
 
 class FlaggedQuestions extends Component {
   constructor() {
@@ -49,17 +50,13 @@ class FlaggedQuestions extends Component {
       <div style={{ marginTop: 0 }} className='flaggedQuestionsContainer'>
         {this.state.renderMainView && (
           <div>
-            <div>
-              <p onClick={() => this.getFlaggedQuestions('all')}>All flagged questions</p>
-            </div>
-            <div>
-              <p onClick={() => this.getFlaggedQuestions('course')}>Flagged questions by course</p>
-            </div>
+            <ClickBox title={'Kaikki ilmiannetut kysymykset'} onClick={() => this.getFlaggedQuestions('all')} />
+            <ClickBox title={'Ilmiannetut kysymykset kursseittain'} onClick={() => this.getFlaggedQuestions('course')} />
           </div>
         )}
         {questions.length !== 0 && (
           <div className='recentlyFlagged'>
-            <h3>All flagged questions</h3>
+            <h3>Kaikki ilmiannetut kysymykset</h3>
             <table>
               <tbody>
                 {this.renderTable(questions)}

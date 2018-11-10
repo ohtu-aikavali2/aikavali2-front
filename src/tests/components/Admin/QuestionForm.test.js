@@ -9,14 +9,16 @@ describe('<QuestionForm />', () => {
     questionType: '',
     question: '',
     correctAnswer: '',
-    incorrectAnswers: ['', '', ''],
-    redirect: false
+    incorrectAnswers: ['', '', '']
   }
   let props, wrapper
   beforeAll(() => {
     props = {
       postCompileQuestion: jest.fn(),
-      postPrintQuestion: jest.fn()
+      postPrintQuestion: jest.fn(),
+      history: {
+        push: jest.fn()
+      }
     }
     wrapper = shallow(<QuestionForm {...props} />)
   })
@@ -163,8 +165,7 @@ describe('<QuestionForm />', () => {
       questionType: 'tulostaa',
       question: 'not null',
       correctAnswer: 'eka',
-      incorrectAnswers: ['1', '2', '3'],
-      redirect: false
+      incorrectAnswers: ['1', '2', '3']
     }
     beforeEach(() => {
       props.postCompileQuestion.mockClear()
@@ -221,7 +222,7 @@ describe('<QuestionForm />', () => {
       expect(props.postCompileQuestion).toHaveBeenCalledTimes(0)
       expect(props.postPrintQuestion).toHaveBeenCalledTimes(1)
       expect(props.postPrintQuestion).toHaveBeenCalledWith(fieldsFilled.question, fieldsFilled.correctAnswer, fieldsFilled.incorrectAnswers)
-      expect(wrapper.state()).toEqual({ ...initialState, redirect: true })
+      expect(wrapper.state()).toEqual({ ...initialState })
     })
     it('calls postCompileQuestion when state is correct and initializes state', () => {
       wrapper.setState({
@@ -232,7 +233,7 @@ describe('<QuestionForm />', () => {
       expect(props.postPrintQuestion).toHaveBeenCalledTimes(0)
       expect(props.postCompileQuestion).toHaveBeenCalledTimes(1)
       expect(props.postCompileQuestion).toHaveBeenCalledWith(fieldsFilled.correctAnswer, fieldsFilled.incorrectAnswers)
-      expect(wrapper.state()).toEqual({ ...initialState, redirect: true })
+      expect(wrapper.state()).toEqual({ ...initialState })
     })
   })
 })

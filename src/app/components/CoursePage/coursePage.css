@@ -1,11 +1,3 @@
 .course-page {
     margin: 2%;
 }
-.course {
-    margin: 2%;
-    cursor: pointer;
-}
-
-.course-link {
-  all: unset;
-}

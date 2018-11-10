@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ClickBox from '../common/ClickBox'
 
 export class AdminPage extends Component {
 
@@ -12,12 +13,8 @@ export class AdminPage extends Component {
         <h1>Admin page</h1>
         {(path === '/admin' || path === '/admin/') && (
           <div>
-            <div onClick={() => this.redirect('/admin/addquestion')}>
-              <p>Add a question</p>
-            </div>
-            <div onClick={() => this.redirect('/admin/flags')}>
-              <p>Flagged questions</p>
-            </div>
+            <ClickBox title={'Lisää uusi kysymys'} onClick={() => this.redirect('/admin/newquestion')} />
+            <ClickBox title={'Ilmiannetut kysymykset'} onClick={() => this.redirect('/admin/flags')} />
           </div>
         )}
       </div>

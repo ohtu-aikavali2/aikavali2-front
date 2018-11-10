@@ -39,7 +39,7 @@ export class App extends React.Component {
             <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)} />
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
               <Route exact path='/' render={() => <Redirect to='/courses' />} />
-              <Route exact path='/courses' render={() => <CoursePage />} />
+              <Route exact path='/courses' render={({ history }) => <CoursePage history={history} />} />
               <Route exact path='/courses/:name' render={({ match }) => <FrontPage course={match.params.name} />} />
               <ProtectedRoute
                 path='/admin'
@@ -48,8 +48,8 @@ export class App extends React.Component {
                 pred={loggedUser && loggedUser.administrator}
               />
               <Route
-                exact path='/admin/addquestion'
-                render={() => <ConnectedQuestionForm />}
+                exact path='/admin/newquestion'
+                render={({ history }) => <ConnectedQuestionForm history={history} />}
               />
               <Route
                 exact path='/admin/flags'
