@@ -1,6 +1,7 @@
 import React from 'react'
 import FrontPage from './components/FrontPage'
 import AdminPage from './components/Admin'
+import CoursePage from './components/CoursePage'
 import AppBar from './components/common/AppBar'
 import TemporaryDrawer from './components/common/TemporaryDrawer'
 import LoginPage from './components/LoginPage'
@@ -10,7 +11,7 @@ import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
 import { pauseGame, initializeGame } from './reducers/actions/gameActions'
-import { HashRouter as Router, Route, Switch } from 'react-router-dom'
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import ProtectedRoute from './components/common/ProtectedRoute'
 
 export class App extends React.Component {
@@ -27,7 +28,7 @@ export class App extends React.Component {
 
   logout = () => this.props.logout()
 
-  render () {
+  render() {
     const { loggedUser, loadingUser } = this.props
     return (
       <div className="App">
@@ -35,9 +36,11 @@ export class App extends React.Component {
         <TemporaryDrawer toggleDrawer={this.handleSidebarToggle} isOpen={this.props.ui.drawerOpen} />
         <Router>
           <Switch>
-            <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)}/>
+            <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)} />
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
-              <Route exact path='/' render={() => <FrontPage />} />
+              <Route exact path='/' render={() => <Redirect to='/courses' />} />
+              <Route exact path='/courses' render={() => <CoursePage />} />
+              <Route exact path='/courses/:name' render={({ match }) => <FrontPage course={match.params.name} />} />
               <ProtectedRoute
                 path='/admin'
                 redirectTo='/'

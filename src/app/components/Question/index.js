@@ -25,6 +25,7 @@ export class Question extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    const { course } = this.props
     // Peli paussille, paitsi jos kyseessä eka kysymys. (Siitä ei mitata aikaa)
     if (nextProps.game.paused && this.state.startTime !== 0) {
       this.setState({ pauseStart: Date.now() })
@@ -44,7 +45,7 @@ export class Question extends Component {
       this.props.endGame()
     } else if (nextProps.game.ended && !this.state.timer) {
       // aloitetaan intervalli
-      const timer = setInterval(this.props.getRandomQuestion, 2000)
+      const timer = setInterval(() => this.props.getRandomQuestion(course), 2000)
       this.setState({ timer })
     } else if (!nextProps.questionMessage && nextProps.game.ended) {
       // intervalli lopetetaan kun message on poissa ja ended = totta.
@@ -59,13 +60,14 @@ export class Question extends Component {
   }
 
   getNewQuestion = async () => {
+    const { course } = this.props
     if (!this.props.userAnswer && !this.state.selected) {
       // If the question has not been answered
       this.skipQuestion()
       // Do nothing else
     } else if (this.props.userAnswer && this.state.selected) {
       this.setState({ selected: null, startTime: Date.now(), reviewed: false })
-      await this.props.getRandomQuestion()
+      await this.props.getRandomQuestion(course)
     } else {
       console.log('Ei voi painaa nyt!')
     }

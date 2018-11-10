@@ -2,13 +2,13 @@ import questionConstants from '../constants/questionConstants'
 import questionService from '../../services/questionService'
 import { shuffle } from '../../utilities/shuffleArray'
 
-export const getRandomQuestion = () => {
+export const getRandomQuestion = (course = null) => {
   console.log('getRandomQuestion')
   return async (dispatch) => {
     dispatch({
       type: questionConstants.FETCHING_QUESTION
     })
-    let random = await questionService.getRandomQuestion()
+    let random = await questionService.getRandomQuestion(course)
     if (random.item) {
       // shuffle the options and hold all the fields
       random = {
@@ -46,13 +46,13 @@ export const answerQuestion = (id, value, time) => {
 
 export const postCompileQuestion = (correctAnswer, options) => {
   return async () => {
-    await questionService.postCompileQuestion(correctAnswer, options)
+    await questionService.postQuestion({ type: 'compile', correctAnswer, options })
   }
 }
 
 export const postPrintQuestion = (value, correctAnswer, options) => {
   return async () => {
-    await questionService.postPrintQuestion(value, correctAnswer, options)
+    await questionService.postQuestion({ type: 'print', value, correctAnswer, options })
   }
 }
 
