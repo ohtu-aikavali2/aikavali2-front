@@ -68,7 +68,18 @@ export const getAllFlaggedQuestions = () => {
   return async (dispatch) => {
     const data = await questionService.getAllFlaggedQuestions()
     dispatch({
-      type: questionConstants.GET_ALL_FLAGGED_QUESTIONS,
+      type: questionConstants.GET_FLAGGED_QUESTIONS,
+      data
+    })
+  }
+}
+
+export const getFlaggedQuestionsByCourse = (course) => {
+  console.log('course name: ' + course)
+  return async (dispatch) => {
+    const data = await questionService.getFlaggedQuestionsByCourse(course)
+    dispatch({
+      type: questionConstants.GET_FLAGGED_QUESTIONS,
       data
     })
   }

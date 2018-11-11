@@ -101,6 +101,19 @@ const flaggedQuestions = [
     recentFlag: date + 6000,
     course: 'Ohjelmoinnin perusteet',
     group: 'Viikko 4'
+  },
+  {
+    kind: 'PrintQuestion',
+    item: {
+      options: [ 'vaihtoehto1', 'vaihtoehto2', 'vaihtoehto3', 'vaihtoehto4' ],
+      _id: '5be3fb4307cbe10ab7f93f7d',
+      value: 'Kysymys',
+      __v: 0
+    },
+    flags: 4,
+    recentFlag: date + 8000,
+    course: 'OHJA',
+    group: 'Viikko 2'
   }
 ]
 
@@ -109,6 +122,10 @@ const getAllFlaggedQuestions = async () => {
     headers: { 'Authorization': token }
   }*/
   return flaggedQuestions
+}
+const getFlaggedQuestionsByCourse = async (course) => {
+  const questions = flaggedQuestions.filter(f => f.course === course)
+  return questions
 }
 
 export default {
@@ -119,5 +136,6 @@ export default {
   getToken,
   reload,
   sendReviewForQuestion,
-  getAllFlaggedQuestions
+  getAllFlaggedQuestions,
+  getFlaggedQuestionsByCourse
 }

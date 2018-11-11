@@ -55,7 +55,7 @@ const questionReducer = (state = initialState, action) => {
       }
     }
 
-    case questionConstants.GET_ALL_FLAGGED_QUESTIONS: {
+    case questionConstants.GET_FLAGGED_QUESTIONS: {
       return {
         ...state,
         flaggedQuestions: action.data

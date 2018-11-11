@@ -1,6 +1,6 @@
 .adminPageContainer {
-    margin-right: 5%;
-    margin-left: 5%;
+    margin-right: 2%;
+    margin-left: 2%;
     margin-bottom: 0;
     padding: 0;
 }
@@ -16,11 +16,11 @@
 }
 
 .questionFormContainer {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin: 2%;
+    margin-top: 0;
 }
 
 .flaggedQuestionsContainer {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin: 2%;
+    margin-top: 0;
 }

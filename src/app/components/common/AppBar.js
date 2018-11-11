@@ -26,7 +26,7 @@ export const ButtonAppBar = (props) => {
                     ? 'Aikavälikertaus'
                     : props.user.administrator && (
                       <Link to={'/admin'} className='adminLink' replace>
-                        Ylläpitäjän toiminnot
+                        ADMIN
                       </Link>
                     )
                   }

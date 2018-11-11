@@ -6,12 +6,12 @@ import CardContent from '@material-ui/core/CardContent'
 import './common.css'
 
 class ClickBox extends Component {
-  render() {
+  render () {
     const { title, onClick } = this.props
     return (
       <div className='clickbox'>
         <div className='clickbox-link' onClick={onClick}>
-          <Card onClick={() => console.log(title)} className='clickbox-container'>
+          <Card className='clickbox-container'>
             <CardHeader title={title} />
             <CardContent>
             </CardContent>
