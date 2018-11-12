@@ -9,7 +9,8 @@ describe('questionReducer', () => {
       userAnswer: null,
       message: null,
       answering: false,
-      loading: false
+      loading: false,
+      flaggedQuestions: []
     }
     questionData = {
       type: 'test',
@@ -25,13 +26,7 @@ describe('questionReducer', () => {
     }
   })
   it('should return initial state', () => {
-    expect(questionReducer(undefined, {})).toEqual({
-      question: null,
-      userAnswer: null,
-      message: null,
-      loading: false,
-      answering: false
-    })
+    expect(questionReducer(undefined, {})).toEqual(INITIAL_STATE)
   })
   it('GET_RANDOM_QUESTION should set question to action.data, userAnswer: null and message: null', () => {
     const data = questionData

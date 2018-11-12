@@ -56,7 +56,7 @@ export class QuestionAnswer extends Component {
   }
 
   render () {
-    const { classes, value, userAnswer, selected, answering } = this.props
+    const { classes, value, userAnswer, selected, answering, dumb } = this.props
     const style = this.determineStyle()
     const textStyle = {}
     if (answering || (!selected && userAnswer && userAnswer.correctAnswer !== value)) {
@@ -66,7 +66,7 @@ export class QuestionAnswer extends Component {
     const answer_lines = '```\n' + value + ''
 
     return (
-      <div className={classes.wrapper} id='container' onClick={this.handleClick}>
+      <div className={classes.wrapper} style={{ cursor: dumb ? 'default' : 'pointer' }} id='container' onClick={dumb ? null : this.handleClick}>
         <Paper className={classes.paper} id='paper' style={style}>
           <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
             <Grid style={textStyle} item className='itemGrid'>

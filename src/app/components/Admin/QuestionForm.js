@@ -86,6 +86,7 @@ export class QuestionForm extends Component {
         incorrectAnswers: ['', '', '']
       })
       console.log('Post succesful')
+      this.props.history.push('/admin')
     }
   }
 

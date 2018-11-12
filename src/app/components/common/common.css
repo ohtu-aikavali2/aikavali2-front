@@ -23,3 +23,29 @@
 .drawerList {
     width: 250px;
 }
+
+.clickbox {
+    margin: 2%;
+    cursor: pointer;
+}
+
+.clickbox-link {
+  all: unset;
+}
+
+a.adminLink:link {
+    color: white;
+    text-decoration: none;
+}
+a.adminLink:visited {
+    color: white;
+}
+  
+a.adminLink:hover {
+    cursor: pointer;
+    color: white;
+}
+  
+a.adminLink:active {
+    color: blue;
+}

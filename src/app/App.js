@@ -5,12 +5,15 @@ import CoursePage from './components/CoursePage'
 import AppBar from './components/common/AppBar'
 import TemporaryDrawer from './components/common/TemporaryDrawer'
 import LoginPage from './components/LoginPage'
+import ConnectedQuestionForm from './components/Admin/QuestionForm'
+import FlaggedQuestions from './components/Admin/FlaggedQuestions'
 import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
 import { pauseGame, initializeGame } from './reducers/actions/gameActions'
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import ProtectedRoute from './components/common/ProtectedRoute'
+import FlaggedQuestionsTable from './components/Admin/FlaggedQuestionsTable'
 
 export class App extends React.Component {
   componentWillMount = async () => await this.props.loggedUserInitialization()
@@ -37,13 +40,29 @@ export class App extends React.Component {
             <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)} />
             <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
               <Route exact path='/' render={() => <Redirect to='/courses' />} />
-              <Route exact path='/courses' render={() => <CoursePage />} />
+              <Route exact path='/courses' render={({ history }) => <CoursePage history={history} />} />
               <Route exact path='/courses/:name' render={({ match }) => <FrontPage course={match.params.name} />} />
               <ProtectedRoute
-                exact path='/admin'
+                path='/admin'
                 redirectTo='/'
-                render={() => <AdminPage />}
+                render={({history}) => <AdminPage history={history} />}
                 pred={loggedUser && loggedUser.administrator}
+              />
+              <Route
+                exact path='/admin/newquestion'
+                render={({ history }) => <ConnectedQuestionForm history={history} />}
+              />
+              <Route
+                exact path='/admin/flags'
+                render={({ history }) => <FlaggedQuestions history={history} />}
+              />
+              <Route
+                exact path='/admin/flags/courses'
+                render={({ history }) => <CoursePage history={history} />}
+              />
+              <Route
+                exact path='/admin/flags/courses/:name'
+                render={({ history }) => <FlaggedQuestionsTable history={history} />}
               />
             </ProtectedRoute>
           </Switch>

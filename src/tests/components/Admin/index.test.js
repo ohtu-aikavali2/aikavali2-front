@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { AdminPage } from '../../../app/components/Admin'
-import QuestionFrom from '../../../app/components/Admin/QuestionForm'
+// import QuestionFrom from '../../../app/components/Admin/QuestionForm'
 
 describe('AdminPage', () => {
   let wrapper, props
@@ -13,6 +13,12 @@ describe('AdminPage', () => {
           id: 12345,
           token: 54321
         }
+      },
+      history: {
+        location: {
+          pathname: 'jokuvaa'
+        },
+        push: jest.fn()
       }
     }
     wrapper = shallow(<AdminPage {...props} />)
@@ -20,7 +26,7 @@ describe('AdminPage', () => {
   it('renders self', () => {
     expect(wrapper.find('.adminPageContainer').length).toBe(1)
   })
-  it('renders QuestionForm', () => {
+  /*it('renders QuestionForm', () => {
     expect(wrapper.find(QuestionFrom).length).toBe(1)
-  })
+  })*/
 })
