@@ -8,7 +8,7 @@ import Loading from '../common/Loading'
 
 const styles = theme => ({
   wrapper: {
-    maxWidth: '365px',
+    maxWidth: '600px',
     margin: '0 auto',
     cursor: 'pointer',
     'user-select': 'none',
@@ -18,7 +18,8 @@ const styles = theme => ({
   paper: {
     margin: theme.spacing.unit,
     padding: theme.spacing.unit * 2,
-    position: 'relative'
+    position: 'relative',
+    overflow: 'auto'
   }
 })
 

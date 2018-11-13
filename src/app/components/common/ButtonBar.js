@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
+import {Link} from 'react-router-dom'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import SkipNextIcon from '@material-ui/icons/SkipNext'
 import ForwardIcon from '@material-ui/icons/Forward'
-/* import AccountBoxIcon from '@material-ui/icons/AccountBox' */
+import ListAltIcon from '@material-ui/icons/ListAlt'
 
 export const styles = {
   bottomNav: {
@@ -43,8 +44,7 @@ export class ButtonBar extends Component {
         style={styles.bottomNav}
       >
         <BottomNavigationAction style={skipStyle} disabled={skipDisabled} onClick={this.props.handleSkip} label="Ohita" icon={<SkipNextIcon style={styles.icon} />} />
-        <BottomNavigationAction disabled />
-        {/* <BottomNavigationAction style={styles.activeButton} label="Profiili" icon={<AccountBoxIcon style={styles.icon} />} /> */}
+        <BottomNavigationAction style={styles.activeButton} label="Kurssit" icon={<ListAltIcon style={styles.icon} />} component={Link} to={'/courses'}/>
         <BottomNavigationAction style={nextStyle} disabled={nextDisabled} onClick={this.props.handleSkip} label="Seuraava" icon={<ForwardIcon style={styles.icon} />} />
       </BottomNavigation>
     )
