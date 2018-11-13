@@ -13,7 +13,6 @@ import { logout, loggedUserInitialization } from './reducers/actions/authActions
 import { pauseGame, initializeGame } from './reducers/actions/gameActions'
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import ProtectedRoute from './components/common/ProtectedRoute'
-import FlaggedQuestionsTable from './components/Admin/FlaggedQuestionsTable'
 
 export class App extends React.Component {
   componentWillMount = async () => await this.props.loggedUserInitialization()
@@ -54,15 +53,7 @@ export class App extends React.Component {
               />
               <Route
                 exact path='/admin/flags'
-                render={({ history }) => <FlaggedQuestions history={history} />}
-              />
-              <Route
-                exact path='/admin/flags/courses'
-                render={({ history }) => <CoursePage history={history} />}
-              />
-              <Route
-                exact path='/admin/flags/courses/:name'
-                render={({ history }) => <FlaggedQuestionsTable history={history} />}
+                render={() => <FlaggedQuestions />}
               />
             </ProtectedRoute>
           </Switch>

@@ -12,28 +12,32 @@ export class AdminPage extends Component {
     }
   }
   pathIntoArray = () => {
-    let paths = [ 'home' ]
+    let paths = [ 'Etusivu' ]
     const words = this.props.history.location.pathname.split('/')
     // First one is "", second one is admin
     for (let i = 1; i < words.length; i++) {
-      paths.push(words[i])
+      // Name the paths as u like, remember to also change them to pathBarRedirect
+      if (words[i] === 'flags') {
+        paths.push('Ilmiannetut')
+      } else if (words[i] === 'newquestion') {
+        paths.push('Lisää kysymys')
+      } else {
+        paths.push(words[i])
+      }
     }
     return paths
   }
   pathBarRedirect = (pathName) => {
-    if (pathName === 'home') {
+    if (pathName === 'Etusivu') {
       this.redirect('/')
     } else if (pathName === 'admin') {
       this.redirect('/admin')
-    } else if (pathName === 'flags') {
+    } else if (pathName === 'Ilmiannetut') {
       this.redirect('/admin/flags')
-    } else if (pathName === 'newquestion') {
+    } else if (pathName === 'Lisää kysymys') {
       this.redirect('/admin/newquestion')
-    } else if (pathName === 'courses') {
-      this.redirect('/admin/flags/courses')
     } else {
-      // Nothing of the above, has to be a course name
-      this.redirect(`/admin/flags/courses/${pathName}`)
+      this.redirect('/')
     }
   }
   render () {
