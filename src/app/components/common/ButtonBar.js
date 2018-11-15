@@ -14,6 +14,11 @@ export const styles = {
     paddingBottom: 10,
     backgroundColor: 'white'
   },
+  middleIcon: {
+    width: 40,
+    height: 40,
+    paddingTop: 20
+  },
   icon: {
     width: 40,
     height: 40
@@ -44,7 +49,7 @@ export class ButtonBar extends Component {
         style={styles.bottomNav}
       >
         <BottomNavigationAction style={skipStyle} disabled={skipDisabled} onClick={this.props.handleSkip} label="Ohita" icon={<SkipNextIcon style={styles.icon} />} />
-        <BottomNavigationAction style={styles.activeButton} label="Kurssit" icon={<ListAltIcon style={styles.icon} />} component={Link} to={'/courses'}/>
+        <BottomNavigationAction style={styles.activeButton} label="Kurssit" icon={<ListAltIcon style={styles.middleIcon} />} component={Link} to={'/courses'}/>
         <BottomNavigationAction style={nextStyle} disabled={nextDisabled} onClick={this.props.handleSkip} label="Seuraava" icon={<ForwardIcon style={styles.icon} />} />
       </BottomNavigation>
     )
