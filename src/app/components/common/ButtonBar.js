@@ -11,7 +11,7 @@ export const styles = {
     width: '100%',
     position: 'fixed',
     bottom: 0,
-    paddingBottom: 10,
+    paddingBottom: 35,
     backgroundColor: 'white'
   },
   middleIcon: {
