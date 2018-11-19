@@ -24,3 +24,49 @@
     margin: 2%;
     margin-top: 0;
 }
+
+@keyframes filterAnimationShow {
+    from {
+        width: 0px;
+        border-color: 'transparent';
+        border-width: 0px;
+        padding: 0px;
+    }
+    to {
+        width: 200px;
+        border-color: 'grey';
+        border-width: 1px;
+        padding: 10px;
+    }
+}
+
+.filterFieldShow {
+    border-radius: 5px;
+    font-size: 14;
+    animation-name: filterAnimationShow;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes filterAnimationHide {
+    from {
+        width: 200px;
+        border-color: 'grey';
+        border-width: 1px;
+        padding: 10px;
+    }
+    to {
+        width: 0px;
+        border-color: 'transparent';
+        border-width: 0px;
+        padding: 0px;
+    }
+}
+
+.filterFieldHide {
+    border-radius: 5px;
+    font-size: 14;
+    animation-name: filterAnimationHide;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+}

@@ -12,13 +12,13 @@ import Paper from '@material-ui/core/Paper'
 import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
-import DeleteIcon from '@material-ui/icons/Delete'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import AlertWindow from '../common/AlertWindow'
 import DumbQuestion from '../Question/DumbQuestion'
 import { getAllFlaggedQuestions } from '../../reducers/actions/questionActions'
+import './admin.css'
 
 const rows = [
   { id: 'value', numeric: false, disablePadding: true, label: 'Kysymys' },
@@ -89,6 +89,13 @@ class FlaggedQuestionsTable extends Component {
   }
   // This is needed. For example, if u press "previous" on browser, and then "next", the state would be empty
   static getDerivedStateFromProps = (props, state) => {
+    // If deleted, then set selected to empty array
+    if (props.flaggedQuestions.length < state.data.length) {
+      return {
+        data: props.flaggedQuestions.map(f => createData(f)),
+        selected: []
+      }
+    }
     if (props.flaggedQuestions.length !== state.data.length) {
       return {
         data: props.flaggedQuestions.map(f => createData(f))
@@ -163,6 +170,14 @@ class FlaggedQuestionsTable extends Component {
     let string = `${d.course} ${d.group} ${d.flags} ${d.recentFlag} ${d.item.value}`
     return string.toLowerCase()
   }
+  handleDelete = () => {
+    let selected = this.state.data.filter(d => this.state.selected.indexOf(d.id) !== -1)
+    this.props.handleDelete(selected)
+  }
+  handleUnflag = () => {
+    let selected = this.state.data.filter(d => this.state.selected.indexOf(d.id) !== -1)
+    this.props.handleUnflag(selected)
+  }
 
   render () {
     let { data } = this.state
@@ -170,7 +185,7 @@ class FlaggedQuestionsTable extends Component {
     data = this.handleFiltering()
     return (
       <Paper style={{ width: '96%', margin: '2%' }}>
-        <TableToolbar numSelected={selected.length} onFilterClick={this.onFilterClick} showFilterInput={this.state.showFilterInput} filterValue={filterValue} onFilterChange={this.onFilterChange} />
+        <TableToolbar numSelected={selected.length} onFilterClick={this.onFilterClick} showFilterInput={this.state.showFilterInput} filterValue={filterValue} onFilterChange={this.onFilterChange} handleDelete={this.handleDelete} handleUnflag={this.handleUnflag} />
         <div style={{ overflowX: 'auto' }}>
           <Table style={{ minWidth: 350 }} aria-labelledby='tableTitle'>
             <EnhancedTableHead
@@ -285,55 +300,64 @@ class EnhancedTableHead extends Component {
   }
 }
 
-const TableToolbar = (props) => {
-  const { numSelected } = props
+class TableToolbar extends Component {
+  render() {
+    const { numSelected } = this.props
+    let unflagText = 'Unflag question'
+    unflagText = numSelected > 1 ? `${unflagText}s` : unflagText
+    let deleteText = 'Delete question'
+    deleteText = numSelected > 1 ? `${deleteText}s` : deleteText
 
-  return (
-    <Toolbar
-      style={{
-        color: numSelected > 0 ? 'red' : 'black',
-        background: numSelected > 0 ? 'rgba(255, 0, 0, 0.2)' : 'white',
-        display: 'flex'
-      }}
-    >
-      <div style={{ flex: 0.9 }}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" style={{ fontSize: 16 }}>
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography id="tableTitle" style={{ fontSize: 20 }}>
-            Ilmiannetut kysymykset
-          </Typography>
-        )}
-      </div>
-      <div style={{ flex: 0.1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }} >
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <div style={{ flexDirection: 'row', display: 'flex' }}>
-            {props.showFilterInput && (
-              <input
-                style={{ width: 200, borderColor: 'grey', borderWidth: 1, borderRadius: 5, padding: 10, fontSize: 14 }}
-                placeholder='Etsi kysymyksiä'
-                onChange={props.onFilterChange}
-                value={props.filterValue}
-              />
-            )}
-            <Tooltip title="Filter list">
-              <IconButton aria-label="Filter list" onClick={props.onFilterClick}>
-                <FilterListIcon />
-              </IconButton>
+    return (
+      <Toolbar
+        style={{
+          color: numSelected > 0 ? 'red' : 'black',
+          background: numSelected > 0 ? 'rgba(255, 0, 0, 0.2)' : 'white',
+          display: 'flex'
+        }}
+      >
+        <div style={{ flex: 0.4 }}>
+          {numSelected > 0 ? (
+            <Typography color="inherit" style={{ fontSize: 16 }}>
+              {numSelected} selected
+            </Typography>
+          ) : (
+            <Typography id="tableTitle" style={{ fontSize: 20 }}>
+              Ilmiannetut kysymykset
+            </Typography>
+          )}
+        </div>
+        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+          {numSelected > 0 && (
+            <Tooltip title="Unflag questions">
+              <Typography style={{ fontSize: 14 }} onClick={this.props.handleUnflag}>{unflagText}</Typography>
             </Tooltip>
-          </div>
-        )}
-      </div>
-    </Toolbar>
-  )
+          )}
+        </div>
+        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }} >
+          {numSelected > 0 ? (
+            <Tooltip title="Delete">
+              <Typography style={{ fontSize: 14 }} onClick={this.props.handleDelete}>{deleteText}</Typography>
+            </Tooltip>
+          ) : (
+            <div style={{ flexDirection: 'row', display: 'flex', position: 'absolute', zIndex: 1, top: 5 }}>
+              <input
+                className={this.props.showFilterInput ? 'filterFieldShow' : 'filterFieldHide'}
+                placeholder='Etsi kysymyksiä'
+                onChange={this.props.onFilterChange}
+                value={this.props.filterValue}
+              />
+              <Tooltip title="Filter list">
+                <IconButton aria-label="Filter list" onClick={this.props.onFilterClick}>
+                  <FilterListIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
+          )}
+        </div>
+      </Toolbar>
+    )
+  }
 }
 
 const mapStateToProps = (state) => {

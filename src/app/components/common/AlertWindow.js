@@ -16,7 +16,8 @@ export const AlertWindow = ({ title, children, width }) => {
   }
 
   const text = {
-    fontSize: 16
+    fontSize: 16,
+    fontWeight: 'bold'
   }
 
   return (

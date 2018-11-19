@@ -39,8 +39,13 @@ const answerQuestion = async (id, answer, time) => {
   const config = {
     headers: { 'Authorization': token }
   }
-  const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer, time }, config)
-  return response.data
+  // In case the question has been removed by admin
+  try {
+    const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer, time }, config)
+    return response.data
+  } catch (e) {
+    return { error: 'Something went wrong while sending the answer' }
+  }
 }
 
 const postQuestion = async (question) => {
@@ -56,6 +61,17 @@ const sendReviewForQuestion = async (id, review) => {
     headers: { 'Authorization': token }
   }
   await axios.post(`${baseUrl}${apiUrl}/review`, { questionId: id, review }, config)
+}
+
+const deleteQuestions = async (questionIDs) => {
+  /*const config = {
+    headers: { 'Authorization': token }
+  }*/
+  try {
+    return flaggedQuestions.filter(q => questionIDs.indexOf(q.item._id) === -1)
+  } catch (e) {
+    return { error: 'Could not delete questions' }
+  }
 }
 
 /* ------------ Flagged questions ------------- */
@@ -123,10 +139,6 @@ const getAllFlaggedQuestions = async () => {
   }*/
   return flaggedQuestions
 }
-const getFlaggedQuestionsByCourse = async (course) => {
-  const questions = flaggedQuestions.filter(f => f.course === course)
-  return questions
-}
 
 export default {
   getRandomQuestion,
@@ -137,5 +149,5 @@ export default {
   reload,
   sendReviewForQuestion,
   getAllFlaggedQuestions,
-  getFlaggedQuestionsByCourse
+  deleteQuestions
 }
