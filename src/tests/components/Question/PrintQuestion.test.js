@@ -24,9 +24,9 @@ describe('<PrintQuestion />', () => {
   it('renders self and subcomponents', () => {
     expect(printQuestion.find('.printQuestion').length).toBe(1)
     const typo = printQuestion.find(Typography)
-    expect(typo.length).toBe(1)
-    expect(typo.props().children).toEqual('Mitä koodi tulostaa?')
-    const typographyProps = typo.props()
+    expect(typo.length).toBe(2)
+    expect(typo.first().props().children).toEqual('Mitä koodi tulostaa?')
+    const typographyProps = typo.first().props()
     expect(typographyProps).toEqual({
       className: 'typography',
       variant: 'headline',

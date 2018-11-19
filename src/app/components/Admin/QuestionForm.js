@@ -120,6 +120,7 @@ export class QuestionForm extends Component {
               value={this.state.question}
               onChange={this.handleChange('question')}
               className='questionField'
+              helperText="Kirjoita tähän koodisi"
               margin="normal"
             />
             ) : null
@@ -133,6 +134,7 @@ export class QuestionForm extends Component {
             value={this.state.correctAnswer}
             onChange={this.handleChange('correctAnswer')}
             className='rightAnswerField'
+            helperText="Kirjoita oikea vastaus kysymyksellesi"
             margin="normal"
           />
 
@@ -146,6 +148,7 @@ export class QuestionForm extends Component {
               value={option}
               onChange={this.handleArrayChange(option, i)}
               className='wrongAnswerField'
+              helperText="Kirjoita jokin väärä vastaus kysymyksellesi"
               margin="normal"
             />
           ))}
