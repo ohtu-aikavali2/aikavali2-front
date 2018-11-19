@@ -10,6 +10,7 @@ import { initializeGame, endGame, startGame } from '../../reducers/actions/gameA
 import './question.css'
 import ReviewPopup from '../common/ReviewPopup'
 import Loading from '../common/Loading'
+import Notifications, { notify } from 'react-notify-toast'
 
 export class Question extends Component {
   constructor () {
@@ -22,6 +23,8 @@ export class Question extends Component {
       showReview: false,
       reviewed: false
     }
+
+    this.notificationRef = React.createRef()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -52,6 +55,17 @@ export class Question extends Component {
       clearInterval(this.state.timer)
       this.setState({ timer: null, startTime: 0, selected: null })
       this.props.initializeGame()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { userAnswer } = this.props
+    if (!prevProps.userAnswer && userAnswer && this.notificationRef.current) {
+      if (userAnswer.isCorrect) {
+        notify.show('Oikein, hyvä!', 'success', 2000)
+      } else {
+        notify.show('Väärin, voi ei!', 'error', 2000)
+      }
     }
   }
 
@@ -112,6 +126,7 @@ export class Question extends Component {
     const { question, userAnswer, questionMessage, loading } = this.props
     return (
       <div className='questionContainer'>
+        <Notifications ref={this.notificationRef} />
         {questionMessage && (
           <AlertWindow title={questionMessage} neutral>
             <Typography style={text} component="p">Uusia kysymyksiä saatavilla myöhemmin</Typography>

@@ -23,10 +23,10 @@ describe('<CompileQuestion />', () => {
   it('renders self and subcomponents', () => {
     expect(compileQuestion.find('.compileQuestion').length).toBe(1)
     const typography = compileQuestion.find(Typography)
-    expect(typography.length).toBe(1)
-    const text = typography.props().children
+    expect(typography.length).toBe(2)
+    const text = typography.first().props().children
     expect(text).toContain('Valitse mikä koodinpätkä kääntyy')
-    const typographyProps = typography.props()
+    const typographyProps = typography.first().props()
     expect(typographyProps).toEqual({
       className: 'typography',
       variant: 'headline',
