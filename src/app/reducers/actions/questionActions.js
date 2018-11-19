@@ -37,10 +37,18 @@ export const answerQuestion = (id, value, time) => {
       type: questionConstants.ANSWER_QUESTION
     })
     const data = await questionService.answerQuestion(id, value, time)
-    dispatch({
-      type: questionConstants.QUESTION_ANSWERED,
-      data
-    })
+    if (!data.error) {
+      dispatch({
+        type: questionConstants.QUESTION_ANSWERED,
+        data
+      })
+    } else {
+      // If there was an error, dispatch a message to redux
+      dispatch({
+        type: questionConstants.ADD_MESSAGE_FROM_BACKEND,
+        data: data.error
+      })
+    }
   }
 }
 
@@ -62,22 +70,24 @@ export const sendReviewForQuestion = (id, review) => {
   }
 }
 
+export const deleteQuestions = (questionIDs) => {
+  return async (dispatch) => {
+    const response = await questionService.deleteQuestions(questionIDs)
+    if (!response.error) {
+      // If everything went well, change redux state aswell. (Delete from flaggedQuestions)
+      dispatch({
+        type: questionConstants.DELETE_QUESTIONS,
+        data: questionIDs
+      })
+    }
+  }
+}
+
 /* ---------- Flagged questions ----------- */
 
 export const getAllFlaggedQuestions = () => {
   return async (dispatch) => {
     const data = await questionService.getAllFlaggedQuestions()
-    dispatch({
-      type: questionConstants.GET_FLAGGED_QUESTIONS,
-      data
-    })
-  }
-}
-
-export const getFlaggedQuestionsByCourse = (course) => {
-  console.log('course name: ' + course)
-  return async (dispatch) => {
-    const data = await questionService.getFlaggedQuestionsByCourse(course)
     dispatch({
       type: questionConstants.GET_FLAGGED_QUESTIONS,
       data
