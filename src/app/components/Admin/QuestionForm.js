@@ -11,6 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import './admin.css'
 
 import { postCompileQuestion, postPrintQuestion } from '../../reducers/actions/questionActions'
+import { fetchCourses } from '../../reducers/actions/courseActions'
 
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
@@ -28,17 +29,25 @@ export class QuestionForm extends Component {
   constructor() {
     super()
     this.state = {
+      course:'',
+      groupId: '',
       questionType: '',
       question: '',
       correctAnswer: '',
-      incorrectAnswers: ['', '', '']
+      incorrectAnswers: ['', '', ''],
+      courses:[]
     }
   }
 
+  async componentDidMount () {
+    await this.props.fetchCourses()
+  }
+
   //handles change of questionType, question and correctAnswer in state
-  handleChange = (name) => event => {
+  handleChange = (name) => e => {
+    console.log(e)
     this.setState({
-      [name]: event.target.value
+      [name]: e.target.value
     })
   }
   addIncorrectAnswer = () => {
@@ -64,7 +73,11 @@ export class QuestionForm extends Component {
   }
 
   handleSave = () => {
-    if (this.state.questionType === '') {
+    if (this.state.course === '') {
+      console.log('Course is not set!')
+    } else if (this.state.group === '') {
+      console.log('Group is not set!')
+    } else if (this.state.questionType === '') {
       console.log('Question Type not set!')
     } else if (this.state.question === '' && this.state.questionType !== 'kääntyy') {
       console.log('Question is empty!')
@@ -75,11 +88,13 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       if (this.state.questionType === 'tulostaa') {
-        this.props.postPrintQuestion(this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
       } else if (this.state.questionType === 'kääntyy') {
-        this.props.postCompileQuestion(this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers)
       }
       this.setState({
+        course:'',
+        groupId: '',
         questionType: '',
         question: '',
         correctAnswer: '',
@@ -96,9 +111,42 @@ export class QuestionForm extends Component {
       questionTypeSelected = true
     }
 
+    const selectedCourse = this.props.courses.filter(obj => {return obj.name === this.state.course})[0]
+    console.log(selectedCourse)
     return (
       <div className='questionFormContainer'>
         <form noValidate autoComplete="off" className='form'>
+          <InputLabel style={{ fontSize: 13 }}>Course</InputLabel>
+          <Select
+            fullWidth
+            value={this.state.course}
+            onChange={this.handleChange('course')}
+          >
+            {this.props.courses.map(course => (
+              <MenuItem key={course.name} value={course.name}>
+                {course.name}
+              </MenuItem>
+            ))}
+          </Select>
+
+          {(this.state.course !== '') ?
+            (<div>
+              <InputLabel style={{ fontSize: 13 }}>Question Group</InputLabel>
+              <Select
+                fullWidth
+                value={this.state.groupId}
+                onChange={this.handleChange('groupId')}
+              >
+                {selectedCourse.groups.map(option => (
+                  <MenuItem key={option.name} value={option._id}>
+                    {option.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+            ) : null
+          }
+
           <InputLabel style={{ fontSize: 13 }}>Question type</InputLabel>
           <Select
             fullWidth
@@ -110,6 +158,7 @@ export class QuestionForm extends Component {
                 {option.label}
               </MenuItem>
             ))}
+
           </Select>
           {questionTypeSelected ?
             (<TextField
@@ -119,8 +168,7 @@ export class QuestionForm extends Component {
               rowsMax="6"
               value={this.state.question}
               onChange={this.handleChange('question')}
-              className='questionField'
-              margin="normal"
+              className='questionField' margin="normal"
             />
             ) : null
           }
@@ -174,9 +222,16 @@ export class QuestionForm extends Component {
 
 const mapDispatchToProps = {
   postCompileQuestion,
-  postPrintQuestion
+  postPrintQuestion,
+  fetchCourses
 }
 
-const ConnectedQuestionForm = connect(null, mapDispatchToProps)(QuestionForm)
+const mapStateToProps = (state) => {
+  return {
+    courses: state.course.courses
+  }
+}
+
+const ConnectedQuestionForm = connect(mapStateToProps, mapDispatchToProps)(QuestionForm)
 
 export default ConnectedQuestionForm
