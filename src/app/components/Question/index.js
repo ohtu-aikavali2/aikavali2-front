@@ -99,6 +99,12 @@ export class Question extends Component {
     this.setState({ showReview: !this.state.showReview })
   }
 
+  renderUserAnswer = (userAnswer) => {
+    const { isCorrect } = userAnswer
+    const message = isCorrect ? 'Oikein, hyvä!' : 'Väärin, voi ei!'
+    return (message)
+  }
+
   render() {
     const text = {
       fontSize: 16
@@ -113,8 +119,8 @@ export class Question extends Component {
           </AlertWindow>
         )}
         {loading && <Loading className='questionLoading' />}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} />}
+        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} feedBack={userAnswer && this.renderUserAnswer(userAnswer)}/>}
+        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} feedBack={userAnswer && this.renderUserAnswer(userAnswer)}/>}
         {userAnswer && (
           <div style={{ textAlign: 'center' }}>
             {!this.state.reviewed
