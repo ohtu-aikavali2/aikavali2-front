@@ -83,6 +83,18 @@ export const deleteQuestions = (questionIDs) => {
   }
 }
 
+export const unflagQuestions = (questionIDs) => {
+  return async (dispatch) => {
+    const response = await questionService.unflagQuestions(questionIDs)
+    if (!response.error) {
+      dispatch({
+        type: questionConstants.UNFLAG_QUESTIONS,
+        data: questionIDs
+      })
+    }
+  }
+}
+
 /* ---------- Flagged questions ----------- */
 
 export const getAllFlaggedQuestions = () => {

@@ -112,11 +112,25 @@ export class Question extends Component {
   toggleReviewWindow = () => {
     this.setState({ showReview: !this.state.showReview })
   }
-
-  renderUserAnswer = (userAnswer) => {
-    const { isCorrect } = userAnswer
-    const message = isCorrect ? 'Oikein, hyvä!' : 'Väärin, voi ei!'
-    return (message)
+  renderReviewText = () => {
+    if (this.props.userAnswer) {
+      return (
+        <div>
+          {!this.state.reviewed
+            ? <p style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleReviewWindow}>Arvostele</p>
+            : <p>Kiitos palautteesta!</p>
+          }
+        </div>
+      )
+    }
+    return null
+  }
+  renderFlagButton = () => {
+    return (
+      <div>
+        Ilmianna
+      </div>
+    )
   }
 
   render() {
@@ -134,15 +148,27 @@ export class Question extends Component {
           </AlertWindow>
         )}
         {loading && <Loading className='questionLoading' />}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} feedBack={userAnswer && this.renderUserAnswer(userAnswer)}/>}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} feedBack={userAnswer && this.renderUserAnswer(userAnswer)}/>}
-        {userAnswer && (
-          <div style={{ textAlign: 'center' }}>
-            {!this.state.reviewed
-              ? <p style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleReviewWindow}>Oliko kysymys mielestäsi hyvä? - Arvostele</p>
-              : <p>Kiitos palautteesta!</p>
-            }
-          </div>
+        {question && question.kind === 'PrintQuestion' && (
+          <PrintQuestion
+            question={question.item}
+            handleQuestionReview={this.handleQuestionReview}
+            handleSelect={this.handleAnswer}
+            handleSkip={this.getNewQuestion}
+            selected={this.state.selected}
+            topLeftContent={this.renderReviewText()}
+            topRightContent={this.renderFlagButton()}
+          />
+        )}
+        {question && question.kind === 'CompileQuestion' && (
+          <CompileQuestion
+            question={question.item}
+            handleQuestionReview={this.handleQuestionReview}
+            handleSelect={this.handleAnswer}
+            handleSkip={this.getNewQuestion}
+            selected={this.state.selected}
+            topLeftContent={this.renderReviewText()}
+            topRightContent={this.renderFlagButton()}
+          />
         )}
         {this.state.showReview && <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} />}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />

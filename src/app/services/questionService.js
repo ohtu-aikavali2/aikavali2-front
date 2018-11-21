@@ -74,6 +74,17 @@ const deleteQuestions = async (questionIDs) => {
   }
 }
 
+const unflagQuestions = async (questionIDs) => {
+  /*const config = {
+    headers: { 'Authorization': token }
+  }*/
+  try {
+    return flaggedQuestions.filter(q => questionIDs.indexOf(q.item._id) === -1)
+  } catch (e) {
+    return { error: 'Could not unflag the questions' }
+  }
+}
+
 /* ------------ Flagged questions ------------- */
 
 // Kovakoodattu toistaiseksi
@@ -130,6 +141,32 @@ const flaggedQuestions = [
     recentFlag: date + 8000,
     course: 'OHJA',
     group: 'Viikko 2'
+  },
+  {
+    kind: 'PrintQuestion',
+    item: {
+      options: [ 'eka', 'toka', 'kolmas', 'joo' ],
+      _id: '5be3fb47sdf07cbe2310ab7f93f7d',
+      value: 'a',
+      __v: 0
+    },
+    flags: 5,
+    recentFlag: date + 10000,
+    course: 'perusteet',
+    group: 'Viikko 3'
+  },
+  {
+    kind: 'PrintQuestion',
+    item: {
+      options: [ 'eka1', 'toka2', 'kolmas3', 'joo4' ],
+      _id: '5be3f243b47sdf07cbe2310ab7f93f7d',
+      value: 'A',
+      __v: 0
+    },
+    flags: 87,
+    recentFlag: date + 12000,
+    course: 'perustkasdaseet',
+    group: 'Viikko 83'
   }
 ]
 
@@ -149,5 +186,6 @@ export default {
   reload,
   sendReviewForQuestion,
   getAllFlaggedQuestions,
-  deleteQuestions
+  deleteQuestions,
+  unflagQuestions
 }

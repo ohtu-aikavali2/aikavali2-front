@@ -4,7 +4,16 @@ import FlaggedQuestionsTable from './FlaggedQuestionsTable'
 import Popup from '../common/Popup'
 import AlertWindow from '../common/AlertWindow'
 import Button from '@material-ui/core/Button'
-import { deleteQuestions } from '../../reducers/actions/questionActions'
+import DumbQuestion from '../Question/DumbQuestion'
+import { deleteQuestions, getAllFlaggedQuestions, unflagQuestions } from '../../reducers/actions/questionActions'
+
+const rows = [
+  { id: 'value', numeric: false, disablePadding: true, label: 'Kysymys' },
+  { id: 'course', numeric: false, disablePadding: false, label: 'Kurssi' },
+  { id: 'group', numeric: false, disablePadding: false, label: 'Viikko' },
+  { id: 'flags', numeric: true, disablePadding: false, label: 'Ilmiantoja' },
+  { id: 'recentFlag', numeric: true, disablePadding: false, label: 'Viimeisin ilmianto' }
+]
 
 class FlaggedQuestions extends Component {
   constructor () {
@@ -16,6 +25,10 @@ class FlaggedQuestions extends Component {
       showUnflagSuccessfulAlert: false,
       selected: []
     }
+  }
+
+  async componentDidMount () {
+    await this.props.getAllFlaggedQuestions()
   }
 
   closeDeleteAlert = () => {
@@ -42,11 +55,14 @@ class FlaggedQuestions extends Component {
   /* ------------- The actual actions ------------- */
   handleDelete = async () => {
     let questionIDs = []
-    this.state.selected.forEach(s => questionIDs.push(s.item._id))
+    this.state.selected.forEach(s => questionIDs.push(s._id))
     await this.props.deleteQuestions(questionIDs)
     this.setState({ showDeleteAlert: false, showDeleteSuccesfulAlert: true })
   }
-  handleUnflag = () => {
+  handleUnflag = async () => {
+    let questionIDs = []
+    this.state.selected.forEach(s => questionIDs.push(s._id))
+    await this.props.unflagQuestions(questionIDs)
     this.setState({ showUnflagAlert: false , showUnflagSuccessfulAlert: true })
   }
 
@@ -121,10 +137,44 @@ class FlaggedQuestions extends Component {
       </Popup>
     )
   }
+  // Has to have id AND no inner fields like { item: { value: 'something' } } -> { value: 'comething' }
+  // ALSO has to have _id for determing the expanding content
+  optimizeData = (array) => {
+    let data = []
+    let counter = 0
+    array.forEach(q => {
+      counter += 1
+      data.push({
+        id: counter,
+        value: q.kind === 'PrintQuestion' ? q.item.value : 'Mikä kääntyy?',
+        course: q.course,
+        group: q.group,
+        flags: q.flags,
+        recentFlag: q.recentFlag,
+        _id: q.item._id
+      })
+    })
+    return data
+  }
+  expandableContent = (id) => {
+    const question = this.props.flaggedQuestions.find(q => q.item._id === id)
+    return (
+      <AlertWindow neutral>
+        <DumbQuestion question={question} />
+      </AlertWindow>
+    )
+  }
   render () {
     return (
       <div className='flaggedQuestionsContainer'>
-        <FlaggedQuestionsTable handleDelete={this.handleDeleteClick} handleUnflag={this.handleUnflagClick} />
+        <FlaggedQuestionsTable
+          handleDelete={this.handleDeleteClick}
+          handleUnflag={this.handleUnflagClick}
+          flaggedQuestions={this.optimizeData(this.props.flaggedQuestions)}
+          rows={rows}
+          expandable
+          expandableContent={this.expandableContent}
+        />
         {this.state.showDeleteAlert && this.deletePopup()}
         {this.state.showDeleteSuccesfulAlert && this.deleteSuccessfulPopup()}
         {this.state.showUnflagAlert && this.unflagPopup()}
@@ -134,8 +184,16 @@ class FlaggedQuestions extends Component {
   }
 }
 
-const mapDispatchToProps = {
-  deleteQuestions
+const mapStateToProps = (state) => {
+  return {
+    flaggedQuestions: state.question.flaggedQuestions
+  }
 }
 
-export default connect(null, mapDispatchToProps)(FlaggedQuestions)
+const mapDispatchToProps = {
+  getAllFlaggedQuestions,
+  deleteQuestions,
+  unflagQuestions
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FlaggedQuestions)

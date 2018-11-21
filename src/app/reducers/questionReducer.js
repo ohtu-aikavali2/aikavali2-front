@@ -63,6 +63,14 @@ const questionReducer = (state = initialState, action) => {
     }
 
     case questionConstants.DELETE_QUESTIONS: {
+      // Tänne sit myös questions poisto, kun säilötään kysymyksiä.
+      return {
+        ...state,
+        flaggedQuestions: state.flaggedQuestions.filter(q => action.data.indexOf(q.item._id) === -1)
+      }
+    }
+
+    case questionConstants.UNFLAG_QUESTIONS: {
       return {
         ...state,
         flaggedQuestions: state.flaggedQuestions.filter(q => action.data.indexOf(q.item._id) === -1)
