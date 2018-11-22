@@ -8,11 +8,12 @@ import DumbQuestion from '../Question/DumbQuestion'
 import { deleteQuestions, getAllFlaggedQuestions, unflagQuestions } from '../../reducers/actions/questionActions'
 
 const rows = [
-  { id: 'value', numeric: false, disablePadding: true, label: 'Kysymys' },
+  { id: 'value', numeric: false, disablePadding: false, label: 'Kysymys' },
   { id: 'course', numeric: false, disablePadding: false, label: 'Kurssi' },
   { id: 'group', numeric: false, disablePadding: false, label: 'Viikko' },
   { id: 'flags', numeric: true, disablePadding: false, label: 'Ilmiantoja' },
-  { id: 'recentFlag', numeric: true, disablePadding: false, label: 'Viimeisin ilmianto' }
+  { id: 'recentFlag', numeric: true, disablePadding: false, label: 'Viimeisin ilmianto' },
+  { id: 'averageRating', numeric: true, disablePadding: false, label: 'Average rating' }
 ]
 
 class FlaggedQuestions extends Component {
@@ -151,7 +152,8 @@ class FlaggedQuestions extends Component {
         group: q.group,
         flags: q.flags,
         recentFlag: q.recentFlag,
-        _id: q.item._id
+        _id: q.item._id,
+        averageRating: q.averageRating
       })
     })
     return data
@@ -174,6 +176,7 @@ class FlaggedQuestions extends Component {
           rows={rows}
           expandable
           expandableContent={this.expandableContent}
+          defaultOrder={'flags'}
         />
         {this.state.showDeleteAlert && this.deletePopup()}
         {this.state.showDeleteSuccesfulAlert && this.deleteSuccessfulPopup()}

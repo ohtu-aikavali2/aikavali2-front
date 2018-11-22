@@ -23,7 +23,7 @@ class FlaggedQuestionsTable extends Component {
     super()
     this.state = {
       order: 'desc',
-      orderBy: 'flags',
+      orderBy: null,
       selected: [],
       data: [],
       expanded: false,
@@ -33,6 +33,13 @@ class FlaggedQuestionsTable extends Component {
   }
   // This is needed. For example, if u press "previous" on browser, and then "next", the state would be empty
   static getDerivedStateFromProps = (props, state) => {
+    // First render
+    if (state.orderBy === null) {
+      return {
+        orderBy: props.defaultOrder,
+        data: props.flaggedQuestions
+      }
+    }
     // If deleted, then set selected to empty array
     if (props.flaggedQuestions.length < state.data.length) {
       return {

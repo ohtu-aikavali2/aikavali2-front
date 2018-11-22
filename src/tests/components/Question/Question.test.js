@@ -178,7 +178,8 @@ describe('<Question />', () => {
         pauseStart: 0,
         timer: null,
         showReview: false,
-        reviewed: false
+        reviewed: false,
+        flagged: false
       })
       expect(props.initializeGame).toHaveBeenCalledTimes(1)
     })

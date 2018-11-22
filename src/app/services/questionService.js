@@ -85,6 +85,13 @@ const unflagQuestions = async (questionIDs) => {
   }
 }
 
+const flagQuestion = async (questionID) => {
+  /*const config = {
+    headers: { 'Authorization': token }
+  }*/
+  console.log('Lähetetään flägi backille, questionID: ' + questionID)
+}
+
 /* ------------ Flagged questions ------------- */
 
 // Kovakoodattu toistaiseksi
@@ -102,7 +109,8 @@ const flaggedQuestions = [
     flags: 5,
     recentFlag: date + 2000,
     course: 'Ohjelmoinnin perusteet',
-    group: 'Viikko 1'
+    group: 'Viikko 1',
+    averageRating: 4.5
   },
   {
     kind: 'CompileQuestion',
@@ -114,7 +122,8 @@ const flaggedQuestions = [
     flags: 2,
     recentFlag: date + 4000,
     course: 'Tietokantojen perusteet',
-    group: 'Viikko 3'
+    group: 'Viikko 3',
+    averageRating: 4.2
   },
   {
     kind: 'PrintQuestion',
@@ -127,7 +136,8 @@ const flaggedQuestions = [
     flags: 3,
     recentFlag: date + 6000,
     course: 'Ohjelmoinnin perusteet',
-    group: 'Viikko 4'
+    group: 'Viikko 4',
+    averageRating: 3.6
   },
   {
     kind: 'PrintQuestion',
@@ -140,7 +150,8 @@ const flaggedQuestions = [
     flags: 4,
     recentFlag: date + 8000,
     course: 'OHJA',
-    group: 'Viikko 2'
+    group: 'Viikko 2',
+    averageRating: 1.2
   },
   {
     kind: 'PrintQuestion',
@@ -153,7 +164,8 @@ const flaggedQuestions = [
     flags: 5,
     recentFlag: date + 10000,
     course: 'perusteet',
-    group: 'Viikko 3'
+    group: 'Viikko 3',
+    averageRating: 2.6
   },
   {
     kind: 'PrintQuestion',
@@ -166,7 +178,8 @@ const flaggedQuestions = [
     flags: 87,
     recentFlag: date + 12000,
     course: 'perustkasdaseet',
-    group: 'Viikko 83'
+    group: 'Viikko 83',
+    averageRating: 5
   }
 ]
 
@@ -187,5 +200,6 @@ export default {
   sendReviewForQuestion,
   getAllFlaggedQuestions,
   deleteQuestions,
-  unflagQuestions
+  unflagQuestions,
+  flagQuestion
 }

@@ -5,12 +5,21 @@ import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
-import { getRandomQuestion, answerQuestion, sendReviewForQuestion } from '../../reducers/actions/questionActions'
+import {
+  getRandomQuestion,
+  answerQuestion,
+  sendReviewForQuestion,
+  flagQuestion
+} from '../../reducers/actions/questionActions'
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
 import './question.css'
 import ReviewPopup from '../common/ReviewPopup'
 import Loading from '../common/Loading'
 import Notifications, { notify } from 'react-notify-toast'
+import Button from '@material-ui/core/Button'
+import FlagIcon from '@material-ui/icons/Flag'
+import CheckCircle from '@material-ui/icons/CheckCircle'
+import Zoom from '@material-ui/core/Zoom'
 
 export class Question extends Component {
   constructor () {
@@ -21,7 +30,8 @@ export class Question extends Component {
       pauseStart: 0,
       timer: null,
       showReview: false,
-      reviewed: false
+      reviewed: false,
+      flagged: false
     }
 
     this.notificationRef = React.createRef()
@@ -63,7 +73,7 @@ export class Question extends Component {
     if (!prevProps.userAnswer && userAnswer && this.notificationRef.current) {
       if (userAnswer.isCorrect) {
         notify.show('Oikein, hyvä!', 'success', 2000)
-      } else {
+      } else if (this.state.selected.value !== 'Note: questionSkipped') {
         notify.show('Väärin, voi ei!', 'error', 2000)
       }
     }
@@ -80,7 +90,7 @@ export class Question extends Component {
       this.skipQuestion()
       // Do nothing else
     } else if (this.props.userAnswer && this.state.selected) {
-      this.setState({ selected: null, startTime: Date.now(), reviewed: false })
+      this.setState({ selected: null, startTime: Date.now(), reviewed: false, flagged: false })
       await this.props.getRandomQuestion(course)
     } else {
       console.log('Ei voi painaa nyt!')
@@ -112,23 +122,50 @@ export class Question extends Component {
   toggleReviewWindow = () => {
     this.setState({ showReview: !this.state.showReview })
   }
+  handleFlag = async () => {
+    this.setState({ flagged: true })
+    await this.props.flagQuestion(this.props.question.item._id)
+  }
   renderReviewText = () => {
-    if (this.props.userAnswer) {
-      return (
-        <div>
-          {!this.state.reviewed
-            ? <p style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleReviewWindow}>Arvostele</p>
-            : <p>Kiitos palautteesta!</p>
-          }
-        </div>
-      )
-    }
-    return null
+    return (
+      <div>
+        {!this.state.reviewed
+          ? (
+            <Button size='small' onClick={this.toggleReviewWindow} color='primary'>
+              Arvostele
+            </Button>
+          )
+          : (
+            <Zoom in={true}>
+              <div style={{ color: 'rgb(113, 218, 113)', alignItems: 'center', justifyContent: 'center', display: 'flex', fontSize: 12 }}>
+                <CheckCircle style={{ marginRight: 5 }} />
+                Kiitos palautteesta!
+              </div>
+            </Zoom>
+          )
+        }
+      </div>
+    )
   }
   renderFlagButton = () => {
     return (
       <div>
-        Ilmianna
+        {!this.state.flagged
+          ? (
+            <Button size='small' color='secondary' onClick={this.handleFlag}>
+              Ilmianna
+              <FlagIcon style={{ marginLeft: 5 }} />
+            </Button>
+          )
+          : (
+            <Zoom in={true}>
+              <div style={{ color: 'rgb(113, 218, 113)', alignItems: 'center', justifyContent: 'center', display: 'flex', fontSize: 12 }}>
+                <CheckCircle style={{ marginRight: 5 }} />
+                Ilmiannettu!
+              </div>
+            </Zoom>
+          )
+        }
       </div>
     )
   }
@@ -157,6 +194,7 @@ export class Question extends Component {
             selected={this.state.selected}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
+            answered={!!userAnswer}
           />
         )}
         {question && question.kind === 'CompileQuestion' && (
@@ -168,6 +206,7 @@ export class Question extends Component {
             selected={this.state.selected}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
+            answered={!!userAnswer}
           />
         )}
         {this.state.showReview && <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} />}
@@ -196,7 +235,8 @@ const mapDispatchToProps = {
   initializeGame,
   startGame,
   endGame,
-  sendReviewForQuestion
+  sendReviewForQuestion,
+  flagQuestion
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Question)

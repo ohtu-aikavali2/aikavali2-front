@@ -95,6 +95,12 @@ export const unflagQuestions = (questionIDs) => {
   }
 }
 
+export const flagQuestion = (questionID) => {
+  return async () => {
+    await questionService.flagQuestion(questionID)
+  }
+}
+
 /* ---------- Flagged questions ----------- */
 
 export const getAllFlaggedQuestions = () => {
