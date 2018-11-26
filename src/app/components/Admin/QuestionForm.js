@@ -203,7 +203,7 @@ export class QuestionForm extends Component {
                   helperText='Kirjoita tähän koodisi'
                   margin='normal'
                 />
-                ) : <h2>"Valitse mikä koodeista kääntyy"</h2>
+                ) : <h2>Valitse mikä koodeista kääntyy</h2>
               }
 
               <TextField
