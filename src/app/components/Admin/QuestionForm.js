@@ -50,7 +50,12 @@ export class QuestionForm extends Component {
   }
 
   async componentDidMount() {
-    await this.props.fetchCourses()
+    try {
+      await this.props.fetchCourses()
+    } catch (e) {
+      console.log(e)
+      return
+    }
   }
 
   //handles change of questionType, question and correctAnswer in state
