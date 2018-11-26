@@ -15,6 +15,7 @@ import DumbQuestion from '../Question/DumbQuestion'
 import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
 import { postCompileQuestion, postPrintQuestion } from '../../reducers/actions/questionActions'
+import { fetchCourses } from '../../reducers/actions/courseActions'
 
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
@@ -28,15 +29,6 @@ const questionTypes = [
   }
 ]
 
-const courses = [
-  {
-    name: 'OHTU'
-  },
-  {
-    name: 'OHJA'
-  }
-]
-
 let question = {
   kind: '',
   item: { value: '', options: [] }
@@ -47,18 +39,24 @@ export class QuestionForm extends Component {
     super()
     this.state = {
       course: '',
+      groupId: '',
       questionType: '',
       question: '',
       correctAnswer: '',
       incorrectAnswers: [''],
-      step: 0
+      step: 0,
+      courses: []
     }
   }
 
+  async componentDidMount() {
+    await this.props.fetchCourses()
+  }
+
   //handles change of questionType, question and correctAnswer in state
-  handleChange = (name) => event => {
+  handleChange = (name) => e => {
     this.setState({
-      [name]: event.target.value
+      [name]: e.target.value
     })
   }
 
@@ -89,7 +87,11 @@ export class QuestionForm extends Component {
   }
 
   handleSave = () => {
-    if (this.state.questionType === '') {
+    if (this.state.course === '') {
+      console.log('Course is not set!')
+    } else if (this.state.groupId === '') {
+      console.log('Group is not set!')
+    } else if (this.state.questionType === '') {
       console.log('Question Type not set!')
     } else if (this.state.question === '' && this.state.questionType !== 'CompileQuestion') {
       console.log('Question is empty!')
@@ -99,25 +101,31 @@ export class QuestionForm extends Component {
       console.log('Atleast one of incorrect answers are empty')
     } else {
       // If the question is valid
+      this.setState({ step: this.state.step + 1 })
       if (this.state.questionType === 'PrintQuestion') {
-        this.props.postPrintQuestion(this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
       } else if (this.state.questionType === 'CompileQuestion') {
-        this.props.postCompileQuestion(this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers)
       }
       this.setState({
+        course: '',
+        groupId: '',
         questionType: '',
         question: '',
         correctAnswer: '',
         incorrectAnswers: ['']
       })
       console.log('Post succesful')
-      this.props.history.push('/admin')
+      notify.show('Kysymys tallennettu', 'success', 2000)
     }
   }
 
   stepForward = () => {
     if (this.state.step === 0 && this.state.course === '') {
       notify.show('Valitse kurssi', 'error', 2000)
+      return
+    } else if (this.state.step === 0 && this.state.groupId === '') {
+      notify.show('Valitse ryhmä', 'error', 2000)
       return
     } else if (this.state.step === 1 && this.state.questionType === '') {
       notify.show('Valitse kysymystyyppi', 'error', 2000)
@@ -144,14 +152,17 @@ export class QuestionForm extends Component {
       questionTypeSelected = true
     }
 
+    const possibleCourses = this.props.courses.filter(obj => { return obj.name === this.state.course })
+    const selectedCourse = (possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] })
+
     return (
       <div className='questionFormContainer'>
 
         <Notifications ref={this.notificationRef} />
 
-        {step >= 3 && (<DumbQuestion question={question} />)}
-
         <form noValidate autoComplete="off" className='questionForm'>
+
+          {step === 3 && (<DumbQuestion question={question} />)}
 
           {step === 0 && (
             <React.Fragment>
@@ -162,12 +173,29 @@ export class QuestionForm extends Component {
                 value={this.state.course}
                 onChange={this.handleChange('course')}
               >
-                {courses.map(option => (
-                  <MenuItem key={option.name} value={option.name}>
-                    {option.name}
+                {this.props.courses.map(course => (
+                  <MenuItem key={course.name} value={course.name}>
+                    {course.name}
                   </MenuItem>
                 ))}
               </Select>
+              {(this.state.course !== '') ?
+                (<div>
+                  <InputLabel style={{ fontSize: 13 }}>Question Group</InputLabel>
+                  <Select
+                    fullWidth
+                    value={this.state.groupId}
+                    onChange={this.handleChange('groupId')}
+                  >
+                    {selectedCourse.groups.map(group => (
+                      <MenuItem key={group._id} value={group._id}>
+                        {group.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </div>
+                ) : null
+              }
             </React.Fragment>
           )}
 
@@ -247,6 +275,14 @@ export class QuestionForm extends Component {
           )}
         </form>
 
+        {step === 4 && (
+          <div className='rerouteButtonContainer'>
+            <Button onClick={() => this.setState({ step: 0 })} variant='contained' color='primary'>
+              Uusi kysymys
+            </Button>
+          </div>
+        )}
+
         <div className='stepContainer'>
           <Steps disabled current={this.state.step} steps={['Valitse kurssi', 'Valitse tyyppi', 'Täytä kentät', 'Tallenna']} />
           <div className='stepperButtonContainer'>
@@ -255,7 +291,7 @@ export class QuestionForm extends Component {
               Back
             </Button>
             {step >= 3 ?
-              (<Button disabled={this.state.step > 3} style={{ float: 'right' }} color='primary' onClick={() => this.stepForward()} variant="contained" className='saveButton'>
+              (<Button disabled={this.state.step > 3} style={{ float: 'right' }} color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
                 Save
                 {<SaveIcon className='saveIcon' />}
               </Button>
@@ -276,9 +312,16 @@ export class QuestionForm extends Component {
 
 const mapDispatchToProps = {
   postCompileQuestion,
-  postPrintQuestion
+  postPrintQuestion,
+  fetchCourses
 }
 
-const ConnectedQuestionForm = connect(null, mapDispatchToProps)(QuestionForm)
+const mapStateToProps = (state) => {
+  return {
+    courses: state.course.courses
+  }
+}
+
+const ConnectedQuestionForm = connect(mapStateToProps, mapDispatchToProps)(QuestionForm)
 
 export default ConnectedQuestionForm
