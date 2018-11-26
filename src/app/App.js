@@ -41,10 +41,11 @@ export class App extends React.Component {
               <Route exact path='/' render={() => <Redirect to='/courses' />} />
               <Route exact path='/courses' render={({ history }) => <CoursePage history={history} />} />
               <Route exact path='/courses/:name' render={({ match }) => <FrontPage course={match.params.name} />} />
+              <Route exact path='/newquestion' render={({ history }) => <ConnectedQuestionForm history={history} />} />
               <ProtectedRoute
                 path='/admin'
                 redirectTo='/'
-                render={({history}) => <AdminPage history={history} />}
+                render={({ history }) => <AdminPage history={history} />}
                 pred={loggedUser && loggedUser.administrator}
               />
               <Route
