@@ -46,7 +46,7 @@ export class App extends React.Component {
               <ProtectedRoute
                 path='/admin'
                 redirectTo='/'
-                render={({history}) => <AdminPage history={history} />}
+                render={({ history }) => <AdminPage history={history} />}
                 pred={loggedUser && loggedUser.administrator}
               />
               <Route

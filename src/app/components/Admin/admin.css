@@ -7,9 +7,7 @@
 .addButtonContainer {
     float: left;
 }
-.saveButtonContainer {  
-    float: right;
-}
+
 .removeButtonContainer {
     float: left;
     margin-left: 5px;
@@ -17,7 +15,25 @@
 
 .questionFormContainer {
     margin: 2%;
-    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.questionForm {
+    height: 100%;
+}
+
+.stepContainer {
+    margin-bottom: 1%;
+}
+
+.rerouteButtonContainer {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    margin-bottom: 10%;
 }
 
 .flaggedQuestionsContainer {

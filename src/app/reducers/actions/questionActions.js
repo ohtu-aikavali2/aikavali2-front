@@ -52,15 +52,15 @@ export const answerQuestion = (id, value, time) => {
   }
 }
 
-export const postCompileQuestion = (correctAnswer, options) => {
+export const postCompileQuestion = (groupId, correctAnswer, options) => {
   return async () => {
-    await questionService.postQuestion({ type: 'compile', correctAnswer, options })
+    await questionService.postQuestion({ type: 'compile', correctAnswer, options, groupId })
   }
 }
 
-export const postPrintQuestion = (value, correctAnswer, options) => {
+export const postPrintQuestion = (groupId, value, correctAnswer, options) => {
   return async () => {
-    await questionService.postQuestion({ type: 'print', value, correctAnswer, options })
+    await questionService.postQuestion({ type: 'print', value, correctAnswer, options, groupId })
   }
 }
 
