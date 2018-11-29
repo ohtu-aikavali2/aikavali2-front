@@ -5,7 +5,7 @@ import AlertWindow from '../common/AlertWindow'
 import DumbQuestion from '../Question/DumbQuestion'
 import SuccessPopup from './Popups/SuccessPopup'
 import ConfirmPopup from './Popups/ConfirmPopup'
-import { deleteQuestions, getAllFlaggedQuestions, unflagQuestions } from '../../reducers/actions/questionActions'
+import { deleteQuestions, getAvailableQuestions, unflagQuestions } from '../../reducers/actions/questionActions'
 
 const rows = [
   { id: 'value', numeric: false, disablePadding: false, label: 'Kysymys' },
@@ -16,7 +16,7 @@ const rows = [
   { id: 'averageRating', numeric: true, disablePadding: false, label: 'Average rating' }
 ]
 
-class FlaggedQuestions extends Component {
+class Questions extends Component {
   constructor () {
     super()
     this.state = {
@@ -30,7 +30,7 @@ class FlaggedQuestions extends Component {
   }
 
   async componentDidMount () {
-    await this.props.getAllFlaggedQuestions()
+    await this.props.getAvailableQuestions()
   }
   updateCheckCount = (count) => {
     this.setState({ checked: count })
@@ -69,6 +69,8 @@ class FlaggedQuestions extends Component {
     this.state.selected.forEach(s => questionIDs.push(s._id))
     await this.props.unflagQuestions(questionIDs)
     this.setState({ showUnflagAlert: false , showUnflagSuccessfulAlert: true })
+    // To update the flags
+    await this.props.getAvailableQuestions()
   }
 
   // Has to have id AND no inner fields like { item: { value: 'something' } } -> { value: 'comething' }
@@ -92,7 +94,7 @@ class FlaggedQuestions extends Component {
     return data
   }
   expandableContent = (id) => {
-    const question = this.props.flaggedQuestions.find(q => q._id === id)
+    const question = this.props.questions.find(q => q._id === id)
     return (
       <AlertWindow neutral>
         <DumbQuestion question={question.question} correctAnswer={question.correctAnswer.value} />
@@ -105,12 +107,12 @@ class FlaggedQuestions extends Component {
         <FlaggedQuestionsTable
           toolbarButton1Click={this.handleUnflagClick}
           toolbarButton2Click={this.handleDeleteClick}
-          data={this.optimizeData(this.props.flaggedQuestions)}
+          data={this.optimizeData(this.props.questions)}
           rows={rows}
           expandable
           expandableContent={this.expandableContent}
-          defaultOrder={'flags'}
-          title={'Ilmiannetut kysymykset'}
+          defaultOrder={'averageRating'}
+          title={'Käytössä olevat kysymykset'}
           toolbarButton1Text={'Nollaa ilmiannot'}
           toolbarButton2Text={this.state.checked > 1 ? 'Poista kysymykset' : 'Poista kysymys'}
           toolbarButton1Tooltip={'Nollaa ilmiannot'}
@@ -128,14 +130,14 @@ class FlaggedQuestions extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    flaggedQuestions: state.question.flaggedQuestions
+    questions: state.question.questions
   }
 }
 
 const mapDispatchToProps = {
-  getAllFlaggedQuestions,
+  getAvailableQuestions,
   deleteQuestions,
   unflagQuestions
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FlaggedQuestions)
+export default connect(mapStateToProps, mapDispatchToProps)(Questions)

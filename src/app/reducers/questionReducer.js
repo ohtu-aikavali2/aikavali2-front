@@ -6,7 +6,9 @@ const initialState = {
   answering: false,
   userAnswer: null,
   message: null,
-  flaggedQuestions: []
+  flaggedQuestions: [],
+  deletedQuestions: [],
+  questions: []
 }
 
 const questionReducer = (state = initialState, action) => {
@@ -62,18 +64,40 @@ const questionReducer = (state = initialState, action) => {
       }
     }
 
+    case questionConstants.GET_DELETED_QUESTIONS: {
+      return {
+        ...state,
+        deletedQuestions: action.data
+      }
+    }
+
     case questionConstants.DELETE_QUESTIONS: {
       // Tänne sit myös questions poisto, kun säilötään kysymyksiä.
       return {
         ...state,
-        flaggedQuestions: state.flaggedQuestions.filter(q => action.data.indexOf(q.item._id) === -1)
+        flaggedQuestions: state.flaggedQuestions.filter(q => action.data.indexOf(q._id) === -1),
+        questions: state.questions.filter(q => action.data.indexOf(q._id) === -1)
       }
     }
 
     case questionConstants.UNFLAG_QUESTIONS: {
       return {
         ...state,
-        flaggedQuestions: state.flaggedQuestions.filter(q => action.data.indexOf(q.item._id) === -1)
+        flaggedQuestions: state.flaggedQuestions.filter(q => action.data.indexOf(q._id) === -1)
+      }
+    }
+
+    case questionConstants.RESTORE_QUESTIONS: {
+      return {
+        ...state,
+        deletedQuestions: state.deletedQuestions.filter(q => action.data.indexOf(q._id) === -1)
+      }
+    }
+
+    case questionConstants.GET_AVAILABLE_QUESTIONS: {
+      return {
+        ...state,
+        questions: action.data
       }
     }
 

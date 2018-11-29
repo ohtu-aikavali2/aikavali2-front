@@ -37,19 +37,20 @@ class FlaggedQuestionsTable extends Component {
     if (state.orderBy === null) {
       return {
         orderBy: props.defaultOrder,
-        data: props.flaggedQuestions
+        data: props.data
       }
     }
     // If deleted, then set selected to empty array
-    if (props.flaggedQuestions.length < state.data.length) {
+    if (props.data.length < state.data.length) {
       return {
-        data: props.flaggedQuestions,
-        selected: []
+        data: props.data,
+        selected: [],
+        expanded: false
       }
     }
-    if (props.flaggedQuestions !== state.data) {
+    if (props.data !== state.data) {
       return {
-        data: props.flaggedQuestions
+        data: props.data
       }
     }
     return null
@@ -58,9 +59,11 @@ class FlaggedQuestionsTable extends Component {
   handleSelectAllClick = event => {
     if (event.target.checked) {
       this.setState(state => ({ selected: state.data.map(n => n.id) }))
+      this.props.updateCheckCount(this.state.data.length)
       return
     }
     this.setState({ selected: [] })
+    this.props.updateCheckCount(0)
   }
   handleRequestSort = (event, property) => {
     const orderBy = property
@@ -92,6 +95,7 @@ class FlaggedQuestionsTable extends Component {
       )
     }
     this.setState({ selected: newSelected })
+    this.props.updateCheckCount(newSelected.length)
   }
   handleExpand = (id) => {
     this.setState({ expanded: this.state.expanded === id ? false : id })
@@ -122,13 +126,23 @@ class FlaggedQuestionsTable extends Component {
     })
     return string.toLowerCase()
   }
-  handleDelete = () => {
+  handleButton1Click = () => {
     let selected = this.state.data.filter(d => this.state.selected.indexOf(d.id) !== -1)
-    this.props.handleDelete(selected)
+    this.props.toolbarButton1Click(selected)
   }
-  handleUnflag = () => {
+  handleButton2Click = () => {
     let selected = this.state.data.filter(d => this.state.selected.indexOf(d.id) !== -1)
-    this.props.handleUnflag(selected)
+    this.props.toolbarButton2Click(selected)
+  }
+  wrapText = (text) => {
+    if (text.length > 13) {
+      let wrapped = ''
+      for (let i = 0; i < 13; i++) {
+        wrapped += text[i]
+      }
+      return wrapped + '...'
+    }
+    return text
   }
   render () {
     let { data, orderBy } = this.state
@@ -137,11 +151,24 @@ class FlaggedQuestionsTable extends Component {
     let i = 0
     let j = 0
     const { order, selected, filterValue } = this.state
-    const { rows } = this.props
+    const { rows, title, toolbarButton1Text, toolbarButton2Text, toolbarButton1Tooltip, toolbarButton2Tooltip } = this.props
     data = this.handleFiltering()
     return (
       <Paper style={{ width: '96%', margin: '2%' }}>
-        <TableToolbar numSelected={selected.length} onFilterClick={this.onFilterClick} showFilterInput={this.state.showFilterInput} filterValue={filterValue} onFilterChange={this.onFilterChange} handleDelete={this.handleDelete} handleUnflag={this.handleUnflag} />
+        <TableToolbar
+          numSelected={selected.length}
+          onFilterClick={this.onFilterClick}
+          showFilterInput={this.state.showFilterInput}
+          filterValue={filterValue}
+          onFilterChange={this.onFilterChange}
+          handleButton1Click={this.handleButton1Click}
+          handleButton2Click={this.handleButton2Click}
+          title={title}
+          toolbarButton1Text={toolbarButton1Text}
+          toolbarButton2Text={toolbarButton2Text}
+          toolbarButton1Tooltip={toolbarButton1Tooltip}
+          toolbarButton2Tooltip={toolbarButton2Tooltip}
+        />
         <div style={{ overflowX: 'auto' }}>
           <Table style={{ minWidth: 350 }} aria-labelledby='tableTitle'>
             <EnhancedTableHead
@@ -177,7 +204,7 @@ class FlaggedQuestionsTable extends Component {
                       {rows.map(r => {
                         j++
                         return (
-                          <TableCell key={keyStart2 + j} onClick={() => this.handleExpand(n.id)} numeric={r.numeric}>{n[r.id]}</TableCell>
+                          <TableCell key={keyStart2 + j} onClick={() => this.handleExpand(n.id)} numeric={r.numeric}><Typography noWrap>{r.id === 'value' ? this.wrapText(n[r.id]) : n[r.id]}</Typography></TableCell>
                         )
                       })}
                     </TableRow>
@@ -259,12 +286,7 @@ class EnhancedTableHead extends Component {
 
 class TableToolbar extends Component {
   render() {
-    const { numSelected } = this.props
-    let unflagText = 'Unflag question'
-    unflagText = numSelected > 1 ? `${unflagText}s` : unflagText
-    let deleteText = 'Delete question'
-    deleteText = numSelected > 1 ? `${deleteText}s` : deleteText
-
+    const { numSelected, title, toolbarButton1Text, toolbarButton2Text, toolbarButton1Tooltip, toolbarButton2Tooltip } = this.props
     return (
       <Toolbar
         style={{
@@ -280,21 +302,21 @@ class TableToolbar extends Component {
             </Typography>
           ) : (
             <Typography id="tableTitle" style={{ fontSize: 20 }}>
-              Ilmiannetut kysymykset
+              {title}
             </Typography>
           )}
         </div>
         <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-          {numSelected > 0 && (
-            <Tooltip title="Unflag questions">
-              <Typography style={{ fontSize: 14 }} onClick={this.props.handleUnflag}>{unflagText}</Typography>
+          {numSelected > 0 && toolbarButton1Text && (
+            <Tooltip title={toolbarButton1Tooltip}>
+              <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton1Click}>{toolbarButton1Text}</Typography>
             </Tooltip>
           )}
         </div>
         <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }} >
-          {numSelected > 0 ? (
-            <Tooltip title="Delete">
-              <Typography style={{ fontSize: 14 }} onClick={this.props.handleDelete}>{deleteText}</Typography>
+          {(numSelected > 0 && toolbarButton2Text) ? (
+            <Tooltip title={toolbarButton2Tooltip}>
+              <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton2Click}>{toolbarButton2Text}</Typography>
             </Tooltip>
           ) : (
             <div style={{ flexDirection: 'row', display: 'flex', position: 'absolute', zIndex: 1, top: 5 }}>

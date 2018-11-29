@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import FeedbackBar from '../common/FeedbackBar'
 import Collapse from '@material-ui/core/Collapse'
 
-export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, dumb, topLeftContent, topRightContent, answered }) => {
+export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, dumb, topLeftContent, topRightContent, answered, correctAnswer }) => {
   let source = '```\n'
   question.value.split('\n').forEach((line) => source += line + '\n')
   source += '```'
@@ -23,7 +23,7 @@ export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, du
           <ReactMarkdown source={source} />
         </div>
       </div>
-      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selected={selected && selected.value === option} dumb={dumb} />)}
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selected={selected && selected.value === option} dumb={dumb} correctAnswer={correctAnswer} />)}
     </div>
   )
 }

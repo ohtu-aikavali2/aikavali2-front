@@ -99,7 +99,8 @@ export class Question extends Component {
 
   handleQuestionReview = async (question, review) => {
     this.setState({ reviewed: true, showReview: false })
-    await this.props.sendReviewForQuestion(this.state.selected.id, review)
+    // NOTE: this uses the question._id INSTEAD of question.item._id
+    await this.props.sendReviewForQuestion(this.props.question._id, review)
   }
 
   // Ensimmäinen painallus kysymysvaihtoehtoon
@@ -124,7 +125,8 @@ export class Question extends Component {
   }
   handleFlag = async () => {
     this.setState({ flagged: true })
-    await this.props.flagQuestion(this.props.question.item._id)
+    // NOTE: this uses the question._id INSTEAD of question.item._id
+    await this.props.flagQuestion(this.props.question._id)
   }
   renderReviewText = () => {
     return (

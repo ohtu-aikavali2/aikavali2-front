@@ -73,7 +73,7 @@ export const sendReviewForQuestion = (id, review) => {
 export const deleteQuestions = (questionIDs) => {
   return async (dispatch) => {
     const response = await questionService.deleteQuestions(questionIDs)
-    if (!response.error) {
+    if (!response) {
       // If everything went well, change redux state aswell. (Delete from flaggedQuestions)
       dispatch({
         type: questionConstants.DELETE_QUESTIONS,
@@ -86,7 +86,7 @@ export const deleteQuestions = (questionIDs) => {
 export const unflagQuestions = (questionIDs) => {
   return async (dispatch) => {
     const response = await questionService.unflagQuestions(questionIDs)
-    if (!response.error) {
+    if (!response) {
       dispatch({
         type: questionConstants.UNFLAG_QUESTIONS,
         data: questionIDs
@@ -98,6 +98,38 @@ export const unflagQuestions = (questionIDs) => {
 export const flagQuestion = (questionID) => {
   return async () => {
     await questionService.flagQuestion(questionID)
+  }
+}
+
+export const getDeletedQuestions = () => {
+  return async (dispatch) => {
+    const data = await questionService.getDeletedQuestions()
+    dispatch({
+      type: questionConstants.GET_DELETED_QUESTIONS,
+      data
+    })
+  }
+}
+
+export const restoreQuestions = (questionIDs) => {
+  return async (dispatch) => {
+    const response = await questionService.restoreQuestions(questionIDs)
+    if (!response) {
+      dispatch({
+        type: questionConstants.RESTORE_QUESTIONS,
+        data: questionIDs
+      })
+    }
+  }
+}
+
+export const getAvailableQuestions = () => {
+  return async (dispatch) => {
+    const data = await questionService.getAvailableQuestions()
+    dispatch({
+      type: questionConstants.GET_AVAILABLE_QUESTIONS,
+      data
+    })
   }
 }
 

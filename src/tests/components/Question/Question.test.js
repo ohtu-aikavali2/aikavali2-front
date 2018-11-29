@@ -19,7 +19,8 @@ describe('<Question />', () => {
         ],
         value: 'testi kysymys',
         _id: '12345'
-      }
+      },
+      _id: '9876'
     },
     {
       kind: 'CompileQuestion',
@@ -30,7 +31,8 @@ describe('<Question />', () => {
           'option3'
         ],
         _id: '6789'
-      }
+      },
+      _id: '6544'
     }
   ]
 
@@ -304,7 +306,7 @@ describe('<Question />', () => {
     })
     it('calls prop sendReviewForQuestion with the correct params', () => {
       expect(props.sendReviewForQuestion).toHaveBeenCalledTimes(1)
-      expect(props.sendReviewForQuestion).toHaveBeenCalledWith('1337', 'review')
+      expect(props.sendReviewForQuestion).toHaveBeenCalledWith('9876', 'review')
     })
   })
   it('toggleReviewWindow sets correct state', () => {

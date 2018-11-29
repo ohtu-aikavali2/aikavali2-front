@@ -6,6 +6,9 @@ const ADD_MESSAGE_FROM_BACKEND = 'Add message'
 const GET_FLAGGED_QUESTIONS = 'Get flagged questions'
 const DELETE_QUESTIONS = 'Delete questions'
 const UNFLAG_QUESTIONS = 'Unflag questions'
+const GET_DELETED_QUESTIONS = 'Get deleted questions'
+const RESTORE_QUESTIONS = 'Restore questions'
+const GET_AVAILABLE_QUESTIONS = 'Get available questions'
 
 export default {
   GET_RANDOM_QUESTION,
@@ -15,5 +18,8 @@ export default {
   ADD_MESSAGE_FROM_BACKEND,
   GET_FLAGGED_QUESTIONS,
   DELETE_QUESTIONS,
-  UNFLAG_QUESTIONS
+  UNFLAG_QUESTIONS,
+  GET_DELETED_QUESTIONS,
+  RESTORE_QUESTIONS,
+  GET_AVAILABLE_QUESTIONS
 }

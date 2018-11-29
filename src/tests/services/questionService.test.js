@@ -255,12 +255,12 @@ describe('questionService', () => {
       questionService.sendReviewForQuestion('12345', '3')
       expect(mockAxios.post).toHaveBeenCalledTimes(1)
     })
-    describe('calls axios post with /api/v1/questions/review, {questionId, review} object and configs', () => {
+    describe('calls axios post with /api/v1/reviews, {questionId, review} object and configs', () => {
       it('when token is not set', async () => {
         questionService.reload()
         await questionService.sendReviewForQuestion('123', '3')
         expect(mockAxios.post).toHaveBeenCalledWith(
-          '/api/v1/questions/review',
+          '/api/v1/reviews',
           {
             questionId: '123',
             review: '3'
@@ -274,7 +274,7 @@ describe('questionService', () => {
         questionService.setToken(1337)
         await questionService.sendReviewForQuestion('12345', '1')
         expect(mockAxios.post).toHaveBeenCalledWith(
-          '/api/v1/questions/review',
+          '/api/v1/reviews',
           {
             questionId: '12345',
             review: '1'
