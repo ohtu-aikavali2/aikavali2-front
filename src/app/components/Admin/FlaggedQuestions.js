@@ -86,7 +86,7 @@ class FlaggedQuestions extends Component {
         flags: q.flags.length,
         recentFlag: !q.recentFlag ? 'no flags' : new Date(q.recentFlag).toLocaleDateString(),
         _id: q._id,
-        averageRating: q.averageRating
+        averageRating: Number(q.averageRating).toFixed(2)
       })
     })
     return data

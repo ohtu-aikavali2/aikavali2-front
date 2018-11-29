@@ -19,6 +19,7 @@ describe('<QuestionForm />', () => {
     props = {
       postCompileQuestion: jest.fn(),
       postPrintQuestion: jest.fn(),
+      fetchCourses: jest.fn(),
       history: {
         push: jest.fn()
       },

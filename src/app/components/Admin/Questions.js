@@ -12,6 +12,7 @@ const rows = [
   { id: 'course', numeric: false, disablePadding: false, label: 'Kurssi' },
   { id: 'group', numeric: false, disablePadding: false, label: 'Viikko' },
   { id: 'flags', numeric: true, disablePadding: false, label: 'Ilmiantoja' },
+  { id: 'reviews', numeric: true, disablePadding: false, label: 'Arvosteluja' },
   { id: 'recentFlag', numeric: true, disablePadding: false, label: 'Viimeisin ilmianto' },
   { id: 'averageRating', numeric: true, disablePadding: false, label: 'Average rating' }
 ]
@@ -86,9 +87,10 @@ class Questions extends Component {
         course: q.group ? q.group.course ? q.group.course.name : 'ei määritelty' : 'ei määritelty',
         group: q.group ? q.group.name : 'ei määritelty',
         flags: q.flags.length,
+        reviews: q.reviews.length,
         recentFlag: !q.recentFlag ? 'no flags' : new Date(q.recentFlag).toLocaleDateString(),
         _id: q._id,
-        averageRating: q.averageRating
+        averageRating: Number(q.averageRating).toFixed(2)
       })
     })
     return data
