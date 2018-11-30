@@ -29,12 +29,12 @@ const login = async (username, password) => {
   }
 }
 
-const setHasSeenIntro = async (value, id) => {
+const setHasSeenIntro = async (value) => {
   const config = {
     headers: { 'Authorization': token }
   }
   try {
-    const { data} = await axios.patch(`${baseUrl}${apiUrl}/${id}/hasSeenIntro`, { hasSeenIntro: value }, config)
+    const { data} = await axios.patch(`${baseUrl}${apiUrl}/hasSeenIntro`, { hasSeenIntro: value }, config)
     return data
   } catch (e) {
     console.error(e)
