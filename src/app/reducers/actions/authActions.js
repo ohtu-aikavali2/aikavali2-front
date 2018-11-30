@@ -52,3 +52,16 @@ export const logout = () => {
     })
   }
 }
+
+export const setHasSeenIntro = (value) => {
+  return async (dispatch) => {
+    let loggedUser = store.get('user')
+    await authService.setHasSeenIntro(value)
+    loggedUser.hasSeenIntro = value
+    dispatch({
+      type: authConstants.INITIALIZE_USER,
+      data: loggedUser
+    })
+    store.set('user', loggedUser)
+  }
+}
