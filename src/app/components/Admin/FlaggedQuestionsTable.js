@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -15,71 +14,16 @@ import Tooltip from '@material-ui/core/Tooltip'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import AlertWindow from '../common/AlertWindow'
-import DumbQuestion from '../Question/DumbQuestion'
-import { getAllFlaggedQuestions } from '../../reducers/actions/questionActions'
+import { stableSort, getSorting } from '../../utilities/sortByField'
 import './admin.css'
 
-const rows = [
-  { id: 'value', numeric: false, disablePadding: true, label: 'Kysymys' },
-  { id: 'course', numeric: false, disablePadding: false, label: 'Kurssi' },
-  { id: 'group', numeric: false, disablePadding: false, label: 'Viikko' },
-  { id: 'flags', numeric: true, disablePadding: false, label: 'Ilmiantoja' },
-  { id: 'recentFlag', numeric: true, disablePadding: false, label: 'Viimeisin ilmianto' }
-]
-
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
-}
-
-function sortByQuestion(a, b) {
-  const valueA = a.kind === 'PrintQuestion' ? a.item.value : 'Mikä kääntyy?'
-  const valueB = b.kind === 'PrintQuestion' ? b.item.value : 'Mikä kääntyy?'
-  if (valueB < valueA) {
-    return -1
-  }
-  if (valueB > valueA) {
-    return 1
-  }
-  return 0
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index])
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0])
-    if (order !== 0) return order
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map(el => el[0])
-}
-
-function getSorting(order, orderBy) {
-  // Tämä palauttaa siis sort-funktion
-  if (orderBy === 'value') {
-    // sortByQuestion, koska value on item-objektin sisällä
-    return order === 'desc' ? (a, b) => sortByQuestion(a, b) : (a, b) => -sortByQuestion(a, b)
-  }
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy)
-}
-
-let counter = 0
-function createData(object) {
-  counter += 1
-  return { ...object, id: counter }
-}
+// Anna tälle komponentille propseina data (esim. kysymykset, flaggedQuestions)
 class FlaggedQuestionsTable extends Component {
   constructor () {
     super()
     this.state = {
-      order: 'asc',
-      orderBy: 'total flags',
+      order: 'desc',
+      orderBy: null,
       selected: [],
       data: [],
       expanded: false,
@@ -89,30 +33,37 @@ class FlaggedQuestionsTable extends Component {
   }
   // This is needed. For example, if u press "previous" on browser, and then "next", the state would be empty
   static getDerivedStateFromProps = (props, state) => {
-    // If deleted, then set selected to empty array
-    if (props.flaggedQuestions.length < state.data.length) {
+    // First render
+    if (state.orderBy === null) {
       return {
-        data: props.flaggedQuestions.map(f => createData(f)),
-        selected: []
+        orderBy: props.defaultOrder,
+        data: props.data
       }
     }
-    if (props.flaggedQuestions.length !== state.data.length) {
+    // If deleted, then set selected to empty array
+    if (props.data.length < state.data.length) {
       return {
-        data: props.flaggedQuestions.map(f => createData(f))
+        data: props.data,
+        selected: [],
+        expanded: false
+      }
+    }
+    if (props.data !== state.data) {
+      return {
+        data: props.data
       }
     }
     return null
   }
 
-  async componentDidMount () {
-    await this.props.getAllFlaggedQuestions()
-  }
   handleSelectAllClick = event => {
     if (event.target.checked) {
       this.setState(state => ({ selected: state.data.map(n => n.id) }))
+      this.props.updateCheckCount(this.state.data.length)
       return
     }
     this.setState({ selected: [] })
+    this.props.updateCheckCount(0)
   }
   handleRequestSort = (event, property) => {
     const orderBy = property
@@ -144,6 +95,7 @@ class FlaggedQuestionsTable extends Component {
       )
     }
     this.setState({ selected: newSelected })
+    this.props.updateCheckCount(newSelected.length)
   }
   handleExpand = (id) => {
     this.setState({ expanded: this.state.expanded === id ? false : id })
@@ -167,25 +119,56 @@ class FlaggedQuestionsTable extends Component {
     return newData
   }
   asString = (d) => {
-    let string = `${d.course} ${d.group} ${d.flags} ${d.recentFlag} ${d.item.value}`
+    let { rows } = this.props
+    let string = ''
+    rows.forEach(r => {
+      string += d[r.id] + ' '
+    })
     return string.toLowerCase()
   }
-  handleDelete = () => {
+  handleButton1Click = () => {
     let selected = this.state.data.filter(d => this.state.selected.indexOf(d.id) !== -1)
-    this.props.handleDelete(selected)
+    this.props.toolbarButton1Click(selected)
   }
-  handleUnflag = () => {
+  handleButton2Click = () => {
     let selected = this.state.data.filter(d => this.state.selected.indexOf(d.id) !== -1)
-    this.props.handleUnflag(selected)
+    this.props.toolbarButton2Click(selected)
   }
-
+  wrapText = (text) => {
+    if (text.length > 13) {
+      let wrapped = ''
+      for (let i = 0; i < 13; i++) {
+        wrapped += text[i]
+      }
+      return wrapped + '...'
+    }
+    return text
+  }
   render () {
-    let { data } = this.state
-    const { order, orderBy, selected, filterValue } = this.state
+    let { data, orderBy } = this.state
+    const keyStart1 = data.length
+    const keyStart2 = data.length * 2
+    let i = 0
+    let j = 0
+    const { order, selected, filterValue } = this.state
+    const { rows, title, toolbarButton1Text, toolbarButton2Text, toolbarButton1Tooltip, toolbarButton2Tooltip } = this.props
     data = this.handleFiltering()
     return (
       <Paper style={{ width: '96%', margin: '2%' }}>
-        <TableToolbar numSelected={selected.length} onFilterClick={this.onFilterClick} showFilterInput={this.state.showFilterInput} filterValue={filterValue} onFilterChange={this.onFilterChange} handleDelete={this.handleDelete} handleUnflag={this.handleUnflag} />
+        <TableToolbar
+          numSelected={selected.length}
+          onFilterClick={this.onFilterClick}
+          showFilterInput={this.state.showFilterInput}
+          filterValue={filterValue}
+          onFilterChange={this.onFilterChange}
+          handleButton1Click={this.handleButton1Click}
+          handleButton2Click={this.handleButton2Click}
+          title={title}
+          toolbarButton1Text={toolbarButton1Text}
+          toolbarButton2Text={toolbarButton2Text}
+          toolbarButton1Tooltip={toolbarButton1Tooltip}
+          toolbarButton2Tooltip={toolbarButton2Tooltip}
+        />
         <div style={{ overflowX: 'auto' }}>
           <Table style={{ minWidth: 350 }} aria-labelledby='tableTitle'>
             <EnhancedTableHead
@@ -195,12 +178,14 @@ class FlaggedQuestionsTable extends Component {
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
+              rows={rows}
             />
             <TableBody>
               {stableSort(data, getSorting(order, orderBy)).map(n => {
+                i++
                 const isSelected = this.isSelected(n.id)
                 return (
-                  <React.Fragment key={n.item._id}>
+                  <React.Fragment key={keyStart1 + i}>
                     <TableRow
                       hover
                       role='checkbox'
@@ -216,33 +201,32 @@ class FlaggedQuestionsTable extends Component {
                       >
                         <Checkbox checked={isSelected} />
                       </TableCell>
-                      <TableCell component='th' scope='row' padding='none' onClick={() => this.handleExpand(n.id)}>
-                        {n.kind === 'PrintQuestion' ? n.item.value : 'Mikä kääntyy?'}
-                      </TableCell>
-                      <TableCell onClick={() => this.handleExpand(n.id)}>{n.course}</TableCell>
-                      <TableCell onClick={() => this.handleExpand(n.id)} style={{ verticalAlign: 'top', height: 'auto', paddingTop: '1.4em' }}>{n.group}</TableCell>
-                      <TableCell onClick={() => this.handleExpand(n.id)} numeric>{n.flags}</TableCell>
-                      <TableCell onClick={() => this.handleExpand(n.id)} numeric>{n.recentFlag}</TableCell>
+                      {rows.map(r => {
+                        j++
+                        return (
+                          <TableCell key={keyStart2 + j} onClick={() => this.handleExpand(n.id)} numeric={r.numeric}><Typography noWrap>{r.id === 'value' ? this.wrapText(n[r.id]) : n[r.id]}</Typography></TableCell>
+                        )
+                      })}
                     </TableRow>
-                    <TableRow
-                      key={n}
-                      style={{ height: this.state.expanded === n.id ? null : 0 }}
-                      hover
-                      role='checkbox'
-                      tabIndex={-1}
-                      aria-checked={isSelected}
-                      selected={isSelected}
-                    >
-                      <TableCell colSpan={6} padding='none'>
-                        <ExpansionPanel style={{ background: 'transparent' }} expanded={this.state.expanded === n.id} onChange={() => this.handleExpand(n.id)}>
-                          <ExpansionPanelDetails>
-                            <AlertWindow neutral>
-                              <DumbQuestion question={n} />
-                            </AlertWindow>
-                          </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                      </TableCell>
-                    </TableRow>
+                    {this.props.expandable && (
+                      <TableRow
+                        key={n}
+                        style={{ height: this.state.expanded === n.id ? null : 0 }}
+                        hover
+                        role='checkbox'
+                        tabIndex={-1}
+                        aria-checked={isSelected}
+                        selected={isSelected}
+                      >
+                        <TableCell colSpan={rows.length + 1} padding='none'>
+                          <ExpansionPanel style={{ background: 'transparent' }} expanded={this.state.expanded === n.id} onChange={() => this.handleExpand(n.id)}>
+                            <ExpansionPanelDetails>
+                              {this.props.expandableContent(n._id)}
+                            </ExpansionPanelDetails>
+                          </ExpansionPanel>
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </React.Fragment>
                 )
               })}
@@ -259,7 +243,7 @@ class EnhancedTableHead extends Component {
     this.props.onRequestSort(event, property)
   }
   render () {
-    const { onSelectAllClick, numSelected, order, orderBy, rowCount } = this.props
+    const { onSelectAllClick, numSelected, order, orderBy, rowCount, rows } = this.props
     return (
       <TableHead>
         <TableRow>
@@ -302,12 +286,7 @@ class EnhancedTableHead extends Component {
 
 class TableToolbar extends Component {
   render() {
-    const { numSelected } = this.props
-    let unflagText = 'Unflag question'
-    unflagText = numSelected > 1 ? `${unflagText}s` : unflagText
-    let deleteText = 'Delete question'
-    deleteText = numSelected > 1 ? `${deleteText}s` : deleteText
-
+    const { numSelected, title, toolbarButton1Text, toolbarButton2Text, toolbarButton1Tooltip, toolbarButton2Tooltip } = this.props
     return (
       <Toolbar
         style={{
@@ -323,21 +302,21 @@ class TableToolbar extends Component {
             </Typography>
           ) : (
             <Typography id="tableTitle" style={{ fontSize: 20 }}>
-              Ilmiannetut kysymykset
+              {title}
             </Typography>
           )}
         </div>
-        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-          {numSelected > 0 && (
-            <Tooltip title="Unflag questions">
-              <Typography style={{ fontSize: 14 }} onClick={this.props.handleUnflag}>{unflagText}</Typography>
+        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', cursor: 'pointer' }}>
+          {numSelected > 0 && toolbarButton1Text && (
+            <Tooltip title={toolbarButton1Tooltip}>
+              <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton1Click}>{toolbarButton1Text}</Typography>
             </Tooltip>
           )}
         </div>
-        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }} >
-          {numSelected > 0 ? (
-            <Tooltip title="Delete">
-              <Typography style={{ fontSize: 14 }} onClick={this.props.handleDelete}>{deleteText}</Typography>
+        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', cursor: 'pointer' }} >
+          {(numSelected > 0 && toolbarButton2Text) ? (
+            <Tooltip title={toolbarButton2Tooltip}>
+              <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton2Click}>{toolbarButton2Text}</Typography>
             </Tooltip>
           ) : (
             <div style={{ flexDirection: 'row', display: 'flex', position: 'absolute', zIndex: 1, top: 5 }}>
@@ -360,13 +339,4 @@ class TableToolbar extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    flaggedQuestions: state.question.flaggedQuestions
-  }
-}
-const mapDispatchToProps = {
-  getAllFlaggedQuestions
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FlaggedQuestionsTable)
+export default FlaggedQuestionsTable

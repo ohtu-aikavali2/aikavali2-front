@@ -37,7 +37,6 @@ class IntroScreen extends Component {
 
   render() {
     const { loggedUser } = this.props
-    console.log('logged', loggedUser)
     return loggedUser ?
       (
         <Intro
