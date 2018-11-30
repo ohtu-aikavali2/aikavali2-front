@@ -306,14 +306,14 @@ class TableToolbar extends Component {
             </Typography>
           )}
         </div>
-        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', cursor: 'pointer' }}>
           {numSelected > 0 && toolbarButton1Text && (
             <Tooltip title={toolbarButton1Tooltip}>
               <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton1Click}>{toolbarButton1Text}</Typography>
             </Tooltip>
           )}
         </div>
-        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }} >
+        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', cursor: 'pointer' }} >
           {(numSelected > 0 && toolbarButton2Text) ? (
             <Tooltip title={toolbarButton2Tooltip}>
               <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton2Click}>{toolbarButton2Text}</Typography>
