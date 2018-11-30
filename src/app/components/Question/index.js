@@ -5,12 +5,21 @@ import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
-import { getRandomQuestion, answerQuestion, sendReviewForQuestion } from '../../reducers/actions/questionActions'
+import {
+  getRandomQuestion,
+  answerQuestion,
+  sendReviewForQuestion,
+  flagQuestion
+} from '../../reducers/actions/questionActions'
 import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
 import './question.css'
 import ReviewPopup from '../common/ReviewPopup'
 import Loading from '../common/Loading'
 import Notifications, { notify } from 'react-notify-toast'
+import Button from '@material-ui/core/Button'
+import FlagIcon from '@material-ui/icons/Flag'
+import CheckCircle from '@material-ui/icons/CheckCircle'
+import Zoom from '@material-ui/core/Zoom'
 
 export class Question extends Component {
   constructor () {
@@ -21,7 +30,8 @@ export class Question extends Component {
       pauseStart: 0,
       timer: null,
       showReview: false,
-      reviewed: false
+      reviewed: false,
+      flagged: false
     }
 
     this.notificationRef = React.createRef()
@@ -63,7 +73,7 @@ export class Question extends Component {
     if (!prevProps.userAnswer && userAnswer && this.notificationRef.current) {
       if (userAnswer.isCorrect) {
         notify.show('Oikein, hyvä!', 'success', 2000)
-      } else {
+      } else if (this.state.selected.value !== 'Note: questionSkipped') {
         notify.show('Väärin, voi ei!', 'error', 2000)
       }
     }
@@ -80,7 +90,7 @@ export class Question extends Component {
       this.skipQuestion()
       // Do nothing else
     } else if (this.props.userAnswer && this.state.selected) {
-      this.setState({ selected: null, startTime: Date.now(), reviewed: false })
+      this.setState({ selected: null, startTime: Date.now(), reviewed: false, flagged: false })
       await this.props.getRandomQuestion(course)
     } else {
       console.log('Ei voi painaa nyt!')
@@ -89,7 +99,8 @@ export class Question extends Component {
 
   handleQuestionReview = async (question, review) => {
     this.setState({ reviewed: true, showReview: false })
-    await this.props.sendReviewForQuestion(this.state.selected.id, review)
+    // NOTE: this uses the question._id INSTEAD of question.item._id
+    await this.props.sendReviewForQuestion(this.props.question._id, review)
   }
 
   // Ensimmäinen painallus kysymysvaihtoehtoon
@@ -112,11 +123,53 @@ export class Question extends Component {
   toggleReviewWindow = () => {
     this.setState({ showReview: !this.state.showReview })
   }
-
-  renderUserAnswer = (userAnswer) => {
-    const { isCorrect } = userAnswer
-    const message = isCorrect ? 'Oikein, hyvä!' : 'Väärin, voi ei!'
-    return (message)
+  handleFlag = async () => {
+    this.setState({ flagged: true })
+    // NOTE: this uses the question._id INSTEAD of question.item._id
+    await this.props.flagQuestion(this.props.question._id)
+  }
+  renderReviewText = () => {
+    return (
+      <div>
+        {!this.state.reviewed
+          ? (
+            <Button size='small' onClick={this.toggleReviewWindow} color='primary'>
+              Arvostele
+            </Button>
+          )
+          : (
+            <Zoom in={true}>
+              <div style={{ color: 'rgb(113, 218, 113)', alignItems: 'center', justifyContent: 'center', display: 'flex', fontSize: 12 }}>
+                <CheckCircle style={{ marginRight: 5 }} />
+                Kiitos palautteesta!
+              </div>
+            </Zoom>
+          )
+        }
+      </div>
+    )
+  }
+  renderFlagButton = () => {
+    return (
+      <div>
+        {!this.state.flagged
+          ? (
+            <Button size='small' color='secondary' onClick={this.handleFlag}>
+              Ilmianna
+              <FlagIcon style={{ marginLeft: 5 }} />
+            </Button>
+          )
+          : (
+            <Zoom in={true}>
+              <div style={{ color: 'rgb(113, 218, 113)', alignItems: 'center', justifyContent: 'center', display: 'flex', fontSize: 12 }}>
+                <CheckCircle style={{ marginRight: 5 }} />
+                Ilmiannettu!
+              </div>
+            </Zoom>
+          )
+        }
+      </div>
+    )
   }
 
   render() {
@@ -134,15 +187,29 @@ export class Question extends Component {
           </AlertWindow>
         )}
         {loading && <Loading className='questionLoading' />}
-        {question && question.kind === 'PrintQuestion' && <PrintQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} feedBack={userAnswer && this.renderUserAnswer(userAnswer)}/>}
-        {question && question.kind === 'CompileQuestion' && <CompileQuestion question={question.item} handleQuestionReview={this.handleQuestionReview} handleSelect={this.handleAnswer} handleSkip={this.getNewQuestion} selected={this.state.selected} feedBack={userAnswer && this.renderUserAnswer(userAnswer)}/>}
-        {userAnswer && (
-          <div style={{ textAlign: 'center' }}>
-            {!this.state.reviewed
-              ? <p style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleReviewWindow}>Oliko kysymys mielestäsi hyvä? - Arvostele</p>
-              : <p>Kiitos palautteesta!</p>
-            }
-          </div>
+        {question && question.kind === 'PrintQuestion' && (
+          <PrintQuestion
+            question={question.item}
+            handleQuestionReview={this.handleQuestionReview}
+            handleSelect={this.handleAnswer}
+            handleSkip={this.getNewQuestion}
+            selected={this.state.selected}
+            topLeftContent={this.renderReviewText()}
+            topRightContent={this.renderFlagButton()}
+            answered={!!userAnswer}
+          />
+        )}
+        {question && question.kind === 'CompileQuestion' && (
+          <CompileQuestion
+            question={question.item}
+            handleQuestionReview={this.handleQuestionReview}
+            handleSelect={this.handleAnswer}
+            handleSkip={this.getNewQuestion}
+            selected={this.state.selected}
+            topLeftContent={this.renderReviewText()}
+            topRightContent={this.renderFlagButton()}
+            answered={!!userAnswer}
+          />
         )}
         {this.state.showReview && <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} />}
         <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
@@ -170,7 +237,8 @@ const mapDispatchToProps = {
   initializeGame,
   startGame,
   endGame,
-  sendReviewForQuestion
+  sendReviewForQuestion,
+  flagQuestion
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Question)

@@ -4,15 +4,13 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 
 // Tälle voi nyt määrittää vaikka mitä kivaa propseina tai vaikka children
-export const AlertWindow = ({ title, children, width }) => {
+export const AlertWindow = ({ title, children }) => {
 
   const style = {
     paddingBottom: '10px',
     paddingTop: '10px',
-    maxWidth: width ? null : '365px',
     margin: '0 auto',
-    textAlign: 'center',
-    width: width ? width : null
+    textAlign: 'center'
   }
 
   const text = {

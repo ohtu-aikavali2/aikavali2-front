@@ -60,84 +60,73 @@ const sendReviewForQuestion = async (id, review) => {
   const config = {
     headers: { 'Authorization': token }
   }
-  await axios.post(`${baseUrl}${apiUrl}/review`, { questionId: id, review }, config)
+  await axios.post(`${baseUrl}/api/v1/reviews`, { questionId: id, review }, config)
 }
 
 const deleteQuestions = async (questionIDs) => {
-  /*const config = {
+  const config = {
     headers: { 'Authorization': token }
-  }*/
+  }
   try {
-    return flaggedQuestions.filter(q => questionIDs.indexOf(q.item._id) === -1)
+    // return flaggedQuestions.filter(q => questionIDs.indexOf(q.item._id) === -1)
+    await axios.put(`${baseUrl}${apiUrl}/delete`, { questionIDs }, config)
   } catch (e) {
     return { error: 'Could not delete questions' }
   }
 }
 
-/* ------------ Flagged questions ------------- */
-
-// Kovakoodattu toistaiseksi
-
-const date = Date.now() - 100000
-const flaggedQuestions = [
-  {
-    kind: 'PrintQuestion',
-    item: {
-      options: [ 'juu', 'jaa', 'jii', 'joo' ],
-      _id: '5be3fb47sdf07cbe10ab7f93f7d',
-      value: 'moi',
-      __v: 0
-    },
-    flags: 5,
-    recentFlag: date + 2000,
-    course: 'Ohjelmoinnin perusteet',
-    group: 'Viikko 1'
-  },
-  {
-    kind: 'CompileQuestion',
-    item: {
-      options: [ '2', '3', 'THIS!', '1' ],
-      _id: '5be1e731267a84086c6356d5',
-      __v: 0
-    },
-    flags: 2,
-    recentFlag: date + 4000,
-    course: 'Tietokantojen perusteet',
-    group: 'Viikko 3'
-  },
-  {
-    kind: 'PrintQuestion',
-    item: {
-      options: [ 'juu', 'jaa', 'jii', 'joo' ],
-      _id: '5be3fb4307cbe10ab7f93f7d',
-      value: 'Kysymys',
-      __v: 0
-    },
-    flags: 3,
-    recentFlag: date + 6000,
-    course: 'Ohjelmoinnin perusteet',
-    group: 'Viikko 4'
-  },
-  {
-    kind: 'PrintQuestion',
-    item: {
-      options: [ 'vaihtoehto1', 'vaihtoehto2', 'vaihtoehto3', 'vaihtoehto4' ],
-      _id: '5be3fb4307cbe10ab7f9ds3f7d',
-      value: 'Kysymys',
-      __v: 0
-    },
-    flags: 4,
-    recentFlag: date + 8000,
-    course: 'OHJA',
-    group: 'Viikko 2'
+const unflagQuestions = async (questionIDs) => {
+  const config = {
+    headers: { 'Authorization': token }
   }
-]
+  try {
+    await axios.put(`${baseUrl}/api/v1/flags`, { questionIDs }, config)
+  } catch (e) {
+    return { error: 'Could not unflag the questions' }
+  }
+}
+
+const flagQuestion = async (questionID) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  await axios.post(`${baseUrl}/api/v1/flags`, { questionID }, config)
+  // console.log('Lähetetään flägi backille, questionID: ' + questionID)
+}
+
+const restoreQuestions = async (questionIDs) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  try {
+    await axios.put(`${baseUrl}${apiUrl}/restore`, { questionIDs }, config)
+  } catch (e) {
+    return { error: 'Could not restore the questions' }
+  }
+}
 
 const getAllFlaggedQuestions = async () => {
-  /*const config = {
+  const config = {
     headers: { 'Authorization': token }
-  }*/
-  return flaggedQuestions
+  }
+  const response = await axios.get(`${baseUrl}${apiUrl}/flagged`, config)
+  return response.data
+}
+
+const getDeletedQuestions = async () => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  const response = await axios.get(`${baseUrl}${apiUrl}/deleted`, config)
+  return response.data
+}
+
+const getAvailableQuestions = async () => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  const response = await axios.get(`${baseUrl}${apiUrl}/available`, config)
+  return response.data
 }
 
 export default {
@@ -149,5 +138,10 @@ export default {
   reload,
   sendReviewForQuestion,
   getAllFlaggedQuestions,
-  deleteQuestions
+  deleteQuestions,
+  unflagQuestions,
+  flagQuestion,
+  getDeletedQuestions,
+  restoreQuestions,
+  getAvailableQuestions
 }

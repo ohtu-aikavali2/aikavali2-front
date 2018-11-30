@@ -21,6 +21,10 @@ export class AdminPage extends Component {
         paths.push('Ilmiannetut')
       } else if (words[i] === 'newquestion') {
         paths.push('Lisää kysymys')
+      } else if (words[i] === 'deleted') {
+        paths.push('Poistetut')
+      } else if (words[i] === 'questions') {
+        paths.push('Kaikki kysymykset')
       } else {
         paths.push(words[i])
       }
@@ -36,6 +40,10 @@ export class AdminPage extends Component {
       this.redirect('/admin/flags')
     } else if (pathName === 'Lisää kysymys') {
       this.redirect('/admin/newquestion')
+    } else if (pathName === 'Poistetut') {
+      this.redirect('/admin/deleted')
+    } else if (pathName === 'Kaikki kysymykset') {
+      this.redirect('/admin/questions')
     } else {
       this.redirect('/')
     }
@@ -50,6 +58,8 @@ export class AdminPage extends Component {
           <div>
             <ClickBox title={'Lisää uusi kysymys'} onClick={() => this.redirect('/admin/newquestion')} />
             <ClickBox title={'Ilmiannetut kysymykset'} onClick={() => this.redirect('/admin/flags')} />
+            <ClickBox title={'Poistetut kysymykset'} onClick={() => this.redirect('/admin/deleted')} />
+            <ClickBox title={'Kaikki kysymykset'} onClick={() => this.redirect('/admin/questions')} />
           </div>
         )}
       </div>

@@ -10,7 +10,9 @@ describe('questionReducer', () => {
       message: null,
       answering: false,
       loading: false,
-      flaggedQuestions: []
+      flaggedQuestions: [],
+      deletedQuestions: [],
+      questions: []
     }
     questionData = {
       type: 'test',
