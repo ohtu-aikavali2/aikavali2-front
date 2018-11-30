@@ -7,6 +7,7 @@ import TemporaryDrawer from './components/common/TemporaryDrawer'
 import LoginPage from './components/LoginPage'
 import ConnectedQuestionForm from './components/Admin/QuestionForm'
 import FlaggedQuestions from './components/Admin/FlaggedQuestions'
+import IntroScreen from './components/common/IntroScreen'
 import DeletedQuestions from './components/Admin/DeletedQuestions'
 import Questions from './components/Admin/Questions'
 import { connect } from 'react-redux'
@@ -36,6 +37,7 @@ export class App extends React.Component {
       <div className="App">
         <AppBar toggleDrawer={this.handleSidebarToggle} user={this.props.loggedUser} logout={this.logout} />
         <TemporaryDrawer toggleDrawer={this.handleSidebarToggle} isOpen={this.props.ui.drawerOpen} />
+        <IntroScreen />
         <Router>
           <Switch>
             <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)} />

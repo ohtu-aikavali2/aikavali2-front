@@ -29,4 +29,17 @@ const login = async (username, password) => {
   }
 }
 
-export default { setToken, getToken, login }
+const setHasSeenIntro = async (value, id) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  try {
+    const { data} = await axios.patch(`${baseUrl}${apiUrl}/${id}/hasSeenIntro`, { hasSeenIntro: value }, config)
+    return data
+  } catch (e) {
+    console.error(e)
+    return { error: 'Virhe' }
+  }
+}
+
+export default { setToken, getToken, login, setHasSeenIntro }
