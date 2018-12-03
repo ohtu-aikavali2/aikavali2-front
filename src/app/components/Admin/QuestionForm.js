@@ -290,24 +290,33 @@ export class QuestionForm extends Component {
 
         <div className='stepContainer'>
           <Steps disabled current={this.state.step} steps={['Valitse kurssi', 'Valitse tyyppi', 'Täytä kentät', 'Tallenna']} />
-          <div className='stepperButtonContainer'>
-            <Button disabled={this.state.step < 1 || this.state.step > 3} style={{ float: 'left' }} onClick={() => this.setState({ step: this.state.step - 1 })} variant="contained" className='backwardButton'>
-              {<ArrowBackward className='backwardIcon' />}
-              Back
-            </Button>
-            {step >= 3 ?
-              (<Button disabled={this.state.step > 3} style={{ float: 'right' }} color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
-                Save
-                {<SaveIcon className='saveIcon' />}
+          <div className='stepperButtonContainer' style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>
+              <Button disabled={this.state.step < 1 || this.state.step > 3} onClick={() => this.setState({ step: this.state.step - 1 })} variant="contained" className='backwardButton'>
+                {<ArrowBackward className='backwardIcon' />}
+                Back
               </Button>
-              )
-              :
-              (<Button style={{ float: 'right' }} onClick={() => this.stepForward()} variant="contained" className='forwardButton'>
-                Next
-                {<ArrowForward className='forwardIcon' />}
+            </div>
+            <div>
+              <Button variant="contained" href="/courses" color="primary">
+                Etusivu
               </Button>
-              )
-            }
+            </div>
+            <div>
+              {step >= 3 ?
+                (<Button disabled={this.state.step > 3} color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
+                  Save
+                  {<SaveIcon className='saveIcon' />}
+                </Button>
+                )
+                :
+                (<Button style={{ float: 'right' }} onClick={() => this.stepForward()} variant="contained" className='forwardButton'>
+                  Next
+                  {<ArrowForward className='forwardIcon' />}
+                </Button>
+                )
+              }
+            </div>
           </div>
         </div>
       </div>
