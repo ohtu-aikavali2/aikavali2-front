@@ -5,7 +5,15 @@ import AlertWindow from '../common/AlertWindow'
 import DumbQuestion from '../Question/DumbQuestion'
 import SuccessPopup from './Popups/SuccessPopup'
 import ConfirmPopup from './Popups/ConfirmPopup'
-import { deleteQuestions, getAvailableQuestions, unflagQuestions } from '../../reducers/actions/questionActions'
+import Loading from '../common/Loading'
+import {
+  deleteQuestions,
+  getAvailableQuestions,
+  unflagQuestions,
+  getDeletedQuestions,
+  restoreQuestions,
+  getAllFlaggedQuestions
+} from '../../reducers/actions/questionActions'
 
 const rows = [
   { id: 'value', numeric: false, disablePadding: false, label: 'Kysymys' },
@@ -25,13 +33,23 @@ class Questions extends Component {
       showDeleteSuccesfulAlert: false,
       showUnflagAlert: false,
       showUnflagSuccessfulAlert: false,
+      showRestoreAlert: false,
+      showRestoreSuccesfulAlert: false,
       selected: [],
       checked: 0
     }
   }
 
   async componentDidMount () {
-    await this.props.getAvailableQuestions()
+    if (this.props.available) {
+      await this.props.getAvailableQuestions()
+    } else if (this.props.deleted) {
+      await this.props.getDeletedQuestions()
+    } else if (this.props.flagged) {
+      await this.props.getAllFlaggedQuestions()
+    } else {
+      await this.props.getAvailableQuestions()
+    }
   }
   updateCheckCount = (count) => {
     this.setState({ checked: count })
@@ -49,6 +67,12 @@ class Questions extends Component {
   closeUnflagSuccessfulAlert = () => {
     this.setState({ showUnflagSuccessfulAlert: false })
   }
+  closeRestoreAlert = () => {
+    this.setState({ showRestoreAlert: false })
+  }
+  closeRestoreSuccessfulAlert = () => {
+    this.setState({ showRestoreSuccesfulAlert: false })
+  }
 
   /* --------- Click handlers passed to child component ---------- */
   handleDeleteClick = (selected) => {
@@ -56,6 +80,9 @@ class Questions extends Component {
   }
   handleUnflagClick = (selected) => {
     this.setState({ showUnflagAlert: true, selected: selected })
+  }
+  handleRestoreClick = (selected) => {
+    this.setState({ showRestoreAlert: true, selected: selected })
   }
 
   /* ------------- The actual actions ------------- */
@@ -72,6 +99,12 @@ class Questions extends Component {
     this.setState({ showUnflagAlert: false , showUnflagSuccessfulAlert: true })
     // To update the flags
     await this.props.getAvailableQuestions()
+  }
+  handleRestore = async () => {
+    let questionIDs = []
+    this.state.selected.forEach(s => questionIDs.push(s._id))
+    await this.props.restoreQuestions(questionIDs)
+    this.setState({ showRestoreAlert: false, showRestoreSuccesfulAlert: true })
   }
 
   // Has to have id AND no inner fields like { item: { value: 'something' } } -> { value: 'comething' }
@@ -104,42 +137,79 @@ class Questions extends Component {
     )
   }
   render () {
+    const { available, deleted, flagged } = this.props
+    let toolbarButton1Text = 'Nollaa ilmiannot'
+    let toolbarButton2Text = ''
+    let title = ''
+    let defaultOrder = ''
+    if (available) {
+      title = 'Käytössä olevat kysymykset'
+      defaultOrder = 'averageRating'
+      if (this.state.checked > 1) {
+        toolbarButton2Text = 'Poista kysymykset'
+      } else {
+        toolbarButton2Text = 'Poista kysymys'
+      }
+    } else if (flagged) {
+      title = 'Ilmiannetut kysymykset'
+      defaultOrder = 'flags'
+      if (this.state.checked > 1) {
+        toolbarButton2Text = 'Poista kysymykset'
+      } else {
+        toolbarButton2Text = 'Poista kysymys'
+      }
+    } else {
+      title = 'Poistetut kysymykset'
+      defaultOrder = 'flags'
+      if (this.state.checked > 1) {
+        toolbarButton2Text = 'Palauta kysymykset'
+      } else {
+        toolbarButton2Text = 'Palauta kysymys'
+      }
+    }
     return (
       <div className='flaggedQuestionsContainer'>
         <FlaggedQuestionsTable
           toolbarButton1Click={this.handleUnflagClick}
-          toolbarButton2Click={this.handleDeleteClick}
+          toolbarButton2Click={(available || flagged) ? this.handleDeleteClick : this.handleRestoreClick}
           data={this.optimizeData(this.props.questions)}
           rows={rows}
           expandable
           expandableContent={this.expandableContent}
-          defaultOrder={'averageRating'}
-          title={'Käytössä olevat kysymykset'}
-          toolbarButton1Text={'Nollaa ilmiannot'}
-          toolbarButton2Text={this.state.checked > 1 ? 'Poista kysymykset' : 'Poista kysymys'}
-          toolbarButton1Tooltip={'Nollaa ilmiannot'}
-          toolbarButton2Tooltip={this.state.checked > 1 ? 'Poista kysymykset' : 'Poista kysymys'}
+          defaultOrder={defaultOrder}
+          title={title}
+          toolbarButton1Text={toolbarButton1Text}
+          toolbarButton2Text={toolbarButton2Text}
+          toolbarButton1Tooltip={toolbarButton1Text}
+          toolbarButton2Tooltip={toolbarButton2Text}
           updateCheckCount={this.updateCheckCount}
         />
         {this.state.showDeleteAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset?`} description2={'Poistamalla kysymyksen, sitä ei näytetä enää käyttäjille. Voit palauttaa kysymyksen myöhemmin käyttöön mikäli haluat.'} okClick={this.handleDelete} okText={'Poista'} toggle={this.closeDeleteAlert} />}
         {this.state.showDeleteSuccesfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymystä poistettu!`} toggle={this.closeDeleteSuccessfulAlert} />}
         {this.state.showUnflagAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan ja kysymystä esitetään edelleen käyttäjille.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} />}
         {this.state.showUnflagSuccessfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymyksen ilmiannot nollattu!`} toggle={this.closeUnflagSuccessfulAlert} />}
+        {this.state.showRestoreAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti palauttaa valitut (${this.state.selected.length} kpl) kysymykset käyttöön?`} description2={'Palauttamisen jälkeen kysymystä ruvetaan näyttämään käyttäjille.'} okClick={this.handleRestore} okText={'Palauta'} toggle={this.closeRestoreAlert} />}
+        {this.state.showRestoreSuccesfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymystä palautettu käyttöön!`} toggle={this.closeRestoreSuccessfulAlert} />}
+        {this.props.loading && <Loading />}
       </div>
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    questions: state.question.questions
+    questions: ownProps.available ? state.question.questions : ownProps.deleted ? state.question.deletedQuestions : ownProps.flagged ? state.question.flaggedQuestions : state.question.questions,
+    loading: state.question.loading
   }
 }
 
 const mapDispatchToProps = {
   getAvailableQuestions,
   deleteQuestions,
-  unflagQuestions
+  unflagQuestions,
+  getDeletedQuestions,
+  restoreQuestions,
+  getAllFlaggedQuestions
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Questions)

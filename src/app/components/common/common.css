@@ -49,3 +49,8 @@ a.adminLink:hover {
 a.adminLink:active {
     color: blue;
 }
+
+.loading {
+    margin: auto;
+    text-align: center;
+}

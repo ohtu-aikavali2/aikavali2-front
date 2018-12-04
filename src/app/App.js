@@ -6,9 +6,7 @@ import AppBar from './components/common/AppBar'
 import TemporaryDrawer from './components/common/TemporaryDrawer'
 import LoginPage from './components/LoginPage'
 import ConnectedQuestionForm from './components/Admin/QuestionForm'
-import FlaggedQuestions from './components/Admin/FlaggedQuestions'
 import IntroScreen from './components/common/IntroScreen'
-import DeletedQuestions from './components/Admin/DeletedQuestions'
 import Questions from './components/Admin/Questions'
 import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
@@ -57,15 +55,15 @@ export class App extends React.Component {
               />
               <Route
                 exact path='/admin/flags'
-                render={() => <FlaggedQuestions />}
+                render={() => <Questions flagged />}
               />
               <Route
                 exact path='/admin/deleted'
-                render={() => <DeletedQuestions />}
+                render={() => <Questions deleted />}
               />
               <Route
                 exact path='/admin/questions'
-                render={() => <Questions />}
+                render={() => <Questions available />}
               />
             </ProtectedRoute>
           </Switch>

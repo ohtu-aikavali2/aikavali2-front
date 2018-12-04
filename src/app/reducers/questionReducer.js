@@ -60,14 +60,16 @@ const questionReducer = (state = initialState, action) => {
     case questionConstants.GET_FLAGGED_QUESTIONS: {
       return {
         ...state,
-        flaggedQuestions: action.data
+        flaggedQuestions: action.data,
+        loading: false
       }
     }
 
     case questionConstants.GET_DELETED_QUESTIONS: {
       return {
         ...state,
-        deletedQuestions: action.data
+        deletedQuestions: action.data,
+        loading: false
       }
     }
 
@@ -97,7 +99,8 @@ const questionReducer = (state = initialState, action) => {
     case questionConstants.GET_AVAILABLE_QUESTIONS: {
       return {
         ...state,
-        questions: action.data
+        questions: action.data,
+        loading: false
       }
     }
 

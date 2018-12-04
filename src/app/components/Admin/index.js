@@ -59,7 +59,7 @@ export class AdminPage extends Component {
             <ClickBox title={'Lisää uusi kysymys'} onClick={() => this.redirect('/admin/newquestion')} />
             <ClickBox title={'Ilmiannetut kysymykset'} onClick={() => this.redirect('/admin/flags')} />
             <ClickBox title={'Poistetut kysymykset'} onClick={() => this.redirect('/admin/deleted')} />
-            <ClickBox title={'Kaikki kysymykset'} onClick={() => this.redirect('/admin/questions')} />
+            <ClickBox title={'Käytössä olevat kysymykset'} onClick={() => this.redirect('/admin/questions')} />
           </div>
         )}
       </div>

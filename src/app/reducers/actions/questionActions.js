@@ -103,6 +103,9 @@ export const flagQuestion = (questionID) => {
 
 export const getDeletedQuestions = () => {
   return async (dispatch) => {
+    dispatch({
+      type: questionConstants.FETCHING_QUESTION
+    })
     const data = await questionService.getDeletedQuestions()
     dispatch({
       type: questionConstants.GET_DELETED_QUESTIONS,
@@ -125,6 +128,9 @@ export const restoreQuestions = (questionIDs) => {
 
 export const getAvailableQuestions = () => {
   return async (dispatch) => {
+    dispatch({
+      type: questionConstants.FETCHING_QUESTION
+    })
     const data = await questionService.getAvailableQuestions()
     dispatch({
       type: questionConstants.GET_AVAILABLE_QUESTIONS,
@@ -137,6 +143,9 @@ export const getAvailableQuestions = () => {
 
 export const getAllFlaggedQuestions = () => {
   return async (dispatch) => {
+    dispatch({
+      type: questionConstants.FETCHING_QUESTION
+    })
     const data = await questionService.getAllFlaggedQuestions()
     dispatch({
       type: questionConstants.GET_FLAGGED_QUESTIONS,
