@@ -137,7 +137,7 @@ class Questions extends Component {
     )
   }
   render () {
-    const { available, deleted, flagged } = this.props
+    const { available, flagged } = this.props
     let toolbarButton1Text = 'Nollaa ilmiannot'
     let toolbarButton2Text = ''
     let title = ''
