@@ -25,7 +25,7 @@ describe('<ButtonBar />', () => {
     })
   })
   it('renders the navigation options', () => {
-    expect(buttonBar.find(BottomNavigationAction).length).toBe(3)
+    expect(buttonBar.find(BottomNavigationAction).length).toBe(4)
   })
   it('leftButton disabled when showNext == true or noMoreQuestions == true', () => {
     // Both are false
@@ -68,7 +68,7 @@ describe('<ButtonBar />', () => {
   })*/
   it('rightButton disabled when showNext == false or noMoreQuestions == true', () => {
     // Both are false
-    let rightButton = buttonBar.find(BottomNavigationAction).at(2)
+    let rightButton = buttonBar.find(BottomNavigationAction).at(3)
     expect(rightButton.props().disabled).toBe(true)
 
     // showNext == true, noMoreQuestions == false
@@ -77,7 +77,7 @@ describe('<ButtonBar />', () => {
       showNext: true
     }
     let tempButtonBar = shallow(<ButtonBar {...tempProps} />)
-    rightButton = tempButtonBar.find(BottomNavigationAction).at(2)
+    rightButton = tempButtonBar.find(BottomNavigationAction).at(3)
     expect(rightButton.props().disabled).toBe(false)
 
     // showNext == false, noMoreQuestions == true
@@ -86,7 +86,7 @@ describe('<ButtonBar />', () => {
       noMoreQuestions: true
     }
     tempButtonBar = shallow(<ButtonBar {...tempProps} />)
-    rightButton = tempButtonBar.find(BottomNavigationAction).at(2)
+    rightButton = tempButtonBar.find(BottomNavigationAction).at(3)
     expect(rightButton.props().disabled).toBe(true)
 
     // Both are true
@@ -96,7 +96,7 @@ describe('<ButtonBar />', () => {
       showNext: true
     }
     tempButtonBar = shallow(<ButtonBar {...tempProps} />)
-    rightButton = tempButtonBar.find(BottomNavigationAction).at(2)
+    rightButton = tempButtonBar.find(BottomNavigationAction).at(3)
     expect(rightButton.props().disabled).toBe(true)
   })
   it('on left button click the prop handleSkip is called', () => {
@@ -108,7 +108,7 @@ describe('<ButtonBar />', () => {
   })
   // The disabled prop should be on, but still able to click it in test
   it('on right button click the props handleSkip is called', () => {
-    let rightButton = buttonBar.find(BottomNavigationAction).at(2)
+    let rightButton = buttonBar.find(BottomNavigationAction).at(3)
     expect(props.handleSkip).toHaveBeenCalledTimes(0)
     rightButton.simulate('click')
     expect(props.handleSkip).toHaveBeenCalledTimes(1)
