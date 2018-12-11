@@ -52,7 +52,7 @@ export class AdminPage extends Component {
     const path = this.props.history.location.pathname
     return (
       <div className='adminPageContainer'>
-        <p style={{ marginBottom: 10, marginTop: 10, fontSize: 30, fontWeight: 'bold' }}>Admin page</p>
+        <p style={{ marginBottom: 20, marginTop: 20, fontSize: 30, fontWeight: 'bold' }}>Ylläpitäjän toiminnot</p>
         <PathBar paths={this.pathIntoArray()} onClick={this.pathBarRedirect} />
         {(path === '/admin' || path === '/admin/') && (
           <div>

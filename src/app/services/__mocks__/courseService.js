@@ -3,5 +3,6 @@ const getCourses = async () => {
 }
 
 export default {
-  getCourses
+  getCourses,
+  setToken: jest.fn()
 }

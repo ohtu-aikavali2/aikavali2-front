@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import FlaggedQuestionsTable from './FlaggedQuestionsTable'
+import EpicTable from '../common/EpicTable/EpicTable'
 import AlertWindow from '../common/AlertWindow'
 import DumbQuestion from '../Question/DumbQuestion'
 import SuccessPopup from './Popups/SuccessPopup'
@@ -15,14 +15,17 @@ import {
   getAllFlaggedQuestions
 } from '../../reducers/actions/questionActions'
 
+// disablePadding false, will left-align the rows with the row header
+// numeric does nothing at the moment. Could be used in sorting
+// (if numeric true, add everything containing letters last. Check "Viimeisin ilmianto")
 const rows = [
   { id: 'value', numeric: false, disablePadding: false, label: 'Kysymys' },
   { id: 'course', numeric: false, disablePadding: false, label: 'Kurssi' },
   { id: 'group', numeric: false, disablePadding: false, label: 'Viikko' },
-  { id: 'flags', numeric: true, disablePadding: false, label: 'Ilmiantoja' },
-  { id: 'reviews', numeric: true, disablePadding: false, label: 'Arvosteluja' },
-  { id: 'recentFlag', numeric: true, disablePadding: false, label: 'Viimeisin ilmianto' },
-  { id: 'averageRating', numeric: true, disablePadding: false, label: 'Average rating' }
+  { id: 'flags', numeric: true, disablePadding: true, label: 'Ilmiantoja' },
+  { id: 'reviews', numeric: true, disablePadding: true, label: 'Arvosteluja' },
+  { id: 'recentFlag', numeric: true, disablePadding: true, label: 'Viimeisin ilmianto' },
+  { id: 'averageRating', numeric: true, disablePadding: true, label: 'Average rating' }
 ]
 
 class Questions extends Component {
@@ -169,7 +172,7 @@ class Questions extends Component {
     }
     return (
       <div className='flaggedQuestionsContainer'>
-        <FlaggedQuestionsTable
+        <EpicTable
           toolbarButton1Click={this.handleUnflagClick}
           toolbarButton2Click={(available || flagged) ? this.handleDeleteClick : this.handleRestoreClick}
           data={this.optimizeData(this.props.questions)}
@@ -186,7 +189,8 @@ class Questions extends Component {
         />
         {this.state.showDeleteAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset?`} description2={'Poistamalla kysymyksen, sitä ei näytetä enää käyttäjille. Voit palauttaa kysymyksen myöhemmin käyttöön mikäli haluat.'} okClick={this.handleDelete} okText={'Poista'} toggle={this.closeDeleteAlert} />}
         {this.state.showDeleteSuccesfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymystä poistettu!`} toggle={this.closeDeleteSuccessfulAlert} />}
-        {this.state.showUnflagAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan ja kysymystä esitetään edelleen käyttäjille.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} />}
+        {this.state.showUnflagAlert && this.props.deleted && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan, mutta kysymystä ei esitetetä käyttäjille, kunnes se palautetaan käyttöön.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} />}
+        {this.state.showUnflagAlert && !this.props.deleted && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan ja kysymystä esitetään edelleen käyttäjille.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} />}
         {this.state.showUnflagSuccessfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymyksen ilmiannot nollattu!`} toggle={this.closeUnflagSuccessfulAlert} />}
         {this.state.showRestoreAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti palauttaa valitut (${this.state.selected.length} kpl) kysymykset käyttöön?`} description2={'Palauttamisen jälkeen kysymystä ruvetaan näyttämään käyttäjille.'} okClick={this.handleRestore} okText={'Palauta'} toggle={this.closeRestoreAlert} />}
         {this.state.showRestoreSuccesfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymystä palautettu käyttöön!`} toggle={this.closeRestoreSuccessfulAlert} />}

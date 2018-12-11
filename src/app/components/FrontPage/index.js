@@ -24,18 +24,9 @@ export class FrontPage extends Component {
   }
 
   render () {
-    const user = this.props.loggedUser.loggedUser
     const { course } = this.props
     return (
       <div className='frontPageContainer' style={{ marginTop: 50 }}>
-        {false && user &&
-          (
-            <div className="user-info">
-              <p>User id: {user.id}, User token: {false && user.token}</p>
-              {!user.token ? <p>Käyttäjä ei ole rekisteröitynyt (Jos käyttäjällä token, on rekisteröitynyt)</p> : <p>Käyttäjä on rekisteröitynyt</p>}
-            </div>
-          )
-        }
         <Question course={course} />
       </div>
     )

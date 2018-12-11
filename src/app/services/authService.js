@@ -19,6 +19,14 @@ const getToken = () => {
   return token
 }
 
+const getConfig = () => {
+  return {
+    headers: { 'Authorization': token }
+    // USED FOR DEV PURPOSES
+    // params: { force: true }
+  }
+}
+
 const login = async (username, password) => {
   try {
     await userManager.login(username, password)
@@ -30,11 +38,8 @@ const login = async (username, password) => {
 }
 
 const setHasSeenIntro = async (value) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
   try {
-    const { data} = await axios.patch(`${baseUrl}${apiUrl}/hasSeenIntro`, { hasSeenIntro: value }, config)
+    const { data} = await axios.patch(`${baseUrl}${apiUrl}/hasSeenIntro`, { hasSeenIntro: value }, getConfig())
     return data
   } catch (e) {
     console.error(e)

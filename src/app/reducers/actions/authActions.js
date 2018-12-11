@@ -1,6 +1,7 @@
 import authConstants from '../constants/authConstants'
 import authService from '../../services/authService'
 import questionService from '../../services/questionService'
+import courseService from '../../services/courseService'
 import userManager from '../../utilities/userManager'
 import store from 'store-js'
 
@@ -12,6 +13,7 @@ export const loggedUserInitialization = () => {
     } else {
       await questionService.setToken(loggedUser.token)
       await authService.setToken(loggedUser.token)
+      await courseService.setToken(loggedUser.token)
     }
     dispatch({
       type: authConstants.INITIALIZE_USER,
@@ -33,6 +35,7 @@ export const login = (username, password) => {
     }
     await questionService.setToken(response.token)
     await authService.setToken(response.token)
+    await courseService.setToken(response.token)
     dispatch({
       type: authConstants.LOGIN_SUCCESSFUL,
       data: { ...response }
@@ -47,6 +50,7 @@ export const logout = () => {
     store.remove('user')
     await questionService.setToken(null)
     await authService.setToken(null)
+    await courseService.setToken(null)
     dispatch({
       type: authConstants.LOGOUT
     })
