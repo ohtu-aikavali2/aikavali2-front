@@ -52,7 +52,7 @@ export class App extends React.Component {
                 pred={loggedUser && loggedUser.administrator}
               />
               <Route
-                exact path='/admin/newquestion'
+                exact path='/newquestion'
                 render={({ history }) => <ConnectedQuestionForm history={history} />}
               />
               <Route
