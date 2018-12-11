@@ -22,7 +22,6 @@ const getConfig = () => {
 }
 
 const getCourses = async () => {
-  console.log(getConfig())
   const response = await axios.get(`${baseUrl}${apiUrl}`, getConfig())
   return response.data
 }
