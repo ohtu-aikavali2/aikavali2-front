@@ -18,11 +18,6 @@ describe('gameActions', () => {
       expect(reduxStore.getActions()[0].type).toEqual(gameConstant.INITIALIZE_GAME)
     })
   })
-  it('startGame dispatches START_GAME', () => {
-    return reduxStore.dispatch(actions.startGame()).then(() => {
-      expect(reduxStore.getActions()[0].type).toEqual(gameConstant.START_GAME)
-    })
-  })
   it('endGame dispatches END_GAME', () => {
     return reduxStore.dispatch(actions.endGame()).then(() => {
       expect(reduxStore.getActions()[0].type).toEqual(gameConstant.END_GAME)
