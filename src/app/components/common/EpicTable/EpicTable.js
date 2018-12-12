@@ -1,24 +1,21 @@
 import React, { Component } from 'react'
+import EnhancedTableHead from './EnhancedTableHead'
+import TableToolbar from './TableToolbar'
+
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import TableSortLabel from '@material-ui/core/TableSortLabel'
-import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Checkbox from '@material-ui/core/Checkbox'
-import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
-import FilterListIcon from '@material-ui/icons/FilterList'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import { stableSort, getSorting } from '../../utilities/sortByField'
-import './admin.css'
+import { stableSort, getSorting } from '../../../utilities/sortByField'
+import '../../Admin/admin.css'
 
 // Anna tälle komponentille propseina data (esim. kysymykset, flaggedQuestions)
-class FlaggedQuestionsTable extends Component {
+class EpicTable extends Component {
   constructor () {
     super()
     this.state = {
@@ -204,7 +201,7 @@ class FlaggedQuestionsTable extends Component {
                       {rows.map(r => {
                         j++
                         return (
-                          <TableCell key={keyStart2 + j} onClick={() => this.handleExpand(n.id)} numeric={r.numeric}><Typography noWrap>{r.id === 'value' ? this.wrapText(n[r.id]) : n[r.id]}</Typography></TableCell>
+                          <TableCell key={keyStart2 + j} onClick={() => this.handleExpand(n.id)}><Typography noWrap>{r.id === 'value' ? this.wrapText(n[r.id]) : n[r.id]}</Typography></TableCell>
                         )
                       })}
                     </TableRow>
@@ -237,106 +234,5 @@ class FlaggedQuestionsTable extends Component {
     )
   }
 }
-class EnhancedTableHead extends Component {
 
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property)
-  }
-  render () {
-    const { onSelectAllClick, numSelected, order, orderBy, rowCount, rows } = this.props
-    return (
-      <TableHead>
-        <TableRow>
-          <TableCell padding='checkbox'>
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
-          {rows.map(row => {
-            return (
-              <TableCell
-                key={row.id}
-                numeric={row.numeric}
-                padding={row.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === row.id ? order : false}
-              >
-                <Tooltip
-                  title='Sort'
-                  placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === row.id}
-                    direction={order}
-                    onClick={this.createSortHandler(row.id)}
-                  >
-                    {row.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            )
-          })}
-        </TableRow>
-      </TableHead>
-    )
-  }
-}
-
-class TableToolbar extends Component {
-  render() {
-    const { numSelected, title, toolbarButton1Text, toolbarButton2Text, toolbarButton1Tooltip, toolbarButton2Tooltip } = this.props
-    return (
-      <Toolbar
-        style={{
-          color: numSelected > 0 ? 'red' : 'black',
-          background: numSelected > 0 ? 'rgba(255, 0, 0, 0.2)' : 'white',
-          display: 'flex'
-        }}
-      >
-        <div style={{ flex: 0.4 }}>
-          {numSelected > 0 ? (
-            <Typography color="inherit" style={{ fontSize: 16 }}>
-              {numSelected} selected
-            </Typography>
-          ) : (
-            <Typography id="tableTitle" style={{ fontSize: 20 }}>
-              {title}
-            </Typography>
-          )}
-        </div>
-        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', cursor: 'pointer' }}>
-          {numSelected > 0 && toolbarButton1Text && (
-            <Tooltip title={toolbarButton1Tooltip}>
-              <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton1Click}>{toolbarButton1Text}</Typography>
-            </Tooltip>
-          )}
-        </div>
-        <div style={{ flex: 0.3, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', cursor: 'pointer' }} >
-          {(numSelected > 0 && toolbarButton2Text) ? (
-            <Tooltip title={toolbarButton2Tooltip}>
-              <Typography style={{ fontSize: 14 }} onClick={this.props.handleButton2Click}>{toolbarButton2Text}</Typography>
-            </Tooltip>
-          ) : (
-            <div style={{ flexDirection: 'row', display: 'flex', position: 'absolute', zIndex: 1, top: 5 }}>
-              <input
-                className={this.props.showFilterInput ? 'filterFieldShow' : 'filterFieldHide'}
-                placeholder='Etsi kysymyksiä'
-                onChange={this.props.onFilterChange}
-                value={this.props.filterValue}
-              />
-              <Tooltip title="Filter list">
-                <IconButton aria-label="Filter list" onClick={this.props.onFilterClick}>
-                  <FilterListIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
-          )}
-        </div>
-      </Toolbar>
-    )
-  }
-}
-
-export default FlaggedQuestionsTable
+export default EpicTable

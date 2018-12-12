@@ -9,35 +9,35 @@ if (process.env.NODE_ENV === 'production') {
 
 const apiUrl = '/api/v1/courses'
 
-const getCourses = async () => {
-  const config = {
-    headers: { 'Authorization': token}
+const setToken = (newToken) => {
+  token = `bearer ${newToken}`
+}
+
+const getConfig = () => {
+  return {
+    headers: { 'Authorization': token }
+    // USED FOR DEV PURPOSES
+    // params: { force: true }
   }
-  const response = await axios.get(`${baseUrl}${apiUrl}`, config)
+}
+
+const getCourses = async () => {
+  const response = await axios.get(`${baseUrl}${apiUrl}`, getConfig())
   return response.data
 }
 
 const getCourse = async (name) => {
-  const config = {
-    headers: { 'Authorization': token}
-  }
-  const response = await axios.get(`${baseUrl}${apiUrl}/${name}`, config)
+  const response = await axios.get(`${baseUrl}${apiUrl}/${name}`, getConfig())
   return response.data
 }
 
 const createCourse = async (data) => {
-  const config = {
-    headers: { 'Authorization': token}
-  }
-  const response = await axios.post(`${baseUrl}${apiUrl}`, data, config)
+  const response = await axios.post(`${baseUrl}${apiUrl}`, data, getConfig())
   return response.data
 }
 
 const updateCourse = async (data, id) => {
-  const config = {
-    headers: { 'Authorization': token}
-  }
-  const response = await axios.patch(`${baseUrl}${apiUrl}/${id}`, data, config)
+  const response = await axios.patch(`${baseUrl}${apiUrl}/${id}`, data, getConfig())
   return response.data
 }
 
@@ -45,5 +45,6 @@ export default {
   getCourses,
   getCourse,
   createCourse,
-  updateCourse
+  updateCourse,
+  setToken
 }

@@ -48,7 +48,6 @@ describe('<Question />', () => {
       getRandomQuestion: jest.fn(),
       answerQuestion: jest.fn(),
       initializeGame: jest.fn(),
-      startGame: jest.fn(),
       endGame: jest.fn(),
       sendReviewForQuestion: jest.fn(),
       loggedUser: {
@@ -61,7 +60,6 @@ describe('<Question />', () => {
     props.getRandomQuestion.mockClear()
     props.answerQuestion.mockClear()
     props.initializeGame.mockClear()
-    props.startGame.mockClear()
     props.endGame.mockClear()
   })
 
@@ -114,7 +112,6 @@ describe('<Question />', () => {
       props.getRandomQuestion.mockClear()
       props.answerQuestion.mockClear()
       props.initializeGame.mockClear()
-      props.startGame.mockClear()
       props.endGame.mockClear()
     })
     it('sets pauseStart time to state if game is set to pause and not the first question', () => {
@@ -176,7 +173,7 @@ describe('<Question />', () => {
       })
       expect(question.state()).toEqual({
         selected: null,
-        startTime: 0,
+        startTime: question.state().startTime,
         pauseStart: 0,
         timer: null,
         showReview: false,

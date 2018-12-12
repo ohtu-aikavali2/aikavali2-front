@@ -2,9 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
 import ReactMarkdown from 'react-markdown'
 import Loading from '../common/Loading'
+
+import Card from '@material-ui/core/Card'
+import CardActionArea from '@material-ui/core/CardActionArea'
+import CardContent from '@material-ui/core/CardContent'
 
 const styles = theme => ({
   wrapper: {
@@ -17,7 +20,6 @@ const styles = theme => ({
 
   paper: {
     margin: theme.spacing.unit,
-    padding: theme.spacing.unit * 2,
     position: 'relative',
     overflow: 'auto'
   }
@@ -68,14 +70,18 @@ export class QuestionAnswer extends Component {
 
     return (
       <div className={classes.wrapper} style={{ cursor: dumb ? 'default' : 'pointer' }} id='container' onClick={dumb ? null : this.handleClick}>
-        <Paper className={classes.paper} id='paper' style={style}>
-          <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
-            <Grid style={textStyle} item className='itemGrid'>
-              <ReactMarkdown source={answer_lines} />
-            </Grid>
-          </Grid>
-          {answering && selected && <Loading className='answerLoading' bar />}
-        </Paper>
+        <Card className={classes.paper} id='paper' style={style}>
+          <CardActionArea style={{ width: '100%' }}>
+            <CardContent>
+              <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
+                <Grid style={textStyle} item className='itemGrid'>
+                  <ReactMarkdown source={answer_lines} />
+                </Grid>
+              </Grid>
+              {answering && selected && <Loading className='answerLoading' bar />}
+            </CardContent>
+          </CardActionArea>
+        </Card>
       </div>
     )
   }

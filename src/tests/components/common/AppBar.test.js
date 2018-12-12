@@ -23,12 +23,6 @@ describe('<AppBar />', () => {
     expect(appBar.find('.appBar').length).toBe(1)
     expect(appBar.find(AppBar).length).toBe(1)
   })
-  it('doesnt render menu button on login page', () => {
-    const menuButtonContainer = appBar.find('.appBarMenuButton')
-    expect(menuButtonContainer.length).toBe(1)
-    expect(menuButtonContainer.children().find(IconButton).length).toBe(0)
-    expect(menuButtonContainer.children().find(MenuIcon).length).toBe(0)
-  })
   it('renders app title', () => {
     const titleContainer = appBar.find('.appBarTitle')
     expect(titleContainer.length).toBe(1)
@@ -45,6 +39,12 @@ describe('<AppBar />', () => {
     const logoutContainer = appBar.find('.appBarLoginContainer')
     expect(logoutContainer.length).toBe(0)
     expect(logoutContainer.children().find(Button).length).toBe(0)
+  })
+  it('doesnt render menu button on if user is not logged in (user is null)', () => {
+    const menuButtonContainer = appBar.find('.appBarMenuButton')
+    expect(menuButtonContainer.length).toBe(0)
+    expect(menuButtonContainer.children().find(IconButton).length).toBe(0)
+    expect(menuButtonContainer.children().find(MenuIcon).length).toBe(0)
   })
   /*   it('Menu button click should call given prop ToggleDrawer', () => {
     const menuButton = appBar.find(IconButton)
