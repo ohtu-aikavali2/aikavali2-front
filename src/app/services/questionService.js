@@ -21,27 +21,27 @@ const reload = () => {
   token = null
 }
 
-const getRandomQuestion = async (course) => {
-  const config = {
+const getConfig = () => {
+  return {
     headers: { 'Authorization': token }
     // USED FOR DEV PURPOSES
     // params: { force: true }
   }
+}
+
+const getRandomQuestion = async (course) => {
   let params = ''
   if (course) {
     params = `?course=${course}`
   }
-  const response = await axios.get(`${baseUrl}${apiUrl}/random${params}`, config)
+  const response = await axios.get(`${baseUrl}${apiUrl}/random${params}`, getConfig())
   return response.data
 }
 
 const answerQuestion = async (id, answer, time) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
   // In case the question has been removed by admin
   try {
-    const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer, time }, config)
+    const response = await axios.post(`${baseUrl}${apiUrl}/answer`, { id, answer, time }, getConfig())
     return response.data
   } catch (e) {
     return { error: 'Something went wrong while sending the answer' }
@@ -49,83 +49,56 @@ const answerQuestion = async (id, answer, time) => {
 }
 
 const postQuestion = async (question) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  const response = await axios.post(`${baseUrl}${apiUrl}`, question, config)
+  const response = await axios.post(`${baseUrl}${apiUrl}`, question, getConfig())
   return response.data
 }
 
 const sendReviewForQuestion = async (id, review) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  await axios.post(`${baseUrl}/api/v1/reviews`, { questionId: id, review }, config)
+  await axios.post(`${baseUrl}/api/v1/reviews`, { questionId: id, review }, getConfig())
 }
 
 const deleteQuestions = async (questionIDs) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
   try {
     // return flaggedQuestions.filter(q => questionIDs.indexOf(q.item._id) === -1)
-    await axios.put(`${baseUrl}${apiUrl}/delete`, { questionIDs }, config)
+    await axios.put(`${baseUrl}${apiUrl}/delete`, { questionIDs }, getConfig())
   } catch (e) {
     return { error: 'Could not delete questions' }
   }
 }
 
 const unflagQuestions = async (questionIDs) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
   try {
-    await axios.put(`${baseUrl}/api/v1/flags`, { questionIDs }, config)
+    await axios.put(`${baseUrl}/api/v1/flags`, { questionIDs }, getConfig())
   } catch (e) {
     return { error: 'Could not unflag the questions' }
   }
 }
 
 const flagQuestion = async (questionID) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  await axios.post(`${baseUrl}/api/v1/flags`, { questionID }, config)
+  await axios.post(`${baseUrl}/api/v1/flags`, { questionID }, getConfig())
   // console.log('Lähetetään flägi backille, questionID: ' + questionID)
 }
 
 const restoreQuestions = async (questionIDs) => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
   try {
-    await axios.put(`${baseUrl}${apiUrl}/restore`, { questionIDs }, config)
+    await axios.put(`${baseUrl}${apiUrl}/restore`, { questionIDs }, getConfig())
   } catch (e) {
     return { error: 'Could not restore the questions' }
   }
 }
 
 const getAllFlaggedQuestions = async () => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  const response = await axios.get(`${baseUrl}${apiUrl}/flagged`, config)
+  const response = await axios.get(`${baseUrl}${apiUrl}/flagged`, getConfig())
   return response.data
 }
 
 const getDeletedQuestions = async () => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  const response = await axios.get(`${baseUrl}${apiUrl}/deleted`, config)
+  const response = await axios.get(`${baseUrl}${apiUrl}/deleted`, getConfig())
   return response.data
 }
 
 const getAvailableQuestions = async () => {
-  const config = {
-    headers: { 'Authorization': token }
-  }
-  const response = await axios.get(`${baseUrl}${apiUrl}/available`, config)
+  const response = await axios.get(`${baseUrl}${apiUrl}/available`, getConfig())
   return response.data
 }
 

@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/587108bad312c57e2c74/maintainability)](https://codeclimate.com/github/ohtu-aikavali/aikavali-front/maintainability)
 
 [Backlog](https://docs.google.com/spreadsheets/d/1eLOK-ZdBtr7S7bItJMD2JX7B941bgRIqcAq6uivDRaY/edit?usp=sharing)  
-[Heroku](https://aikavali-front.herokuapp.com/)
+[opi.mooc.fi](https://opi.mooc.fi/)
 
 # Definition of Done
 

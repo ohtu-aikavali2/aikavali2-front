@@ -20,10 +20,6 @@
   cursor: pointer;
 }
 
-.questionLoading {
-  margin: auto;
-}
-
 .answerLoading {
   position: absolute;
   bottom: 10px;

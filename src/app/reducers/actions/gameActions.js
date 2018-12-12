@@ -8,14 +8,6 @@ export const initializeGame = () => {
   }
 }
 
-export const startGame = () => {
-  return async (dispatch) => {
-    dispatch({
-      type: gameConstants.START_GAME
-    })
-  }
-}
-
 export const endGame = () => {
   return async (dispatch) => {
     dispatch({

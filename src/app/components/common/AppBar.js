@@ -5,42 +5,54 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
-import { HashRouter as Router, Link } from 'react-router-dom'
 import './common.css'
 
 export const ButtonAppBar = (props) => {
+
+  const redirect = (path) => {
+    const location = props.history.location.pathname
+    // Only if not already there
+    if (path !== location && path !== `${location}/`) {
+      props.history.push(path)
+    }
+  }
+
   return (
     <div className='appBar'>
-      <Router>
-        <div>
-          <AppBar position='static' className='appBar_material'>
-            <Toolbar className='toolbar_material'>
+      <div>
+        <AppBar position='static' className='appBar_material'>
+          <Toolbar className='toolbar_material'>
+            {props.user && (
               <div className='appBarMenuButton'>
                 <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
                   <MenuIcon className='menuicon_material' />
                 </IconButton>
               </div>
-              <div className='appBarTitle'>
-                <Typography variant={!props.user ? 'title' : null} color='inherit' className='typography'>
-                  {!props.user
-                    ? 'Aikavälikertaus'
-                    : props.user.administrator && (
-                      <Link to={'/admin'} className='adminLink' replace>
-                        ADMIN
-                      </Link>
-                    )
-                  }
-                </Typography>
+            )}
+            <div className='appBarTitle'>
+              {(props.user && props.user.administrator)
+                ? (
+                  <Button style={{ color: 'white' }} onClick={() => redirect('/admin')}>
+                    ADMIN
+                  </Button>
+                ) : (
+                  <Typography
+                    variant={'title'}
+                    color='inherit'
+                    className='typography'
+                  >
+                    Aikavälikertaus
+                  </Typography>
+                )}
+            </div>
+            {props.user && (
+              <div className='appBarLoginContainer'>
+                <Button onClick={() => props.logout()} color='inherit' className='appBar_login_button'>Kirjaudu ulos</Button>
               </div>
-              {props.user && (
-                <div className='appBarLoginContainer'>
-                  <Button onClick={() => props.logout()} color='inherit' className='appBar_login_button'>Kirjaudu ulos</Button>
-                </div>
-              )}
-            </Toolbar>
-          </AppBar>
-        </div>
-      </Router>
+            )}
+          </Toolbar>
+        </AppBar>
+      </div>
     </div>
   )
 }

@@ -11,7 +11,7 @@ import {
   sendReviewForQuestion,
   flagQuestion
 } from '../../reducers/actions/questionActions'
-import { initializeGame, endGame, startGame } from '../../reducers/actions/gameActions'
+import { initializeGame, endGame } from '../../reducers/actions/gameActions'
 import './question.css'
 import ReviewPopup from '../common/ReviewPopup'
 import Loading from '../common/Loading'
@@ -37,10 +37,14 @@ export class Question extends Component {
     this.notificationRef = React.createRef()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidMount () {
+    this.setState({ startTime: Date.now() })
+  }
+
+  componentWillReceiveProps (nextProps) {
     const { course } = this.props
     // Peli paussille, paitsi jos kyseessä eka kysymys. (Siitä ei mitata aikaa)
-    if (nextProps.game.paused && this.state.startTime !== 0) {
+    if (nextProps.game.paused) {
       this.setState({ pauseStart: Date.now() })
     } else if (this.props.game.paused && !nextProps.game.paused && this.state.startTime !== 0) {
       // Paussi päättyi, muutetaan vain startTimea
@@ -49,7 +53,7 @@ export class Question extends Component {
         pauseStart: 0
       })
     }
-    if (!nextProps.loggedUser.loggedUser) {
+    if (this.props.loggedUser.loggedUser && !nextProps.loggedUser.loggedUser) {
       // Jos käyttäjä kirjautuu ulos, nollataan kaikki
       clearInterval(this.state.timer)
       this.setState({ selected: null, startTime: 0, timer: null })
@@ -63,7 +67,7 @@ export class Question extends Component {
     } else if (!nextProps.questionMessage && nextProps.game.ended) {
       // intervalli lopetetaan kun message on poissa ja ended = totta.
       clearInterval(this.state.timer)
-      this.setState({ timer: null, startTime: 0, selected: null })
+      this.setState({ timer: null, startTime: Date.now(), selected: null })
       this.props.initializeGame()
     }
   }
@@ -107,7 +111,7 @@ export class Question extends Component {
   handleAnswer = async (id, value) => {
     if (!(this.state.selected && !this.props.userAnswer)) {
       this.setState({ selected: { id, value } })
-      const time = this.state.startTime !== 0 ? Date.now() - this.state.startTime : 0
+      const time = Date.now() - this.state.startTime
       await this.props.answerQuestion(id, value, time)
     }
   }
@@ -186,7 +190,7 @@ export class Question extends Component {
             <a href="https://goo.gl/forms/GGU02CHM2bZcShhy2" target="_blank" rel="noopener noreferrer">Anna palautetta</a>
           </AlertWindow>
         )}
-        {loading && <Loading className='questionLoading' />}
+        {loading && <Loading />}
         {question && question.kind === 'PrintQuestion' && (
           <PrintQuestion
             question={question.item}
@@ -235,7 +239,6 @@ const mapDispatchToProps = {
   getRandomQuestion,
   answerQuestion,
   initializeGame,
-  startGame,
   endGame,
   sendReviewForQuestion,
   flagQuestion

@@ -298,7 +298,7 @@ export class QuestionForm extends Component {
               </Button>
             </div>
             <div>
-              <Button variant="contained" href="/courses" color="primary">
+              <Button variant="contained" onClick={() => this.props.history.push('/courses')} color="primary">
                 Etusivu
               </Button>
             </div>

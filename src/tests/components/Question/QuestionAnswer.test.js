@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { QuestionAnswer } from '../../../app/components/Question/QuestionAnswer'
-import Paper from '@material-ui/core/Paper'
+import Card from '@material-ui/core/Card'
 import Grid from '@material-ui/core/Grid'
 import ReactMarkdown from 'react-markdown'
 
@@ -30,7 +30,6 @@ describe('<QuestionAnswer />', () => {
   it('renders self and subcomponents', () => {
     const containerDiv = question.find('div').first()
     expect(containerDiv.props().id).toEqual('container')
-    expect(question.find(Paper).props().id).toEqual('paper')
     const containerGrid = question.find(Grid).first()
     expect(containerGrid.props()).toEqual({
       container: true,
@@ -112,7 +111,7 @@ describe('<QuestionAnswer />', () => {
         selected: true
       }
       question = shallow(<QuestionAnswer {...props} />)
-      const paperStyle = question.find(Paper).props().style
+      const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(113, 218, 113)' })
     })
     it('is set to correctStyle when question has been answered wrong (shows the correct answer)', () => {
@@ -124,7 +123,7 @@ describe('<QuestionAnswer />', () => {
         }
       }
       question = shallow(<QuestionAnswer {...props} />)
-      const paperStyle = question.find(Paper).props().style
+      const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(113, 218, 113)' })
     })
     it('is set to wrongStyle when option is selected and the answer is wrong', () => {
@@ -137,7 +136,7 @@ describe('<QuestionAnswer />', () => {
         selected: true
       }
       question = shallow(<QuestionAnswer {...props} />)
-      const paperStyle = question.find(Paper).props().style
+      const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(255, 128, 128)', cursor: 'default' })
     })
     it('is set to selectedStyle when option is selected but not yet answered', () => {
@@ -146,7 +145,7 @@ describe('<QuestionAnswer />', () => {
         selected: true
       }
       question = shallow(<QuestionAnswer {...props} />)
-      const paperStyle = question.find(Paper).props().style
+      const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' })
     })
     it('is set to notSelectedWrongStyle when question has been answered, and option is not right or wrong. ALSO text color is turned grey', () => {
@@ -158,13 +157,13 @@ describe('<QuestionAnswer />', () => {
         }
       }
       question = shallow(<QuestionAnswer {...props} />)
-      const paperStyle = question.find(Paper).props().style
+      const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ cursor: 'default' })
       const gridStyle = question.find(Grid).at(1).props().style
       expect(gridStyle).toEqual({ color: 'grey' })
     })
     it('if user has not selected any option, style is null', () => {
-      const paperStyle = question.find(Paper).props().style
+      const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual(null)
     })
   })
