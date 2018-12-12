@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import SkipNextIcon from '@material-ui/icons/SkipNext'
-import ForwardIcon from '@material-ui/icons/Forward'
 import ListAltIcon from '@material-ui/icons/ListAlt'
 import LibraryAddIcon from '@material-ui/icons/LibraryAdd'
 
@@ -39,20 +38,18 @@ export class ButtonBar extends Component {
   }
 
   render() {
-    const skipDisabled = this.props.showNext || this.props.noMoreQuestions
-    const nextDisabled = !this.props.showNext || this.props.noMoreQuestions
+    const skipDisabled = this.props.noMoreQuestions
     const skipStyle = skipDisabled ? styles.disabledButton : styles.activeButton
-    const nextStyle = nextDisabled ? styles.disabledButton : styles.activeButton
+
     return (
       <BottomNavigation
         onChange={this.handleChange}
         showLabels
         style={styles.bottomNav}
       >
-        <BottomNavigationAction style={skipStyle} disabled={skipDisabled} onClick={this.props.handleSkip} label="Ohita" icon={<SkipNextIcon style={styles.icon} />} />
-        <BottomNavigationAction style={styles.activeButton} label="Lisää kysymys" icon={<LibraryAddIcon style={styles.middleIcon} />} component={Link} to={'/newquestion'}/>
-        <BottomNavigationAction style={styles.activeButton} label="Kurssit" icon={<ListAltIcon style={styles.middleIcon} />} component={Link} to={'/courses'}/>
-        <BottomNavigationAction style={nextStyle} disabled={nextDisabled} onClick={this.props.handleSkip} label="Seuraava" icon={<ForwardIcon style={styles.icon} />} />
+        <BottomNavigationAction style={styles.activeButton} label="Lisää kysymys" icon={<LibraryAddIcon style={styles.middleIcon} />} component={Link} to={'/newquestion'} />
+        <BottomNavigationAction style={styles.activeButton} label="Kurssit" icon={<ListAltIcon style={styles.middleIcon} />} component={Link} to={'/courses'} />
+        <BottomNavigationAction disabled={skipDisabled} style={skipStyle} onClick={this.props.handleSkip} label="Seuraava" icon={<SkipNextIcon style={styles.icon} />} />
       </BottomNavigation>
     )
   }
