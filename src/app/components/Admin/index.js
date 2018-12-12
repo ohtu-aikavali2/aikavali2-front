@@ -39,7 +39,7 @@ export class AdminPage extends Component {
     } else if (pathName === 'Ilmiannetut') {
       this.redirect('/admin/flags')
     } else if (pathName === 'Lisää kysymys') {
-      this.redirect('/newquestion')
+      this.redirect('/admin/newquestion')
     } else if (pathName === 'Poistetut') {
       this.redirect('/admin/deleted')
     } else if (pathName === 'Kaikki kysymykset') {
@@ -56,7 +56,7 @@ export class AdminPage extends Component {
         <PathBar paths={this.pathIntoArray()} onClick={this.pathBarRedirect} />
         {(path === '/admin' || path === '/admin/') && (
           <div>
-            <ClickBox title={'Lisää uusi kysymys'} onClick={() => this.redirect('/newquestion')} />
+            <ClickBox title={'Lisää uusi kysymys'} onClick={() => this.redirect('/admin/newquestion')} />
             <ClickBox title={'Ilmiannetut kysymykset'} onClick={() => this.redirect('/admin/flags')} />
             <ClickBox title={'Poistetut kysymykset'} onClick={() => this.redirect('/admin/deleted')} />
             <ClickBox title={'Käytössä olevat kysymykset'} onClick={() => this.redirect('/admin/questions')} />
