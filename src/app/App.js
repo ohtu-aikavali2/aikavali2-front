@@ -45,34 +45,34 @@ export class App extends React.Component {
         <IntroScreen />
         <Router>
           <div>
-          <Route path='/' render={({ history }) => <AppBar toggleDrawer={this.handleSidebarToggle} user={loggedUser} logout={this.logout} history={history} />} />
+            <Route path='/' render={({ history }) => <AppBar toggleDrawer={this.handleSidebarToggle} user={loggedUser} logout={this.logout} history={history} />} />
             <Switch>
               <ProtectedRoute
-                  path='/admin'
-                  redirectTo='/'
-                  pred={loggedUser && loggedUser.administrator}
-                >
+                path='/admin'
+                redirectTo='/'
+                pred={loggedUser && loggedUser.administrator}
+              >
                 <Route
                   path='/admin'
                   render={({ history }) => <AdminPage history={history} />}
                 />
                 <Switch>
-                <Route
-                  exact path='/admin/newquestion'
-                  render={({ history }) => <ConnectedQuestionForm history={history} />}
-                />
-                <Route
-                  exact path='/admin/flags'
-                  render={() => <Questions flagged />}
-                />
-                <Route
-                  exact path='/admin/deleted'
-                  render={() => <Questions deleted />}
-                />
-                <Route
-                  exact path='/admin/questions'
-                  render={() => <Questions available />}
-                />
+                  <Route
+                    exact path='/admin/newquestion'
+                    render={({ history }) => <ConnectedQuestionForm history={history} />}
+                  />
+                  <Route
+                    exact path='/admin/flags'
+                    render={() => <Questions flagged />}
+                  />
+                  <Route
+                    exact path='/admin/deleted'
+                    render={() => <Questions deleted />}
+                  />
+                  <Route
+                    exact path='/admin/questions'
+                    render={() => <Questions available />}
+                  />
                 </Switch>
               </ProtectedRoute>
               <ProtectedRoute exact path='/login' render={() => <LoginPage />} redirectTo='/' pred={(loggedUser === null)} />

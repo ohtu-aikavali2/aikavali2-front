@@ -20,19 +20,19 @@ export const ButtonAppBar = (props) => {
             </div>
             <div className='appBarTitle'>
               {(props.user && props.user.administrator)
-              ? (
-                <Button style={{ color: 'white' }} onClick={() => props.history.push('/admin')}>
-                  ADMIN
-                </Button>
-              ) : (
-                <Typography
-                  variant={'title'}
-                  color='inherit'
-                  className='typography'
-                >
-                  Aikavälikertaus
-                </Typography>
-              )}
+                ? (
+                  <Button style={{ color: 'white' }} onClick={() => props.history.push('/admin')}>
+                    ADMIN
+                  </Button>
+                ) : (
+                  <Typography
+                    variant={'title'}
+                    color='inherit'
+                    className='typography'
+                  >
+                    Aikavälikertaus
+                  </Typography>
+                )}
             </div>
             {props.user && (
               <div className='appBarLoginContainer'>
