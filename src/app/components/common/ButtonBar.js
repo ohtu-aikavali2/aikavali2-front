@@ -40,6 +40,7 @@ export class ButtonBar extends Component {
   render() {
     const skipDisabled = this.props.noMoreQuestions
     const skipStyle = skipDisabled ? styles.disabledButton : styles.activeButton
+    const skipLabel = this.props.showNext ? 'Seuraava' : 'Ohita'
 
     return (
       <BottomNavigation
@@ -49,7 +50,7 @@ export class ButtonBar extends Component {
       >
         <BottomNavigationAction style={styles.activeButton} label="Lisää kysymys" icon={<LibraryAddIcon style={styles.middleIcon} />} component={Link} to={'/newquestion'} />
         <BottomNavigationAction style={styles.activeButton} label="Kurssit" icon={<ListAltIcon style={styles.middleIcon} />} component={Link} to={'/courses'} />
-        <BottomNavigationAction disabled={skipDisabled} style={skipStyle} onClick={this.props.handleSkip} label="Seuraava" icon={<SkipNextIcon style={styles.icon} />} />
+        <BottomNavigationAction disabled={skipDisabled} style={skipStyle} onClick={this.props.handleSkip} label={skipLabel} icon={<SkipNextIcon style={styles.icon} />} />
       </BottomNavigation>
     )
   }
