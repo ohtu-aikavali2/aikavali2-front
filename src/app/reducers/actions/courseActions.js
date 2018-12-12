@@ -26,3 +26,23 @@ export const fetchCourse = (name) => {
     })
   }
 }
+
+export const createCourse = (data) => {
+  return async (dispatch) => {
+    const newCourse = await courseService.createCourse(data)
+    dispatch({
+      type: courseConstants.CREATE_COURSE_SUCCESSFUL,
+      data: newCourse
+    })
+  }
+}
+
+export const updateCourse = (data, id) => {
+  return async (dispatch) => {
+    const updatedCourse = await courseService.updateCourse(data, id)
+    dispatch({
+      type: courseConstants.UPDATE_COURSE_SUCCESSFUL,
+      data: updatedCourse
+    })
+  }
+}

@@ -8,20 +8,31 @@ import MenuIcon from '@material-ui/icons/Menu'
 import './common.css'
 
 export const ButtonAppBar = (props) => {
+
+  const redirect = (path) => {
+    const location = props.history.location.pathname
+    // Only if not already there
+    if (path !== location && path !== `${location}/`) {
+      props.history.push(path)
+    }
+  }
+
   return (
     <div className='appBar'>
       <div>
         <AppBar position='static' className='appBar_material'>
           <Toolbar className='toolbar_material'>
-            <div className='appBarMenuButton'>
-              <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
-                <MenuIcon className='menuicon_material' />
-              </IconButton>
-            </div>
+            {props.user && (
+              <div className='appBarMenuButton'>
+                <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
+                  <MenuIcon className='menuicon_material' />
+                </IconButton>
+              </div>
+            )}
             <div className='appBarTitle'>
               {(props.user && props.user.administrator)
                 ? (
-                  <Button style={{ color: 'white' }} onClick={() => props.history.push('/admin')}>
+                  <Button style={{ color: 'white' }} onClick={() => redirect('/admin')}>
                     ADMIN
                   </Button>
                 ) : (

@@ -1,4 +1,28 @@
 .course-page {
     margin: 2%;
-    margin-top: 0;
+    margin-top: 20px;
+}
+
+.course-container {
+  display: flex;
+  justify-content: center;
+  width: 50%;
+  margin: auto;
+}
+
+.course-action-area {
+  width: 100%;
+}
+
+.course {
+  margin: 2%;
+  cursor: pointer;
+  width: 100%;
+}
+
+
+@media only screen and (max-width: 800px) {
+  .course-container {
+      width: 100%;
+  }
 }

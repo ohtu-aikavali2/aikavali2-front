@@ -25,6 +25,8 @@ export class AdminPage extends Component {
         paths.push('Poistetut')
       } else if (words[i] === 'questions') {
         paths.push('Kaikki kysymykset')
+      } else if (words[i] === 'courses') {
+        paths.push('Lisää kurssi')
       } else {
         paths.push(words[i])
       }
@@ -44,6 +46,8 @@ export class AdminPage extends Component {
       this.redirect('/admin/deleted')
     } else if (pathName === 'Kaikki kysymykset') {
       this.redirect('/admin/questions')
+    } else if (pathName === 'Lisää kurssi') {
+      this.redirect('/admin/courses')
     } else {
       this.redirect('/')
     }
@@ -60,6 +64,7 @@ export class AdminPage extends Component {
             <ClickBox title={'Ilmiannetut kysymykset'} onClick={() => this.redirect('/admin/flags')} />
             <ClickBox title={'Poistetut kysymykset'} onClick={() => this.redirect('/admin/deleted')} />
             <ClickBox title={'Käytössä olevat kysymykset'} onClick={() => this.redirect('/admin/questions')} />
+            <ClickBox title={'Kurssit'} onClick={() => this.redirect('/admin/courses')} />
           </div>
         )}
       </div>

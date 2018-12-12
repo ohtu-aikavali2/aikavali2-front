@@ -31,8 +31,20 @@ const getCourse = async (name) => {
   return response.data
 }
 
+const createCourse = async (data) => {
+  const response = await axios.post(`${baseUrl}${apiUrl}`, data, getConfig())
+  return response.data
+}
+
+const updateCourse = async (data, id) => {
+  const response = await axios.patch(`${baseUrl}${apiUrl}/${id}`, data, getConfig())
+  return response.data
+}
+
 export default {
   getCourses,
   getCourse,
+  createCourse,
+  updateCourse,
   setToken
 }
