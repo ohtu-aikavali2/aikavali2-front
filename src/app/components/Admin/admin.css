@@ -86,3 +86,29 @@
     animation-duration: 0.2s;
     animation-fill-mode: forwards;
 }
+
+.admin-courses {
+  padding: 20px;
+}
+
+.group-form {
+  display: flex;
+}
+
+.course-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.course-info {
+  display: flex;
+  align-items: center;
+}
+
+.course-info :nth-child(2) {
+  margin-left: 4px;
+}
+
+.course-groups {
+  margin-top: 10px;
+}

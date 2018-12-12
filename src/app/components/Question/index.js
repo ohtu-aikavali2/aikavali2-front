@@ -186,7 +186,7 @@ export class Question extends Component {
             <a href="https://goo.gl/forms/GGU02CHM2bZcShhy2" target="_blank" rel="noopener noreferrer">Anna palautetta</a>
           </AlertWindow>
         )}
-        {loading && <Loading className='questionLoading' />}
+        {loading && <Loading />}
         {question && question.kind === 'PrintQuestion' && (
           <PrintQuestion
             question={question.item}

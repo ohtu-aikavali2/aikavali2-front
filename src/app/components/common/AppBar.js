@@ -16,9 +16,11 @@ export const ButtonAppBar = (props) => {
           <AppBar position='static' className='appBar_material'>
             <Toolbar className='toolbar_material'>
               <div className='appBarMenuButton'>
-                <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
-                  <MenuIcon className='menuicon_material' />
-                </IconButton>
+                {props.showMenu && (
+                  <IconButton onClick={props.toggleDrawer} className='appBar_menu_button' color='inherit' aria-label='Menu'>
+                    <MenuIcon className='menuicon_material' />
+                  </IconButton>
+                )}
               </div>
               <div className='appBarTitle'>
                 <Typography variant={!props.user ? 'title' : null} color='inherit' className='typography'>

@@ -10,6 +10,7 @@ import FlaggedQuestions from './components/Admin/FlaggedQuestions'
 import IntroScreen from './components/common/IntroScreen'
 import DeletedQuestions from './components/Admin/DeletedQuestions'
 import Questions from './components/Admin/Questions'
+import Courses from './components/Admin/Courses'
 import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
@@ -35,7 +36,7 @@ export class App extends React.Component {
     const { loggedUser, loadingUser } = this.props
     return (
       <div className="App">
-        <AppBar toggleDrawer={this.handleSidebarToggle} user={this.props.loggedUser} logout={this.logout} />
+        <AppBar showMenu={(loggedUser !== null)} toggleDrawer={this.handleSidebarToggle} user={loggedUser} logout={this.logout} />
         <TemporaryDrawer toggleDrawer={this.handleSidebarToggle} isOpen={this.props.ui.drawerOpen} />
         <IntroScreen />
         <Router>
@@ -66,6 +67,10 @@ export class App extends React.Component {
               <Route
                 exact path='/admin/questions'
                 render={() => <Questions />}
+              />
+              <Route
+                exact path='/admin/courses'
+                render={() => <Courses />}
               />
             </ProtectedRoute>
           </Switch>

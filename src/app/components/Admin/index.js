@@ -60,6 +60,7 @@ export class AdminPage extends Component {
             <ClickBox title={'Ilmiannetut kysymykset'} onClick={() => this.redirect('/admin/flags')} />
             <ClickBox title={'Poistetut kysymykset'} onClick={() => this.redirect('/admin/deleted')} />
             <ClickBox title={'Kaikki kysymykset'} onClick={() => this.redirect('/admin/questions')} />
+            <ClickBox title={'Kurssit'} onClick={() => this.redirect('/admin/courses')} />
           </div>
         )}
       </div>
