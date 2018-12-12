@@ -45,7 +45,7 @@ export class App extends React.Component {
         <TemporaryDrawer toggleDrawer={this.handleSidebarToggle} isOpen={this.props.ui.drawerOpen} />
         <IntroScreen />
         <Router>
-          <div>
+          <React.Fragment>
             <Route path='/' render={({ history }) => <AppBar toggleDrawer={this.handleSidebarToggle} user={loggedUser} logout={this.logout} history={history} />} />
             <Switch>
               <ProtectedRoute
@@ -91,7 +91,7 @@ export class App extends React.Component {
                 />
               </ProtectedRoute>
             </Switch>
-          </div>
+          </React.Fragment>
         </Router>
       </div>
     )

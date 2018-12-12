@@ -177,6 +177,7 @@ export class QuestionForm extends Component {
                 fullWidth
                 value={this.state.course}
                 onChange={this.handleChange('course')}
+                style={{marginBottom: '10px'}}
               >
                 {this.props.courses.map(course => (
                   <MenuItem key={course.name} value={course.name}>
@@ -186,7 +187,7 @@ export class QuestionForm extends Component {
               </Select>
               {(this.state.course !== '') ?
                 (<div>
-                  <InputLabel style={{ fontSize: 13 }}>Question Group</InputLabel>
+                  <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
                   <Select
                     fullWidth
                     value={this.state.groupId}
