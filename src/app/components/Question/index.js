@@ -22,7 +22,7 @@ import CheckCircle from '@material-ui/icons/CheckCircle'
 import Zoom from '@material-ui/core/Zoom'
 
 export class Question extends Component {
-  constructor () {
+  constructor() {
     super()
     this.state = {
       selected: null,
@@ -83,7 +83,7 @@ export class Question extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     clearInterval(this.state.timer)
   }
 
@@ -216,7 +216,7 @@ export class Question extends Component {
           />
         )}
         {this.state.showReview && <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} />}
-        <ButtonBar handleSkip={this.getNewQuestion} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
+        <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div>
     )
