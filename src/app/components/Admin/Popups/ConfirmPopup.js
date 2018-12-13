@@ -3,9 +3,9 @@ import Popup from '../../common/Popup'
 import AlertWindow from '../../common/AlertWindow'
 import Button from '@material-ui/core/Button'
 
-const ConfirmPopup = ({ title, description1, description2, okClick, okText, toggle }) => {
+const ConfirmPopup = ({ title, description1, description2, okClick, okText, toggle, checked, timeout }) => {
   return (
-    <Popup toggle={toggle}>
+    <Popup toggle={toggle} checked={checked} timeout={timeout}>
       <AlertWindow title={title}>
         <div style={{ marginTop: 20 }}>
           <p>{description1}</p>

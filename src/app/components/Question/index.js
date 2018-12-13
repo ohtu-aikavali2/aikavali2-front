@@ -215,7 +215,7 @@ export class Question extends Component {
             answered={!!userAnswer}
           />
         )}
-        {this.state.showReview && <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} />}
+        <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div>
