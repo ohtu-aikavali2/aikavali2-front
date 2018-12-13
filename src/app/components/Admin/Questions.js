@@ -140,7 +140,7 @@ class Questions extends Component {
     )
   }
   render () {
-    const { available, flagged } = this.props
+    const { available, flagged, deleted } = this.props
     let toolbarButton1Text = 'Nollaa ilmiannot'
     let toolbarButton2Text = ''
     let title = ''
@@ -187,13 +187,13 @@ class Questions extends Component {
           toolbarButton2Tooltip={toolbarButton2Text}
           updateCheckCount={this.updateCheckCount}
         />
-        {this.state.showDeleteAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset?`} description2={'Poistamalla kysymyksen, sitä ei näytetä enää käyttäjille. Voit palauttaa kysymyksen myöhemmin käyttöön mikäli haluat.'} okClick={this.handleDelete} okText={'Poista'} toggle={this.closeDeleteAlert} />}
-        {this.state.showDeleteSuccesfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymystä poistettu!`} toggle={this.closeDeleteSuccessfulAlert} />}
-        {this.state.showUnflagAlert && this.props.deleted && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan, mutta kysymystä ei esitetetä käyttäjille, kunnes se palautetaan käyttöön.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} />}
-        {this.state.showUnflagAlert && !this.props.deleted && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan ja kysymystä esitetään edelleen käyttäjille.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} />}
-        {this.state.showUnflagSuccessfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymyksen ilmiannot nollattu!`} toggle={this.closeUnflagSuccessfulAlert} />}
-        {this.state.showRestoreAlert && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti palauttaa valitut (${this.state.selected.length} kpl) kysymykset käyttöön?`} description2={'Palauttamisen jälkeen kysymystä ruvetaan näyttämään käyttäjille.'} okClick={this.handleRestore} okText={'Palauta'} toggle={this.closeRestoreAlert} />}
-        {this.state.showRestoreSuccesfulAlert && <SuccessPopup title={`${this.state.selected.length} kysymystä palautettu käyttöön!`} toggle={this.closeRestoreSuccessfulAlert} />}
+        {(available || flagged) && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset?`} description2={'Poistamalla kysymyksen, sitä ei näytetä enää käyttäjille. Voit palauttaa kysymyksen myöhemmin käyttöön mikäli haluat.'} okClick={this.handleDelete} okText={'Poista'} toggle={this.closeDeleteAlert} checked={this.state.showDeleteAlert} />}
+        {(available || flagged) && <SuccessPopup title={`${this.state.selected.length} kysymystä poistettu!`} toggle={this.closeDeleteSuccessfulAlert} checked={this.state.showDeleteSuccesfulAlert} />}
+        {deleted && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan, mutta kysymystä ei esitetetä käyttäjille, kunnes se palautetaan käyttöön.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} checked={this.state.showUnflagAlert} />}
+        {!deleted && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti poistaa valitut (${this.state.selected.length} kpl) kysymykset ilmiannetuista kysymyksistä?`} description2={'Painamalla KYLLÄ, kysymyksen ilmiannot nollataan ja kysymystä esitetään edelleen käyttäjille.'} okClick={this.handleUnflag} okText={'Kyllä'} toggle={this.closeUnflagAlert} checked={this.state.showUnflagAlert} />}
+        <SuccessPopup title={`${this.state.selected.length} kysymyksen ilmiannot nollattu!`} toggle={this.closeUnflagSuccessfulAlert} checked={this.state.showUnflagSuccessfulAlert} />
+        {deleted && <ConfirmPopup title={'Oletko varma?'} description1={`Haluatko varmasti palauttaa valitut (${this.state.selected.length} kpl) kysymykset käyttöön?`} description2={'Palauttamisen jälkeen kysymystä ruvetaan näyttämään käyttäjille.'} okClick={this.handleRestore} okText={'Palauta'} toggle={this.closeRestoreAlert} checked={this.state.showRestoreAlert} />}
+        {deleted && <SuccessPopup title={`${this.state.selected.length} kysymystä palautettu käyttöön!`} toggle={this.closeRestoreSuccessfulAlert} checked={this.state.showRestoreSuccesfulAlert} />}
         {this.props.loading && <Loading />}
       </div>
     )
