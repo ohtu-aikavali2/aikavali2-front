@@ -21,13 +21,6 @@ describe ('<ReviewPopup />', () => {
     expect(alertWindow.length).toBe(1)
     expect(alertWindow.children().find(LikertScale).length).toBe(1)
   })
-  it('background press calls props.toggle', () => {
-    const background = popup.find('.popupContainer')
-    expect(props.toggle).toHaveBeenCalledTimes(0)
-    background.simulate('click')
-    expect(props.toggle).toHaveBeenCalledTimes(1)
-    props.toggle.mockClear()
-  })
   it('LikertScale click calls props.submit', () => {
     const scale = popup.find(LikertScale)
     expect(props.submit).toHaveBeenCalledTimes(0)
