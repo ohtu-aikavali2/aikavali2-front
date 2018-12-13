@@ -17,22 +17,27 @@ const getRandomQuestion = async () => {
   return question
 }
 
-const answer = {
+/*const answer = {
   isCorrect: false,
   correctAnswer: 'Oikea vastaus'
 }
 
 const answerQuestion = async () => {
   return answer
-}
+}*/
 
 export default {
   getRandomQuestion,
-  answerQuestion,
+  answerQuestion: jest.fn(),
   setToken: jest.fn(),
   question,
-  answer,
-  postCompileQuestion: jest.fn(),
-  postPrintQuestion: jest.fn(),
-  sendReviewForQuestion: jest.fn()
+  postQuestion: jest.fn(),
+  sendReviewForQuestion: jest.fn(),
+  deleteQuestions: jest.fn(),
+  unflagQuestions: jest.fn(),
+  flagQuestion: jest.fn(),
+  getDeletedQuestions: jest.fn(),
+  restoreQuestions: jest.fn(),
+  getAvailableQuestions: jest.fn(),
+  getAllFlaggedQuestions: jest.fn()
 }

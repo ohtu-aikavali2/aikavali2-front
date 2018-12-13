@@ -18,5 +18,6 @@ export default {
   loggedUser,
   setToken: jest.fn(),
   login,
-  getLoggedUser
+  getLoggedUser,
+  setHasSeenIntro: jest.fn()
 }

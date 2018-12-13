@@ -5,9 +5,11 @@ import thunk from 'redux-thunk'
 import authConstants from '../../../app/reducers/constants/authConstants'
 jest.mock('../../../app/services/authService')
 jest.mock('../../../app/services/questionService')
+jest.mock('../../../app/services/courseService')
 jest.mock('../../../app/utilities/userManager')
 import authService from '../../../app/services/authService'
 import questionService from '../../../app/services/questionService'
+import courseService from '../../../app/services/courseService'
 import userManager from '../../../app/utilities/userManager'
 
 const middlewares = [thunk]
@@ -22,10 +24,11 @@ describe('authActions', () => {
   afterAll(() => {
     jest.unmock('../../../app/services/authService')
     jest.unmock('../../../app/services/questionService')
+    jest.unmock('../../../app/services/courseService')
     jest.unmock('../../../app/utilities/userManager')
   })
   describe('loggedUserInitialization', () => {
-    it('if there is a user in store, dispatches INITIALIZE_USER, returns that user and sets token fron authService and questionService', () => {
+    it('if there is a user in store, dispatches INITIALIZE_USER, returns that user and sets token fron authService, questionService and courseService', () => {
       const user = {
         id: 1337,
         token: 13379
@@ -35,23 +38,27 @@ describe('authActions', () => {
         expect(reduxStore.getActions()[0].type).toBe(authConstants.INITIALIZE_USER)
         expect(authService.setToken).toHaveBeenCalledTimes(1)
         expect(questionService.setToken).toHaveBeenCalledTimes(1)
+        expect(courseService.setToken).toHaveBeenCalledTimes(1)
         const store = reduxStore.getActions()[0].data
         expect(store.id).toBe(user.id)
         expect(store.token).toBe(user.token)
         authService.setToken.mockClear()
         questionService.setToken.mockClear()
+        courseService.setToken.mockClear()
       })
     })
-    it('if there is no user in store, loggedUserInitialization dispatches INITIALIZE_USER and returns null and does not set tokens fron authService and questionService', () => {
+    it('if there is no user in store, loggedUserInitialization dispatches INITIALIZE_USER and returns null and does not set tokens fron authService, questionService and courseService', () => {
       localStore.remove('user')
       return reduxStore.dispatch(actions.loggedUserInitialization()).then(() => {
         expect(authService.setToken).toHaveBeenCalledTimes(0)
         expect(questionService.setToken).toHaveBeenCalledTimes(0)
+        expect(courseService.setToken).toHaveBeenCalledTimes(0)
         expect(reduxStore.getActions()[0].type).toBe(authConstants.INITIALIZE_USER)
         const store = reduxStore.getActions()[0].data
         expect(store).toBe(null)
         authService.setToken.mockClear()
         questionService.setToken.mockClear()
+        courseService.setToken.mockClear()
       })
     })
   })
@@ -76,8 +83,10 @@ describe('authActions', () => {
         expect(containsLoginSuccess).toBe(false)
         expect(authService.setToken).toHaveBeenCalledTimes(0)
         expect(questionService.setToken).toHaveBeenCalledTimes(0)
+        expect(courseService.setToken).toHaveBeenCalledTimes(0)
         authService.setToken.mockClear()
         questionService.setToken.mockClear()
+        courseService.setToken.mockClear()
       })
     })
     it('if authService.login is successful', () => {
@@ -101,9 +110,11 @@ describe('authActions', () => {
         expect(containsLoginSuccess).toBe(true)
         expect(authService.setToken).toHaveBeenCalledTimes(1)
         expect(questionService.setToken).toHaveBeenCalledTimes(1)
+        expect(courseService.setToken).toHaveBeenCalledTimes(1)
         expect(localStore.get('user')).toEqual(authService.getLoggedUser())
         authService.setToken.mockClear()
         questionService.setToken.mockClear()
+        courseService.setToken.mockClear()
       })
     })
   })
@@ -117,6 +128,7 @@ describe('authActions', () => {
       let containsLogout = false
       expect(authService.setToken).toHaveBeenCalledTimes(1)
       expect(questionService.setToken).toHaveBeenCalledTimes(1)
+      expect(courseService.setToken).toHaveBeenCalledTimes(1)
       storeActions.forEach(action => {
         if (action.type === 'Logout') {
           containsLogout = true
@@ -127,7 +139,34 @@ describe('authActions', () => {
       expect(userManager.logout).toHaveBeenCalledTimes(1)
       authService.setToken.mockClear()
       questionService.setToken.mockClear()
+      courseService.setToken.mockClear()
       userManager.logout.mockClear()
+    })
+  })
+  it('setHasSeenIntro sets the correct data to localStorage and dispatches INITIALIZE_USER with correct data', () => {
+    localStore.set('user', {
+      id: 1337,
+      token: 13379,
+      hasSeenIntro: false
+    })
+    return reduxStore.dispatch(actions.setHasSeenIntro(true)).then(() => {
+      const storeActions = reduxStore.getActions()
+      let containsInitialize = false
+      let actionData = null
+      storeActions.forEach(action => {
+        if (action.type === authConstants.INITIALIZE_USER) {
+          containsInitialize = true
+          actionData = action.data
+        }
+      })
+      expect(containsInitialize).toBe(true)
+      expect(actionData).toEqual({
+        id: 1337,
+        token: 13379,
+        hasSeenIntro: true
+      })
+      expect(localStore.get('user')).toEqual(actionData)
+      expect(authService.setHasSeenIntro).toHaveBeenCalledWith(true)
     })
   })
 })

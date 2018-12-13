@@ -42,7 +42,6 @@ const setHasSeenIntro = async (value) => {
     const { data} = await axios.patch(`${baseUrl}${apiUrl}/hasSeenIntro`, { hasSeenIntro: value }, getConfig())
     return data
   } catch (e) {
-    console.error(e)
     return { error: 'Virhe' }
   }
 }
