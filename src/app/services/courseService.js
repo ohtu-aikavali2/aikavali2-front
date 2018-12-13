@@ -13,6 +13,11 @@ const setToken = (newToken) => {
   token = `bearer ${newToken}`
 }
 
+// For tests
+const getToken = () => {
+  return token
+}
+
 const getConfig = () => {
   return {
     headers: { 'Authorization': token }
@@ -46,5 +51,6 @@ export default {
   getCourse,
   createCourse,
   updateCourse,
-  setToken
+  setToken,
+  getToken
 }

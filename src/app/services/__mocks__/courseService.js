@@ -1,8 +1,7 @@
-const getCourses = async () => {
-  return []
-}
-
 export default {
-  getCourses,
-  setToken: jest.fn()
+  getCourses: jest.fn(),
+  setToken: jest.fn(),
+  getCourse: jest.fn(),
+  createCourse: jest.fn(),
+  updateCourse: jest.fn()
 }

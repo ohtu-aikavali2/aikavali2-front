@@ -42,4 +42,28 @@ describe('authService', () => {
     authService.setToken(8783)
     expect(authService.getToken()).toBe('bearer 8783')
   })
+  describe('setHasSeenIntro', () => {
+    it('calls axios PATCH with correct params and returns data when successful', async () => {
+      authService.setToken(8783)
+      mockAxios.patch.mockReturnValueOnce({ data: 'dataFromBackend' })
+      let response = await authService.setHasSeenIntro(true)
+      expect(mockAxios.patch).toHaveBeenCalledWith(
+        '/api/v1/user/hasSeenIntro',
+        {
+          hasSeenIntro: true
+        },
+        {
+          headers: {
+            'Authorization': 'bearer 8783'
+          }
+        }
+      )
+      expect(response).toEqual('dataFromBackend')
+    })
+    it('calls axios PATCH and returns error when there is an error with axios patch', async () => {
+      mockAxios.patch.mockImplementationOnce(() => { throw new Error('error') })
+      let response = await authService.setHasSeenIntro(true)
+      expect(response).toEqual({ error: 'Virhe' })
+    })
+  })
 })

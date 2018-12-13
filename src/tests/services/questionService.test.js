@@ -68,19 +68,18 @@ describe('questionService', () => {
         __v: 0
       })
     })
+    it('calls axios get with correct params, when course is set', async () => {
+      await questionService.getRandomQuestion('courseName')
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        '/api/v1/questions/random?course=courseName',
+        {
+          headers: { 'Authorization': 'bearer 1337' }
+        }
+      )
+    })
   })
   describe('answerQuestion', () => {
     let answer
-    beforeEach(() => {
-      mockAxios.post.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            isCorrect: false,
-            correctAnswer: 'Option1'
-          }
-        })
-      )
-    })
     afterAll(() => {
       mockAxios.post.mockClear()
     })
@@ -119,131 +118,26 @@ describe('questionService', () => {
       })
     })
     it('returns answer object from axios', async () => {
+      mockAxios.post.mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            isCorrect: false,
+            correctAnswer: 'Option1'
+          }
+        })
+      )
       answer = await questionService.answerQuestion()
       expect(answer).toEqual({
         isCorrect: false,
         correctAnswer: 'Option1'
       })
     })
-  })
-  // FIX TESTS
-  /* describe('postCompileQuestion', () => {
-    let response
-    beforeEach(() => {
-      mockAxios.post.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            fieldOne: 'fieldOne',
-            fieldTwo: 'fieldTwo'
-          }
-        })
-      )
-    })
-    afterAll(() => {
-      mockAxios.post.mockClear()
-    })
-    it('calls axios post', async () => {
-      response = await questionService.postCompileQuestion('correctAnswer', 'options')
-      expect(mockAxios.post).toHaveBeenCalledTimes(1)
-    })
-    describe('calls axios post with /api/v1/questions/compile, {correctAnswer, options} object and configs', () => {
-      it('when token is not set', async () => {
-        questionService.reload()
-        response = await questionService.postCompileQuestion('correctAnswer', 'options')
-        expect(mockAxios.post).toHaveBeenCalledWith(
-          '/api/v1/questions/compile',
-          {
-            correctAnswer: 'correctAnswer',
-            options: 'options'
-          },
-          {
-            headers: { 'Authorization': null }
-          }
-        )
-      })
-      it('when token is set', async () => {
-        questionService.setToken(1337)
-        response = await questionService.postCompileQuestion('correctAnswer', 'options')
-        expect(mockAxios.post).toHaveBeenCalledWith(
-          '/api/v1/questions/compile',
-          {
-            correctAnswer: 'correctAnswer',
-            options: 'options'
-          },
-          {
-            headers: { 'Authorization': 'bearer 1337' }
-          }
-        )
-      })
-    })
-    it('returns response object from axios', async () => {
-      response = await questionService.postCompileQuestion()
-      expect(response).toEqual({
-        fieldOne: 'fieldOne',
-        fieldTwo: 'fieldTwo'
-      })
+    it('returns an error when there is an error with axios post', async () => {
+      mockAxios.post.mockImplementationOnce(() => { throw new Error('error') })
+      let response = await questionService.answerQuestion()
+      expect(response).toEqual({ error: 'Something went wrong while sending the answer' })
     })
   })
-
-  describe('postPrintQuestion', () => {
-    let response
-    beforeEach(() => {
-      mockAxios.post.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            fieldOne: 'fieldOne',
-            fieldTwo: 'fieldTwo'
-          }
-        })
-      )
-    })
-    afterAll(() => {
-      mockAxios.post.mockClear()
-    })
-    it('calls axios post', async () => {
-      response = await questionService.postPrintQuestion('value', 'correctAnswer', 'options')
-      expect(mockAxios.post).toHaveBeenCalledTimes(1)
-    })
-    describe('calls axios post with /api/v1/questions/print, {value, correctAnswer, options} object and configs', () => {
-      it('when token is not set', async () => {
-        questionService.reload()
-        response = await questionService.postPrintQuestion('value', 'correctAnswer', 'options')
-        expect(mockAxios.post).toHaveBeenCalledWith(
-          '/api/v1/questions/print',
-          {
-            value: 'value',
-            correctAnswer: 'correctAnswer',
-            options: 'options'
-          },
-          {
-            headers: { 'Authorization': null }
-          }
-        )
-      })
-      it('when token is set', async () => {
-        questionService.setToken(1337)
-        response = await questionService.postPrintQuestion('value', 'correctAnswer', 'options')
-        expect(mockAxios.post).toHaveBeenCalledWith(
-          '/api/v1/questions/print',
-          {
-            value: 'value',
-            correctAnswer: 'correctAnswer',
-            options: 'options'
-          },
-          {
-            headers: { 'Authorization': 'bearer 1337' }
-          }
-        )
-      })
-    })
-    it('returns response object from axios', async () => {
-      response = await questionService.postPrintQuestion()
-      expect(response).toEqual({
-        fieldOne: 'fieldOne',
-        fieldTwo: 'fieldTwo'
-      })
-    })
-  }) */
   describe('sendReviewForQuestion', () => {
     beforeEach(() => {
       mockAxios.post.mockImplementationOnce()
@@ -289,5 +183,116 @@ describe('questionService', () => {
   it ('sets token', () => {
     questionService.setToken(8783)
     expect(questionService.getToken()).toBe('bearer 8783')
+  })
+  it('postQuestion calls axios post with correct params and return correct data', async () => {
+    mockAxios.post.mockReturnValueOnce({ data: 'dataFromBE' })
+    let response = await questionService.postQuestion('question')
+    expect(mockAxios.post).toHaveBeenCalledWith(
+      '/api/v1/questions',
+      'question',
+      {
+        headers: { 'Authorization': 'bearer 8783' }
+      }
+    )
+    expect(response).toEqual('dataFromBE')
+  })
+  describe('deleteQuestions', () => {
+    it('calls axios put with correct parameters', async () => {
+      await questionService.deleteQuestions([ 'id1', 'id2' ])
+      expect(mockAxios.put).toHaveBeenCalledWith(
+        '/api/v1/questions/delete',
+        { questionIDs: [ 'id1', 'id2' ] },
+        {
+          headers: { 'Authorization': 'bearer 8783' }
+        }
+      )
+    })
+    it('returns error when there is an error in backend', async () => {
+      mockAxios.put.mockImplementationOnce(() => { throw new Error('error') })
+      let response = await questionService.deleteQuestions([ 'id1', 'id2' ])
+      expect(response).toEqual({ error: 'Could not delete questions' })
+    })
+  })
+  describe('unflagQuestions', () => {
+    it('calls axios put with correct parameters', async () => {
+      mockAxios.put.mockClear()
+      await questionService.unflagQuestions([ 'id1', 'id2' ])
+      expect(mockAxios.put).toHaveBeenCalledWith(
+        '/api/v1/flags',
+        { questionIDs: [ 'id1', 'id2' ] },
+        {
+          headers: { 'Authorization': 'bearer 8783' }
+        }
+      )
+      mockAxios.put.mockClear()
+    })
+    it('returns error when there is an error in backend', async () => {
+      mockAxios.put.mockClear()
+      mockAxios.put.mockImplementationOnce(() => { throw new Error('error') })
+      let response = await questionService.unflagQuestions([ 'id1', 'id2' ])
+      expect(response).toEqual({ error: 'Could not unflag the questions' })
+      mockAxios.put.mockClear()
+    })
+  })
+  it('flagQuestion calls axios post with correct parameters', async () => {
+    await questionService.flagQuestion('questionID')
+    expect(mockAxios.post).toHaveBeenCalledWith(
+      '/api/v1/flags',
+      { questionID: 'questionID' },
+      {
+        headers: { 'Authorization': 'bearer 8783' }
+      }
+    )
+    mockAxios.post.mockClear()
+  })
+  describe('restoreQuestions', () => {
+    it('calls axios put with correct parameters', async () => {
+      await questionService.restoreQuestions([ 'id1', 'id2' ])
+      expect(mockAxios.put).toHaveBeenCalledWith(
+        '/api/v1/questions/restore',
+        { questionIDs: [ 'id1', 'id2' ] },
+        {
+          headers: { 'Authorization': 'bearer 8783' }
+        }
+      )
+    })
+    it('returns error when there is an error in backend', async () => {
+      mockAxios.put.mockImplementationOnce(() => { throw new Error('error') })
+      let response = await questionService.restoreQuestions()
+      expect(response).toEqual({ error: 'Could not restore the questions' })
+    })
+  })
+  it('getAllFlaggedQuestions calls axios get with correct parameters and returns correct data', async () => {
+    mockAxios.get.mockReturnValueOnce({ data: 'data' })
+    let response = await questionService.getAllFlaggedQuestions()
+    expect(mockAxios.get).toHaveBeenCalledWith(
+      '/api/v1/questions/flagged',
+      {
+        headers: { 'Authorization': 'bearer 8783' }
+      }
+    )
+    expect(response).toEqual('data')
+  })
+  it('getDeletedQuestions calls axios get with correct params and returns correct data', async () => {
+    mockAxios.get.mockReturnValueOnce({ data: 'data' })
+    let response = await questionService.getDeletedQuestions()
+    expect(mockAxios.get).toHaveBeenCalledWith(
+      '/api/v1/questions/deleted',
+      {
+        headers: { 'Authorization': 'bearer 8783' }
+      }
+    )
+    expect(response).toEqual('data')
+  })
+  it('getAvailableQuestions calls axios get with correct params and returns correct data', async () => {
+    mockAxios.get.mockReturnValueOnce({ data: 'data' })
+    let response = await questionService.getAvailableQuestions()
+    expect(mockAxios.get).toHaveBeenCalledWith(
+      '/api/v1/questions/available',
+      {
+        headers: { 'Authorization': 'bearer 8783' }
+      }
+    )
+    expect(response).toEqual('data')
   })
 })
