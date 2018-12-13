@@ -295,7 +295,7 @@ export class QuestionForm extends Component {
             <div>
               <Button disabled={this.state.step < 1 || this.state.step > 3} onClick={() => this.setState({ step: this.state.step - 1 })} variant="contained" className='backwardButton'>
                 {<ArrowBackward className='backwardIcon' />}
-                Back
+                Takaisin
               </Button>
             </div>
             <div>
@@ -306,13 +306,13 @@ export class QuestionForm extends Component {
             <div>
               {step >= 3 ?
                 (<Button disabled={this.state.step > 3} color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
-                  Save
+                  Tallenna
                   {<SaveIcon className='saveIcon' />}
                 </Button>
                 )
                 :
                 (<Button style={{ float: 'right' }} onClick={() => this.stepForward()} variant="contained" className='forwardButton'>
-                  Next
+                  Seuraava
                   {<ArrowForward className='forwardIcon' />}
                 </Button>
                 )
