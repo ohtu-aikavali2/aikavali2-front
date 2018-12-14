@@ -303,7 +303,7 @@ export class QuestionForm extends Component {
                 </Button>
               )}
               {step === 3 && (
-                <Button disabled={this.state.step > 3} color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
+                <Button color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
                   Tallenna
                   {<SaveIcon className='saveIcon' />}
                 </Button>
