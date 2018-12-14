@@ -29,13 +29,6 @@
     margin-bottom: 1%;
 }
 
-.rerouteButtonContainer {
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    margin-bottom: 10%;
-}
-
 .flaggedQuestionsContainer {
     margin: 2%;
     margin-top: 0;
