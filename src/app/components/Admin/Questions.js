@@ -119,7 +119,7 @@ class Questions extends Component {
       counter += 1
       data.push({
         id: counter,
-        value: q.question.kind === 'PrintQuestion' ? q.question.item.value : 'Mikä kääntyy?',
+        value: (q.question.kind === 'PrintQuestion' || q.question.kind === 'GeneralQuestion') ? q.question.item.value : 'Mikä kääntyy?',
         course: q.group ? q.group.course ? q.group.course.name : 'ei määritelty' : 'ei määritelty',
         group: q.group ? q.group.name : 'ei määritelty',
         flags: q.flags.length,
