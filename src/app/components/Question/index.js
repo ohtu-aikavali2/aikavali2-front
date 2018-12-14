@@ -191,7 +191,7 @@ export class Question extends Component {
           </AlertWindow>
         )}
         {loading && <Loading />}
-        {question && question.kind === 'PrintQuestion' && (
+        {question && (question.kind === 'PrintQuestion' || question.kind === 'GeneralQuestion') && (
           <PrintQuestion
             question={question.item}
             handleQuestionReview={this.handleQuestionReview}
