@@ -14,7 +14,7 @@ import ArrowBackward from '@material-ui/icons/ArrowBack'
 import DumbQuestion from '../Question/DumbQuestion'
 import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
-import { postCompileQuestion, postPrintQuestion } from '../../reducers/actions/questionActions'
+import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 
 //toistaiseksi tyypit kovakoodattu
@@ -26,6 +26,10 @@ const questionTypes = [
   {
     value: 'PrintQuestion',
     label: 'valitse mitä koodi tulostaa'
+  },
+  {
+    value: 'GeneralQuestion',
+    label: 'valitse yleinen kysymys'
   }
 ]
 
@@ -111,6 +115,8 @@ export class QuestionForm extends Component {
         this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
       } else if (this.state.questionType === 'CompileQuestion') {
         this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers)
+      } else {
+        this.props.postGeneralQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
       }
       this.setState({
         course: '',
@@ -151,9 +157,9 @@ export class QuestionForm extends Component {
   }
 
   render() {
-    const { step } = this.state
+    const { step, questionType } = this.state
     let questionTypeSelected = false
-    if (this.state.questionType === 'PrintQuestion') {
+    if (questionType === 'PrintQuestion' || questionType === 'GeneralQuestion') {
       questionTypeSelected = true
     }
 
@@ -227,14 +233,14 @@ export class QuestionForm extends Component {
             <React.Fragment>
               {questionTypeSelected ?
                 (<TextField
-                  label='Koodisi'
+                  label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
                   multiline
                   fullWidth
                   rowsMax='6'
                   value={this.state.question}
                   onChange={this.handleChange('question')}
                   className='questionField'
-                  helperText='Kirjoita tähän koodisi'
+                  helperText={`Kirjoita tähän ${questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'}`}
                   margin='normal'
                 />
                 ) : <h2>Valitse mikä koodeista kääntyy</h2>
@@ -325,6 +331,7 @@ export class QuestionForm extends Component {
 const mapDispatchToProps = {
   postCompileQuestion,
   postPrintQuestion,
+  postGeneralQuestion,
   fetchCourses
 }
 

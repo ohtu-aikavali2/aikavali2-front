@@ -64,6 +64,12 @@ export const postPrintQuestion = (groupId, value, correctAnswer, options) => {
   }
 }
 
+export const postGeneralQuestion = (groupId, value, correctAnswer, options) => {
+  return async () => {
+    await questionService.postQuestion({ type: 'general', value, correctAnswer, options, groupId })
+  }
+}
+
 export const sendReviewForQuestion = (id, review) => {
   return async () => {
     await questionService.sendReviewForQuestion(id, review)
