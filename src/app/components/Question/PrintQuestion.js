@@ -5,15 +5,14 @@ import ReactMarkdown from 'react-markdown'
 import FeedbackBar from '../common/FeedbackBar'
 import Collapse from '@material-ui/core/Collapse'
 
-export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, dumb, topLeftContent, topRightContent, answered, correctAnswer }) => {
+export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, dumb, topLeftContent, topRightContent, answered, correctAnswer, kind }) => {
   let source = '```\n'
   question.value.split('\n').forEach((line) => source += line + '\n')
   source += '```'
-
   return (
     <div className='printQuestion'>
       <Typography className='typography' variant="headline" align="center" color="default" gutterBottom>
-        {question.type !== 'GeneralQuestion' && 'Mitä koodi tulostaa?'}
+        {kind !== 'GeneralQuestion' && 'Mitä koodi tulostaa?'}
       </Typography>
       <Collapse in={answered} timeout={400}>
         <FeedbackBar topLeftContent={topLeftContent} topRightContent={topRightContent} />

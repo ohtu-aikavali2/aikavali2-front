@@ -194,6 +194,7 @@ export class Question extends Component {
         {question && (question.kind === 'PrintQuestion' || question.kind === 'GeneralQuestion') && (
           <PrintQuestion
             question={question.item}
+            kind={question.kind}
             handleQuestionReview={this.handleQuestionReview}
             handleSelect={this.handleAnswer}
             handleSkip={this.getNewQuestion}
