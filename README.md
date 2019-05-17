@@ -4,7 +4,7 @@
 [![dependencies Status](https://david-dm.org/ohtu-aikavali/aikavali-front/status.svg)](https://david-dm.org/ohtu-aikavali/aikavali-front)
 [![Maintainability](https://api.codeclimate.com/v1/badges/587108bad312c57e2c74/maintainability)](https://codeclimate.com/github/ohtu-aikavali/aikavali-front/maintainability)
 
-[Backlog](https://docs.google.com/spreadsheets/d/1eLOK-ZdBtr7S7bItJMD2JX7B941bgRIqcAq6uivDRaY/edit?usp=sharing)  
+[Backlog](https://docs.google.com/spreadsheets/d/15_vCkjjTOUxaQN1zxxQHbL1P8U5bj6oboSiP0_snezE/edit?usp=sharing)  
 [opi.mooc.fi](https://opi.mooc.fi/)
 
 # Definition of Done
