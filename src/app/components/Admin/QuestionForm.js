@@ -20,14 +20,6 @@ import { fetchCourses } from '../../reducers/actions/courseActions'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
-    value: 'CompileQuestion',
-    label: 'valitse mikä koodeista kääntyy'
-  },
-  {
-    value: 'PrintQuestion',
-    label: 'valitse mitä koodi tulostaa'
-  },
-  {
     value: 'GeneralQuestion',
     label: 'valitse yleinen kysymys'
   }
