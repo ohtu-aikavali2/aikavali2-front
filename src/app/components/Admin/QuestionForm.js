@@ -157,7 +157,6 @@ export class QuestionForm extends Component {
 
     const possibleCourses = this.props.courses.filter(obj => { return obj.name === this.state.course })
     const selectedCourse = (possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] })
-
     return (
       <div className='questionFormContainer'>
 
@@ -223,6 +222,11 @@ export class QuestionForm extends Component {
 
           {step === 2 && (
             <React.Fragment>
+              <div>
+                <Button variant="contained" onClick={() => console.log('painettu')} color="primary">
+                  Valitse Kysymys listasta
+                </Button>
+              </div>
               {questionTypeSelected ?
                 (<TextField
                   label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
