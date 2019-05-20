@@ -16,7 +16,7 @@ import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
 import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
-
+import SimpleDialog from '../common/Dialog'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -41,7 +41,9 @@ export class QuestionForm extends Component {
       correctAnswer: '',
       incorrectAnswers: [''],
       step: 0,
-      courses: []
+      courses: [],
+      modalOpen: false,
+      selectedValue: null
     }
   }
 
@@ -59,6 +61,16 @@ export class QuestionForm extends Component {
     this.setState({
       [name]: e.target.value
     })
+  }
+
+  handleClickOpen = () => {
+    this.setState({
+      modalOpen: true
+    })
+  }
+
+  handleClose = value => {
+    this.setState({ selectedValue: value, modalOpen: false , question: value})
   }
 
   addIncorrectAnswer = () => {
@@ -222,10 +234,12 @@ export class QuestionForm extends Component {
 
           {step === 2 && (
             <React.Fragment>
+              <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse kysymys listasta</Button>
               <div>
-                <Button variant="contained" onClick={() => console.log('painettu')} color="primary">
-                  Valitse Kysymys listasta
-                </Button>
+                <SimpleDialog selectedValue={this.state.selectedValue}
+                  open={this.state.modalOpen}
+                  onClose={this.handleClose}
+                />
               </div>
               {questionTypeSelected ?
                 (<TextField
