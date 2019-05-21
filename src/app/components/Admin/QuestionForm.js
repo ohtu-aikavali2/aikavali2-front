@@ -41,7 +41,8 @@ export class QuestionForm extends Component {
       correctAnswer: '',
       incorrectAnswers: [''],
       step: 0,
-      courses: []
+      courses: [],
+      modalOpen: false
     }
   }
 
@@ -223,7 +224,7 @@ export class QuestionForm extends Component {
           {step === 2 && (
             <React.Fragment>
               <div>
-                <Button variant="contained" onClick={() => console.log('painettu')} color="primary">
+                <Button variant="contained" onClick={() => this.handleOpen()} color="primary">
                   Valitse Kysymys listasta
                 </Button>
               </div>
