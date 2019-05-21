@@ -29,6 +29,11 @@ const getConfig = () => {
   }
 }
 
+const getQuestions = async () => {
+  const response = await axios.get(`${baseUrl}${apiUrl}`, getConfig())
+  return response.data
+}
+
 const getRandomQuestion = async (course) => {
   let params = ''
   if (course) {
@@ -103,6 +108,7 @@ const getAvailableQuestions = async () => {
 }
 
 export default {
+  getQuestions,
   getRandomQuestion,
   answerQuestion,
   postQuestion,

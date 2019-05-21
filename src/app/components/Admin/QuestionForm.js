@@ -16,7 +16,8 @@ import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
 import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
-
+import questionService from '../../services/questionService'
+import SimpleDialog from '../common/Dialog'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -42,13 +43,23 @@ export class QuestionForm extends Component {
       incorrectAnswers: [''],
       step: 0,
       courses: [],
-      modalOpen: false
+      questions: [],
+      modalOpen: false,
+      selectedValue: null
     }
   }
 
   async componentDidMount() {
     try {
       await this.props.fetchCourses()
+
+      questionService
+        .getQuestions()
+        .then(res => {
+          this.setState({
+            questions: res
+          })
+        })
     } catch (e) {
       console.log(e)
       return
@@ -60,6 +71,16 @@ export class QuestionForm extends Component {
     this.setState({
       [name]: e.target.value
     })
+  }
+
+  handleClickOpen = () => {
+    this.setState({
+      modalOpen: true
+    })
+  }
+
+  handleClose = value => {
+    this.setState({ selectedValue: value, modalOpen: false , question: value})
   }
 
   addIncorrectAnswer = () => {
@@ -223,10 +244,13 @@ export class QuestionForm extends Component {
 
           {step === 2 && (
             <React.Fragment>
+              <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse kysymys listasta</Button>
               <div>
-                <Button variant="contained" onClick={() => this.handleOpen()} color="primary">
-                  Valitse Kysymys listasta
-                </Button>
+                <SimpleDialog selectedValue={this.state.selectedValue}
+                  open={this.state.modalOpen}
+                  onClose={this.handleClose}
+                  questions={this.state.questions}
+                />
               </div>
               {questionTypeSelected ?
                 (<TextField

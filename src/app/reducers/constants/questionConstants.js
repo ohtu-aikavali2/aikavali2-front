@@ -9,6 +9,7 @@ const UNFLAG_QUESTIONS = 'Unflag questions'
 const GET_DELETED_QUESTIONS = 'Get deleted questions'
 const RESTORE_QUESTIONS = 'Restore questions'
 const GET_AVAILABLE_QUESTIONS = 'Get available questions'
+const FETCH_QUESTIONS = 'Fetch questions'
 
 export default {
   GET_RANDOM_QUESTION,
@@ -21,5 +22,6 @@ export default {
   UNFLAG_QUESTIONS,
   GET_DELETED_QUESTIONS,
   RESTORE_QUESTIONS,
-  GET_AVAILABLE_QUESTIONS
+  GET_AVAILABLE_QUESTIONS,
+  FETCH_QUESTIONS
 }
