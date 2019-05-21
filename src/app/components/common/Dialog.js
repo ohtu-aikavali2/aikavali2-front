@@ -6,7 +6,6 @@ import ListItemText from '@material-ui/core/ListItemText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 
-
 class SimpleDialog extends React.Component {
 
   handleClose = () => {

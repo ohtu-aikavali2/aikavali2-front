@@ -186,7 +186,7 @@ export class QuestionForm extends Component {
 
         <form noValidate autoComplete="off" className='questionForm'>
 
-          {step === 3 && (<DumbQuestion question={question} />)}
+          {step === 4 && (<DumbQuestion question={question} />)}
 
           {step === 0 && (
             <React.Fragment>
@@ -306,13 +306,20 @@ export class QuestionForm extends Component {
               </div>
             </React.Fragment>
           )}
+
+          {step === 3 && (
+            <React.Fragment>
+              <h2>Valitse konseptit</h2>
+
+            </React.Fragment>
+          )}
         </form>
 
         <div className='stepContainer'>
-          <Steps disabled current={this.state.step} steps={['Valitse kurssi', 'Valitse tyyppi', 'Täytä kentät', 'Tallenna']} />
+          <Steps disabled current={this.state.step} steps={['Valitse kurssi', 'Valitse tyyppi', 'Täytä kentät', 'Valitse konseptit', 'Tallenna']} />
           <div className='stepperButtonContainer' style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
-              <Button disabled={this.state.step < 1 || this.state.step > 3} onClick={() => this.setState({ step: this.state.step - 1 })} variant="contained" className='backwardButton'>
+              <Button disabled={this.state.step < 1 || this.state.step > 4} onClick={() => this.setState({ step: this.state.step - 1 })} variant="contained" className='backwardButton'>
                 {<ArrowBackward className='backwardIcon' />}
                 Takaisin
               </Button>
@@ -323,19 +330,19 @@ export class QuestionForm extends Component {
               </Button>
             </div>
             <div>
-              {step < 3 && (
+              {step < 4 && (
                 <Button style={{ float: 'right' }} onClick={() => this.stepForward()} variant="contained" className='forwardButton'>
                   Seuraava
                   {<ArrowForward className='forwardIcon' />}
                 </Button>
               )}
-              {step === 3 && (
+              {step === 4 && (
                 <Button color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
                   Tallenna
                   {<SaveIcon className='saveIcon' />}
                 </Button>
               )}
-              {step > 3 && (
+              {step > 4 && (
                 <Button onClick={() => this.setState({ step: 0 })} variant='contained' color='primary'>
                   Uusi kysymys
                   <AddIcon className='addIcon' />
