@@ -32,7 +32,7 @@ class SimpleDialog extends React.Component {
         <div>
           <List>
             {this.sortQuestions(questions).map(question => (
-              <ListItem button onClick={() => this.handleListItemClick(question)} key={question._id}>
+              <ListItem button onClick={() => this.handleListItemClick(question)} key={question}>
                 <ListItemText primary={question} />
               </ListItem>
             ))}
