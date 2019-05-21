@@ -45,7 +45,7 @@ export class QuestionForm extends Component {
       courses: [],
       questions: [],
       modalOpen: false,
-      selectedValue: null
+      selectedValue: ''
     }
   }
 

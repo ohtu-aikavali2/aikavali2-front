@@ -9,7 +9,7 @@ import Dialog from '@material-ui/core/Dialog'
 class SimpleDialog extends React.Component {
 
   handleClose = () => {
-    this.props.onClose(this.props.selectedValue)
+    this.props.onClose('')
   }
   handleListItemClick = value => {
     this.props.onClose(value)
@@ -19,14 +19,13 @@ class SimpleDialog extends React.Component {
     const { onClose, selectedValue, questions, ...other } = this.props
     console.log(selectedValue)
     console.log(onClose)
-    console.log(questions)
     return (
       <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
         <DialogTitle id="simple-dialog-title">Valitse kysymys</DialogTitle>
         <div>
           <List>
             {questions.map(question => (
-              <ListItem button onClick={() => this.handleListItemClick(question.question.item.value)} key={question.question.item.value}>
+              <ListItem button onClick={() => this.handleListItemClick(question.question.item.value)} key={question._id}>
                 <ListItemText primary={question.question.item.value} />
               </ListItem>
             ))}
