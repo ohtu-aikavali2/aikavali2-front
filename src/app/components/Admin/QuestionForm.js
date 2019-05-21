@@ -17,12 +17,14 @@ import Notifications, { notify } from 'react-notify-toast'
 import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
+import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
+import ConceptDialog from '../common/ConceptDialog'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
     value: 'GeneralQuestion',
-    label: 'valitse yleinen kysymys'
+    label: 'Valitse yleinen kysymys'
   }
 ]
 
@@ -44,6 +46,8 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
+      concept: '',
+      concepts: [],
       modalOpen: false,
       selectedValue: null
     }
@@ -58,6 +62,14 @@ export class QuestionForm extends Component {
         .then(res => {
           this.setState({
             questions: res
+          })
+        })
+
+      conceptService
+        .getConcepts()
+        .then(res => {
+          this.setState({
+            concepts: res
           })
         })
     } catch (e) {
@@ -80,7 +92,7 @@ export class QuestionForm extends Component {
   }
 
   handleClose = value => {
-    this.setState({ selectedValue: value, modalOpen: false , question: value})
+    this.setState({ selectedValue: value, modalOpen: false, question: value })
   }
 
   addIncorrectAnswer = () => {
@@ -89,6 +101,10 @@ export class QuestionForm extends Component {
         incorrectAnswers: [...this.state.incorrectAnswers, '']
       })
     }
+  }
+
+  addConcept = () => {
+
   }
 
   //handles changes of incorrectAnswers in state
@@ -107,6 +123,10 @@ export class QuestionForm extends Component {
         incorrectAnswers: this.state.incorrectAnswers.slice(0, this.state.incorrectAnswers.length - 1)
       })
     }
+  }
+
+  removeConcept = () => {
+
   }
 
   handleSave = () => {
@@ -138,7 +158,9 @@ export class QuestionForm extends Component {
         questionType: '',
         question: '',
         correctAnswer: '',
-        incorrectAnswers: ['']
+        incorrectAnswers: [''],
+        concept: '',
+        concepts: ['']
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -307,12 +329,44 @@ export class QuestionForm extends Component {
             </React.Fragment>
           )}
 
-          {step === 3 && (
+          {/* {step === 3 && (
             <React.Fragment>
               <h2>Valitse konseptit</h2>
 
             </React.Fragment>
-          )}
+          )} */}
+          <React.Fragment>
+            <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse konsepti listasta</Button>
+            <div>
+              <ConceptDialog selectedValue={this.state.selectedValue}
+                open={this.state.modalOpen}
+                onClose={this.handleClose}
+                concepts={this.state.concepts}
+              />
+            </div>
+            <TextField
+              label='Konseptisi'
+              multiline
+              fullWidth
+              rowsMax='6'
+              value={this.state.question}
+              onChange={this.handleChange('concept')}
+              className='conceptField'
+              helperText='Kirjoita tähän konseptisi'
+              margin='normal'
+            />
+
+            {/* <div className='addButtonContainer'>
+              <Button onClick={this.addIncorrectAnswer} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                <AddIcon className='addIcon' />
+              </Button>
+            </div>
+            <div className='removeButtonContainer'>
+              <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>
+                <DeleteIcon className='deleteIcon' />
+              </Button>
+            </div> */}
+          </React.Fragment>
         </form>
 
         <div className='stepContainer'>
