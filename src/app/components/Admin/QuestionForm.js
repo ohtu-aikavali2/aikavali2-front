@@ -19,7 +19,6 @@ import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-import ConceptDialog from '../common/ConceptDialog'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -331,38 +330,9 @@ export class QuestionForm extends Component {
 
           {step === 3 && (
             <React.Fragment>
-              <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse konsepti listasta</Button>
-              <div>
-                <ConceptDialog selectedValue={this.state.selectedValue}
-                  open={this.state.modalOpen}
-                  onClose={this.handleClose}
-                  concepts={this.state.concepts}
-                />
-              </div>
-              <TextField
-                label='Konseptisi'
-                multiline
-                fullWidth
-                rowsMax='6'
-                value={this.state.question}
-                onChange={this.handleChange('concept')}
-                className='conceptField'
-                helperText='Kirjoita tähän konseptisi'
-                margin='normal'
-              />
+              <h2>Valitse kysymykseen liittyvät konseptit</h2>
             </React.Fragment>
           )}
-
-          {/* <div className='addButtonContainer'>
-              <Button onClick={this.addIncorrectAnswer} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                <AddIcon className='addIcon' />
-              </Button>
-            </div>
-            <div className='removeButtonContainer'>
-              <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>
-                <DeleteIcon className='deleteIcon' />
-              </Button>
-            </div> */}
         </form>
 
         <div className='stepContainer'>
