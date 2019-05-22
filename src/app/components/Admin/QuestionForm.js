@@ -329,34 +329,31 @@ export class QuestionForm extends Component {
             </React.Fragment>
           )}
 
-          {/* {step === 3 && (
+          {step === 3 && (
             <React.Fragment>
-              <h2>Valitse konseptit</h2>
-
-            </React.Fragment>
-          )} */}
-          <React.Fragment>
-            <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse konsepti listasta</Button>
-            <div>
-              <ConceptDialog selectedValue={this.state.selectedValue}
-                open={this.state.modalOpen}
-                onClose={this.handleClose}
-                concepts={this.state.concepts}
+              <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse konsepti listasta</Button>
+              <div>
+                <ConceptDialog selectedValue={this.state.selectedValue}
+                  open={this.state.modalOpen}
+                  onClose={this.handleClose}
+                  concepts={this.state.concepts}
+                />
+              </div>
+              <TextField
+                label='Konseptisi'
+                multiline
+                fullWidth
+                rowsMax='6'
+                value={this.state.question}
+                onChange={this.handleChange('concept')}
+                className='conceptField'
+                helperText='Kirjoita tähän konseptisi'
+                margin='normal'
               />
-            </div>
-            <TextField
-              label='Konseptisi'
-              multiline
-              fullWidth
-              rowsMax='6'
-              value={this.state.question}
-              onChange={this.handleChange('concept')}
-              className='conceptField'
-              helperText='Kirjoita tähän konseptisi'
-              margin='normal'
-            />
+            </React.Fragment>
+          )}
 
-            {/* <div className='addButtonContainer'>
+          {/* <div className='addButtonContainer'>
               <Button onClick={this.addIncorrectAnswer} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                 <AddIcon className='addIcon' />
               </Button>
@@ -366,7 +363,6 @@ export class QuestionForm extends Component {
                 <DeleteIcon className='deleteIcon' />
               </Button>
             </div> */}
-          </React.Fragment>
         </form>
 
         <div className='stepContainer'>
