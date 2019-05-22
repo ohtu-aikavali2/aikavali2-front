@@ -123,26 +123,26 @@ describe('questionReducer', () => {
   it('GET_FLAGGED_QUESTIONS should set new flaggedQuestions and set loading: false', () => {
     expect(questionReducer({ ...INITIAL_STATE, loading: true }, {
       type: questionConstants.GET_FLAGGED_QUESTIONS,
-      data: [ 'flagged1', 'flagged2' ]
+      data: ['flagged1', 'flagged2']
     })).toEqual({
       ...INITIAL_STATE,
-      flaggedQuestions: [ 'flagged1', 'flagged2' ]
+      flaggedQuestions: ['flagged1', 'flagged2']
     })
   })
   it('GET_DELETED_QUESTIONS should set new deletedQuestions and set loading: false', () => {
     expect(questionReducer({ ...INITIAL_STATE, loading: true }, {
       type: questionConstants.GET_DELETED_QUESTIONS,
-      data: [ 'deleted1', 'deleted2' ]
+      data: ['deleted1', 'deleted2']
     })).toEqual({
       ...INITIAL_STATE,
-      deletedQuestions: [ 'deleted1', 'deleted2' ]
+      deletedQuestions: ['deleted1', 'deleted2']
     })
   })
   // Should probably also add the questions to deletedQuestions..
   it('DELETE_QUESTIONS should delete the given questions from flaggedQuestions and questions', () => {
     expect(questionReducer(stateWithData, {
       type: questionConstants.DELETE_QUESTIONS,
-      data: [ '123', '456' ]
+      data: ['123', '456']
     })).toEqual({
       ...stateWithData,
       questions: [],
@@ -156,7 +156,7 @@ describe('questionReducer', () => {
   it('UNFLAG_QUESTIONS should delete the given questions from flaggedQuestions', () => {
     expect(questionReducer(stateWithData, {
       type: questionConstants.UNFLAG_QUESTIONS,
-      data: [ '123' ]
+      data: ['123']
     })).toEqual({
       ...stateWithData,
       flaggedQuestions: [
@@ -169,7 +169,7 @@ describe('questionReducer', () => {
   it('RESTORE_QUESTIONS should delete the given questions from deletedQuestions', () => {
     expect(questionReducer(stateWithData, {
       type: questionConstants.RESTORE_QUESTIONS,
-      data: [ '12345', '67890' ]
+      data: ['12345', '67890']
     })).toEqual({
       ...stateWithData,
       deletedQuestions: [
@@ -182,10 +182,10 @@ describe('questionReducer', () => {
   it('GET_AVAILABLE_QUESTIONS should set new questions and set loading: false', () => {
     expect(questionReducer({ ...stateWithData, loading: true }, {
       type: questionConstants.GET_AVAILABLE_QUESTIONS,
-      data: [ 'q1', 'q2' ]
+      data: ['q1', 'q2']
     })).toEqual({
       ...stateWithData,
-      questions: [ 'q1', 'q2' ],
+      questions: ['q1', 'q2'],
       loading: false
     })
   })

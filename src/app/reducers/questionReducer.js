@@ -8,7 +8,8 @@ const initialState = {
   message: null,
   flaggedQuestions: [],
   deletedQuestions: [],
-  questions: []
+  questions: [],
+  concept: null
 }
 
 const questionReducer = (state = initialState, action) => {

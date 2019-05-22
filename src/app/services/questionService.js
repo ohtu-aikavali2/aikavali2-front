@@ -54,6 +54,7 @@ const answerQuestion = async (id, answer, time) => {
 }
 
 const postQuestion = async (question) => {
+  //console.log('service-vaiheessa konsepti on: ', question.concept)
   const response = await axios.post(`${baseUrl}${apiUrl}`, question, getConfig())
   return response.data
 }

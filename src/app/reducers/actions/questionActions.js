@@ -65,21 +65,22 @@ export const answerQuestion = (id, value, time) => {
   }
 }
 
-export const postCompileQuestion = (groupId, correctAnswer, options) => {
+export const postCompileQuestion = (groupId, correctAnswer, options, concept) => {
   return async () => {
-    await questionService.postQuestion({ type: 'compile', correctAnswer, options, groupId })
+    await questionService.postQuestion({ type: 'compile', correctAnswer, options, groupId, concept })
   }
 }
 
-export const postPrintQuestion = (groupId, value, correctAnswer, options) => {
+export const postPrintQuestion = (groupId, value, correctAnswer, options, concept) => {
   return async () => {
-    await questionService.postQuestion({ type: 'print', value, correctAnswer, options, groupId })
+    await questionService.postQuestion({ type: 'print', value, correctAnswer, options, groupId, concept })
   }
 }
 
-export const postGeneralQuestion = (groupId, value, correctAnswer, options) => {
+export const postGeneralQuestion = (groupId, value, correctAnswer, options, concept) => {
   return async () => {
-    await questionService.postQuestion({ type: 'general', value, correctAnswer, options, groupId })
+    //console.log('konsepti actions-kohdassa: ', concept)
+    await questionService.postQuestion({ type: 'general', value, correctAnswer, options, groupId, concept })
   }
 }
 

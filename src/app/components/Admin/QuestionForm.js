@@ -11,6 +11,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Steps from 'react-simple-steps'
 import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBackward from '@material-ui/icons/ArrowBack'
+import Checkbox from '@material-ui/core/Checkbox'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormGroup from '@material-ui/core/FormGroup'
 import DumbQuestion from '../Question/DumbQuestion'
 import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
@@ -19,7 +22,7 @@ import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-import ConceptDialog from '../common/ConceptDialog'
+
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -47,7 +50,7 @@ export class QuestionForm extends Component {
       courses: [],
       questions: [],
       concept: '',
-      concepts: [],
+      //concepts: [],
       modalOpen: false,
       selectedValue: null
     }
@@ -103,9 +106,9 @@ export class QuestionForm extends Component {
     }
   }
 
-  addConcept = () => {
+  // addConcept = () => {
 
-  }
+  // }
 
   //handles changes of incorrectAnswers in state
   handleArrayChange = (option, i) => event => {
@@ -125,9 +128,9 @@ export class QuestionForm extends Component {
     }
   }
 
-  removeConcept = () => {
+  // removeConcept = () => {
 
-  }
+  // }
 
   handleSave = () => {
     if (this.state.course === '') {
@@ -146,11 +149,11 @@ export class QuestionForm extends Component {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
       if (this.state.questionType === 'PrintQuestion') {
-        this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers, this.state.concept)
       } else if (this.state.questionType === 'CompileQuestion') {
-        this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers, this.state.concept)
       } else {
-        this.props.postGeneralQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postGeneralQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers, this.state.concept)
       }
       this.setState({
         course: '',
@@ -159,8 +162,8 @@ export class QuestionForm extends Component {
         question: '',
         correctAnswer: '',
         incorrectAnswers: [''],
-        concept: '',
-        concepts: ['']
+        concept: ''
+        // concepts: ['']
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -329,44 +332,54 @@ export class QuestionForm extends Component {
             </React.Fragment>
           )}
 
-          {/* {step === 3 && (
+          {step === 3 && (
             <React.Fragment>
               <h2>Valitse konseptit</h2>
+              {/* <FormControl component="fieldset" className={classes.formControl}> */}
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      // checked={this.state.checkedA}
+                      // onChange={this.handleChange('checkedA')}
+                      // value="checkedA"
+                      color="primary"
+                    />
+                  }
+                  label='for-loop'
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      // checked={this.state.checkedA}
+                      // onChange={this.handleChange('checkedA')}
+                      // value="checkedA"
+                      color="primary"
+                    />
+                  }
+                  label='while-loop'
+                />
+              </FormGroup>
 
-            </React.Fragment>
-          )} */}
-          <React.Fragment>
-            <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse konsepti listasta</Button>
-            <div>
-              <ConceptDialog selectedValue={this.state.selectedValue}
-                open={this.state.modalOpen}
-                onClose={this.handleClose}
-                concepts={this.state.concepts}
+              <TextField
+                label='Lisää uusi konsepti'
+                multiline
+                fullWidth
+                rowsMax='6'
+                value={this.state.concept}
+                onChange={this.handleChange('concept')}
+                className='conceptField'
+                helperText='Kirjoita kysymykseesi liittyvä konsepti'
+                margin='normal'
               />
-            </div>
-            <TextField
-              label='Konseptisi'
-              multiline
-              fullWidth
-              rowsMax='6'
-              value={this.state.question}
-              onChange={this.handleChange('concept')}
-              className='conceptField'
-              helperText='Kirjoita tähän konseptisi'
-              margin='normal'
-            />
 
-            {/* <div className='addButtonContainer'>
-              <Button onClick={this.addIncorrectAnswer} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                <AddIcon className='addIcon' />
-              </Button>
-            </div>
-            <div className='removeButtonContainer'>
-              <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>
-                <DeleteIcon className='deleteIcon' />
-              </Button>
-            </div> */}
-          </React.Fragment>
+              <div className='addButtonContainer'>
+                <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                  <AddIcon className='addIcon' />
+                </Button>
+              </div>
+            </React.Fragment>
+          )}
         </form>
 
         <div className='stepContainer'>
