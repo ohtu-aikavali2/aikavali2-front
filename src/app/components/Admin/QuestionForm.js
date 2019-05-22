@@ -22,7 +22,6 @@ import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
