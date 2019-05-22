@@ -2,10 +2,12 @@
   "name": "aikavali-front",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ohtu-aikavali2.github.io/aikavali2-front/",
   "dependencies": {
     "@material-ui/core": "^3.1.2",
     "@material-ui/icons": "^3.0.1",
     "axios": "^0.18.0",
+    "gh-pages": "^2.0.1",
     "likert-react": "0.0.0-beta6",
     "material-ui-rating": "^2.0.0",
     "react": "^16.4.2",
@@ -21,7 +23,8 @@
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
     "store-js": "^2.0.4",
-    "tmc-client-js": "0.0.9"
+    "tmc-client-js": "0.0.9",
+    "yarn": "^1.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,7 +35,9 @@
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "codecov": "./node_modules/.bin/codecov",
-    "precommit": "npm test && npm run lint"
+    "precommit": "npm test && npm run lint",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
