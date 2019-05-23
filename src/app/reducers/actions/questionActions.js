@@ -2,6 +2,19 @@ import questionConstants from '../constants/questionConstants'
 import questionService from '../../services/questionService'
 import { shuffle } from '../../utilities/shuffleArray'
 
+export const fetchQuestions = () => {
+  return async (dispatch) => {
+    dispatch({
+      type: questionConstants.FETCH_QUESTIONS
+    })
+    const questions = await questionService.getQuestions()
+    dispatch({
+      type: questionConstants.FETCH_QUESTIONS_SUCCESFUL,
+      data: questions
+    })
+  }
+}
+
 export const getRandomQuestion = (course = null) => {
   console.log('getRandomQuestion')
   return async (dispatch) => {

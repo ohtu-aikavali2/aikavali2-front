@@ -16,17 +16,10 @@ import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
 import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
-
+import questionService from '../../services/questionService'
+import SimpleDialog from '../common/Dialog'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
-  {
-    value: 'CompileQuestion',
-    label: 'valitse mikä koodeista kääntyy'
-  },
-  {
-    value: 'PrintQuestion',
-    label: 'valitse mitä koodi tulostaa'
-  },
   {
     value: 'GeneralQuestion',
     label: 'valitse yleinen kysymys'
@@ -49,13 +42,24 @@ export class QuestionForm extends Component {
       correctAnswer: '',
       incorrectAnswers: [''],
       step: 0,
-      courses: []
+      courses: [],
+      questions: [],
+      modalOpen: false,
+      selectedValue: ''
     }
   }
 
   async componentDidMount() {
     try {
       await this.props.fetchCourses()
+
+      questionService
+        .getQuestions()
+        .then(res => {
+          this.setState({
+            questions: res
+          })
+        })
     } catch (e) {
       console.log(e)
       return
@@ -67,6 +71,16 @@ export class QuestionForm extends Component {
     this.setState({
       [name]: e.target.value
     })
+  }
+
+  handleClickOpen = () => {
+    this.setState({
+      modalOpen: true
+    })
+  }
+
+  handleClose = value => {
+    this.setState({ selectedValue: value, modalOpen: false , question: value})
   }
 
   addIncorrectAnswer = () => {
@@ -165,7 +179,6 @@ export class QuestionForm extends Component {
 
     const possibleCourses = this.props.courses.filter(obj => { return obj.name === this.state.course })
     const selectedCourse = (possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] })
-
     return (
       <div className='questionFormContainer'>
 
@@ -231,6 +244,14 @@ export class QuestionForm extends Component {
 
           {step === 2 && (
             <React.Fragment>
+              <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse kysymys listasta</Button>
+              <div>
+                <SimpleDialog selectedValue={this.state.selectedValue}
+                  open={this.state.modalOpen}
+                  onClose={this.handleClose}
+                  questions={this.state.questions}
+                />
+              </div>
               {questionTypeSelected ?
                 (<TextField
                   label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
