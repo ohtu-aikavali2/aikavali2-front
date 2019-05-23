@@ -4,7 +4,7 @@ import userManager from '../utilities/userManager'
 let baseUrl = ''
 // This can not be tested. It's ok tho
 if (process.env.NODE_ENV === 'production') {
-  baseUrl = 'https://aikavali-back.herokuapp.com'
+  baseUrl = 'https://aikavali-back2.herokuapp.com'
 }
 
 const apiUrl = '/api/v1/user'
