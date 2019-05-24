@@ -67,13 +67,6 @@ export class QuestionForm extends Component {
           })
         })
 
-      // conceptService
-      //   .getConcepts()
-      //   .then(res => {
-      //     this.setState({
-      //       concepts: res
-      //     })
-      //   })
       this.setState({
         concepts: ['for-loop', 'while-loop'],
         checkedConcepts: [false, false]
@@ -101,11 +94,6 @@ export class QuestionForm extends Component {
     this.setState({ selectedValue: value, modalOpen: false, question: value })
   }
 
-  // handleMenuItemClick(event, index) {
-  //   setSelectedIndex(index)
-  //   this.handleChange(event)
-  // }
-
   addIncorrectAnswer = () => {
     if (this.state.incorrectAnswers.length < 4) {
       this.setState({
@@ -114,16 +102,6 @@ export class QuestionForm extends Component {
     }
   }
 
-  // addConcept = (newConcept) => {
-  //   console.log('not adding ', newConcept)
-  //   if (this.state.concepts.length < 4) {
-  //     this.setState({
-  //       concepts: [...this.state.concepts, newConcept]
-  //     })
-  //     this.state.concepts.map(c => console.log(c))
-  //   }
-  // }
-
   handleConceptCheckBox = (i) => event => {
     console.log(event)
     const newCheckedConcepts = [...this.state.checkedConcepts]
@@ -131,7 +109,6 @@ export class QuestionForm extends Component {
     this.setState({
       checkedConcepts: newCheckedConcepts
     })
-    console.log(this.state.checkedConcepts)
   }
 
   //handles changes of incorrectAnswers in state
@@ -152,10 +129,6 @@ export class QuestionForm extends Component {
     }
   }
 
-  // removeConcept = () => {
-
-  // }
-
   handleSave = () => {
     if (this.state.course === '') {
       console.log('Course is not set!')
@@ -172,12 +145,17 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
+      // new array for concepts to be saved as references to the the question
+      // TODO: save (only) indices of concept objects
+      const concepts = this.state.checkedConcepts.map((value, i) => value === true ? this.state.concepts[i] : null).filter(c => c !== null)
+      console.log('concepts to be saved: ', concepts)
       if (this.state.questionType === 'PrintQuestion') {
-        this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers, this.state.concept)
+        this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
       } else if (this.state.questionType === 'CompileQuestion') {
-        this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers, this.state.concept)
+        this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers)
       } else {
-        this.props.postGeneralQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers, this.state.concept)
+        //TODO: input concepts to be saved as parameters
+        this.props.postGeneralQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
       }
       this.setState({
         course: '',
@@ -278,33 +256,18 @@ export class QuestionForm extends Component {
           {step === 1 && (
             <React.Fragment>
               <h2>Valitse tyyppi</h2>
-              {/* <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel> */}
-              {/* <Select
+              <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
+              <Select
                 fullWidth
                 value={this.state.questionType}
                 onChange={this.handleChange('questionType')}
-              > */}
-              {/* <ClickBox title='Kysymystyyppi' onClick={this.handleChange('questionType')}> */}
-              {/* <Menu id="lock-menu" >
-                {questionTypes.map((option, index) => (
-                  <MenuItem
-                    key={option}
-                    disabled={index === 0}
-                    selected={index === selectedIndex}
-                    onClick={event => this.handleMenuItemClick(event, index)}
-                  >
-                    {option}
+              >
+                {questionTypes.map(option => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
                   </MenuItem>
                 ))}
-              </Menu> */}
-
-              {questionTypes.map(option => (
-                <MenuItem key={option.value} value={option.value} onClick={this.handleChange('questionType')}>
-                  {option.label}
-                </MenuItem>
-              ))}
-              {/* </ClickBox> */}
-              {/* </Select> */}
+              </Select>
             </React.Fragment>
           )}
 
@@ -376,20 +339,25 @@ export class QuestionForm extends Component {
           {step === 3 && (
             <React.Fragment>
               <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
-              {/* <FormControl component="fieldset" className={classes.formControl}> */}
               <FormGroup>
                 {concepts.map((option, i) => (
                   <FormControlLabel
                     key={i}
                     control={
                       <Checkbox
-                        checked={this.state.checkedConcepts[i]}
+                        // checked={this.state.checkedConcepts[i]}
                         onChange={this.handleConceptCheckBox(i)}
                         value={option}
                         color="primary"
                       />
                     }
                     label={option}
+
+                  // {selectedCourse.concepts.map(concept => (
+                  //   <FormControlLabel control={
+                  //     <Checkbox checked={this.state.checkedA} onChange={this.handleChange('concept')} value='concept' color="primary" />
+                  //   }
+                  //   label={concept.name} key={concept._id}
                   />
                 ))}
               </FormGroup>
