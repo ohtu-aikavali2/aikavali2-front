@@ -336,28 +336,13 @@ export class QuestionForm extends Component {
               <h2>Valitse konseptit</h2>
               {/* <FormControl component="fieldset" className={classes.formControl}> */}
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      // checked={this.state.checkedA}
-                      // onChange={this.handleChange('checkedA')}
-                      // value="checkedA"
-                      color="primary"
-                    />
+                {selectedCourse.concepts.map(concept => (
+                  <FormControlLabel control={
+                    <Checkbox checked={this.state.checkedA} onChange={this.handleChange('concept')} value='concept' color="primary" />
                   }
-                  label='for-loop'
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      // checked={this.state.checkedA}
-                      // onChange={this.handleChange('checkedA')}
-                      // value="checkedA"
-                      color="primary"
-                    />
-                  }
-                  label='while-loop'
-                />
+                  label={concept.name} key={concept._id}
+                  />
+                ))}
               </FormGroup>
 
               <TextField
