@@ -48,8 +48,8 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concepts: [],
-      checkedConcepts: [],
+      concepts: [''],
+      checkedConcepts: [''],
       modalOpen: false,
       selectedValue: null
     }
@@ -66,11 +66,10 @@ export class QuestionForm extends Component {
             questions: res
           })
         })
-
-      this.setState({
-        concepts: ['for-loop', 'while-loop'],
-        checkedConcepts: [false, false]
-      })
+      // this.setState({
+      //   concepts: ['for-loop', 'while-loop'],
+      //   checkedConcepts: [false, false]
+      // })
     } catch (e) {
       console.log(e)
       return
@@ -109,6 +108,14 @@ export class QuestionForm extends Component {
     this.setState({
       checkedConcepts: newCheckedConcepts
     })
+  }
+
+  initializeConcepts = (selectedCourse) => () => {
+    console.log('selected course', selectedCourse)
+    console.log('concepts to be initialized', selectedCourse.concepts)
+    this.setState({ concepts: selectedCourse.concepts })
+    console.log('------------------', this.state.concepts)
+    this.setState({ checkedConcepts: new Array(selectedCourse.concepts.length).fill(false) })
   }
 
   //handles changes of incorrectAnswers in state
@@ -203,11 +210,16 @@ export class QuestionForm extends Component {
     if (questionType === 'PrintQuestion' || questionType === 'GeneralQuestion') {
       questionTypeSelected = true
     }
-
     const possibleCourses = this.props.courses.filter(obj => { return obj.name === this.state.course })
     const selectedCourse = (possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] })
-
+    if (selectedCourse.concepts !== null && selectedCourse.concepts !== undefined && this.state.concepts.length < 2) {
+      this.initializeConcepts(selectedCourse)
+      // console.log('selected course', selectedCourse)
+      // console.log(selectedCourse.concepts)
+      // console.log(this.state.concepts)
+    }
     const concepts = [...this.state.concepts]
+
     return (
       <div className='questionFormContainer'>
 
@@ -340,18 +352,18 @@ export class QuestionForm extends Component {
             <React.Fragment>
               <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
               <FormGroup>
-                {concepts.map((option, i) => (
+                {concepts.map((concept, i) => (
                   <FormControlLabel
                     key={i}
                     control={
                       <Checkbox
                         // checked={this.state.checkedConcepts[i]}
                         onChange={this.handleConceptCheckBox(i)}
-                        value={option}
+                        value={concept.name}
                         color="primary"
                       />
                     }
-                    label={option}
+                    label={concept.name}
 
                   // {selectedCourse.concepts.map(concept => (
                   //   <FormControlLabel control={
