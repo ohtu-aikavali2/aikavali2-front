@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+// import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -20,7 +21,6 @@ import Notifications, { notify } from 'react-notify-toast'
 import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
-import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
@@ -48,8 +48,8 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concept: '',
-      //concepts: [],
+      concepts: [],
+      checkedConcepts: [],
       modalOpen: false,
       selectedValue: null
     }
@@ -67,13 +67,17 @@ export class QuestionForm extends Component {
           })
         })
 
-      conceptService
-        .getConcepts()
-        .then(res => {
-          this.setState({
-            concepts: res
-          })
-        })
+      // conceptService
+      //   .getConcepts()
+      //   .then(res => {
+      //     this.setState({
+      //       concepts: res
+      //     })
+      //   })
+      this.setState({
+        concepts: ['for-loop', 'while-loop'],
+        checkedConcepts: [false, false]
+      })
     } catch (e) {
       console.log(e)
       return
@@ -97,6 +101,11 @@ export class QuestionForm extends Component {
     this.setState({ selectedValue: value, modalOpen: false, question: value })
   }
 
+  // handleMenuItemClick(event, index) {
+  //   setSelectedIndex(index)
+  //   this.handleChange(event)
+  // }
+
   addIncorrectAnswer = () => {
     if (this.state.incorrectAnswers.length < 4) {
       this.setState({
@@ -105,9 +114,25 @@ export class QuestionForm extends Component {
     }
   }
 
-  // addConcept = () => {
-
+  // addConcept = (newConcept) => {
+  //   console.log('not adding ', newConcept)
+  //   if (this.state.concepts.length < 4) {
+  //     this.setState({
+  //       concepts: [...this.state.concepts, newConcept]
+  //     })
+  //     this.state.concepts.map(c => console.log(c))
+  //   }
   // }
+
+  handleConceptCheckBox = (i) => event => {
+    console.log(event)
+    const newCheckedConcepts = [...this.state.checkedConcepts]
+    newCheckedConcepts[i] = !newCheckedConcepts[i]
+    this.setState({
+      checkedConcepts: newCheckedConcepts
+    })
+    console.log(this.state.checkedConcepts)
+  }
 
   //handles changes of incorrectAnswers in state
   handleArrayChange = (option, i) => event => {
@@ -161,8 +186,8 @@ export class QuestionForm extends Component {
         question: '',
         correctAnswer: '',
         incorrectAnswers: [''],
-        concept: ''
-        // concepts: ['']
+        concepts: [''],
+        checkedConcepts: ['']
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -203,6 +228,8 @@ export class QuestionForm extends Component {
 
     const possibleCourses = this.props.courses.filter(obj => { return obj.name === this.state.course })
     const selectedCourse = (possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] })
+
+    const concepts = [...this.state.concepts]
     return (
       <div className='questionFormContainer'>
 
@@ -251,18 +278,33 @@ export class QuestionForm extends Component {
           {step === 1 && (
             <React.Fragment>
               <h2>Valitse tyyppi</h2>
-              <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
-              <Select
+              {/* <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel> */}
+              {/* <Select
                 fullWidth
                 value={this.state.questionType}
                 onChange={this.handleChange('questionType')}
-              >
-                {questionTypes.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+              > */}
+              {/* <ClickBox title='Kysymystyyppi' onClick={this.handleChange('questionType')}> */}
+              {/* <Menu id="lock-menu" >
+                {questionTypes.map((option, index) => (
+                  <MenuItem
+                    key={option}
+                    disabled={index === 0}
+                    selected={index === selectedIndex}
+                    onClick={event => this.handleMenuItemClick(event, index)}
+                  >
+                    {option}
                   </MenuItem>
                 ))}
-              </Select>
+              </Menu> */}
+
+              {questionTypes.map(option => (
+                <MenuItem key={option.value} value={option.value} onClick={this.handleChange('questionType')}>
+                  {option.label}
+                </MenuItem>
+              ))}
+              {/* </ClickBox> */}
+              {/* </Select> */}
             </React.Fragment>
           )}
 
@@ -333,31 +375,23 @@ export class QuestionForm extends Component {
 
           {step === 3 && (
             <React.Fragment>
-              <h2>Valitse konseptit</h2>
+              <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
               {/* <FormControl component="fieldset" className={classes.formControl}> */}
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      // checked={this.state.checkedA}
-                      // onChange={this.handleChange('checkedA')}
-                      // value="checkedA"
-                      color="primary"
-                    />
-                  }
-                  label='for-loop'
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      // checked={this.state.checkedA}
-                      // onChange={this.handleChange('checkedA')}
-                      // value="checkedA"
-                      color="primary"
-                    />
-                  }
-                  label='while-loop'
-                />
+                {concepts.map((option, i) => (
+                  <FormControlLabel
+                    key={i}
+                    control={
+                      <Checkbox
+                        checked={this.state.checkedConcepts[i]}
+                        onChange={this.handleConceptCheckBox(i)}
+                        value={option}
+                        color="primary"
+                      />
+                    }
+                    label={option}
+                  />
+                ))}
               </FormGroup>
 
               <TextField
