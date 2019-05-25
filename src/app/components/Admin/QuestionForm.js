@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 // import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -18,7 +18,11 @@ import FormGroup from '@material-ui/core/FormGroup'
 import DumbQuestion from '../Question/DumbQuestion'
 import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
-import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
+import {
+  postCompileQuestion,
+  postPrintQuestion,
+  postGeneralQuestion
+} from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
 import SimpleDialog from '../common/Dialog'
@@ -33,6 +37,25 @@ const questionTypes = [
 let question = {
   kind: '',
   item: { value: '', options: [] }
+}
+
+const Concept = concept => () => {
+  const [checked, setChecked] = useState(false)
+
+  const handleChecked = () => {
+    setChecked(!checked)
+  }
+
+  return (
+    <div>
+      <Checkbox
+        checked={checked}
+        onChange={handleChecked}
+        value={concept.name}
+        color="primary"
+      />
+    </div>
+  )
 }
 
 export class QuestionForm extends Component {
@@ -59,13 +82,11 @@ export class QuestionForm extends Component {
     try {
       await this.props.fetchCourses()
 
-      questionService
-        .getQuestions()
-        .then(res => {
-          this.setState({
-            questions: res
-          })
+      questionService.getQuestions().then(res => {
+        this.setState({
+          questions: res
         })
+      })
       // this.setState({
       //   concepts: ['for-loop', 'while-loop'],
       //   checkedConcepts: [false, false]
@@ -77,7 +98,7 @@ export class QuestionForm extends Component {
   }
 
   //handles change of questionType, question and correctAnswer in state
-  handleChange = (name) => e => {
+  handleChange = name => e => {
     this.setState({
       [name]: e.target.value
     })
@@ -101,7 +122,7 @@ export class QuestionForm extends Component {
     }
   }
 
-  handleConceptCheckBox = (i) => event => {
+  handleConceptCheckBox = i => event => {
     console.log(event)
     const newCheckedConcepts = [...this.state.checkedConcepts]
     newCheckedConcepts[i] = !newCheckedConcepts[i]
@@ -110,13 +131,13 @@ export class QuestionForm extends Component {
     })
   }
 
-  initializeConcepts = (selectedCourse) => () => {
-    console.log('selected course', selectedCourse)
-    console.log('concepts to be initialized', selectedCourse.concepts)
-    this.setState({ concepts: selectedCourse.concepts })
-    console.log('------------------', this.state.concepts)
-    this.setState({ checkedConcepts: new Array(selectedCourse.concepts.length).fill(false) })
-  }
+  // initializeConcepts = (selectedCourse) => () => {
+  //   console.log('selected course', selectedCourse)
+  //   console.log('concepts to be initialized', selectedCourse.concepts)
+  //   this.setState({ concepts: selectedCourse.concepts })
+  //   console.log('------------------', this.state.concepts)
+  //   this.setState({ checkedConcepts: new Array(selectedCourse.concepts.length).fill(false) })
+  // }
 
   //handles changes of incorrectAnswers in state
   handleArrayChange = (option, i) => event => {
@@ -131,7 +152,10 @@ export class QuestionForm extends Component {
   removeIncorrectAnswer = () => {
     if (this.state.incorrectAnswers.length > 1) {
       this.setState({
-        incorrectAnswers: this.state.incorrectAnswers.slice(0, this.state.incorrectAnswers.length - 1)
+        incorrectAnswers: this.state.incorrectAnswers.slice(
+          0,
+          this.state.incorrectAnswers.length - 1
+        )
       })
     }
   }
@@ -143,7 +167,10 @@ export class QuestionForm extends Component {
       console.log('Group is not set!')
     } else if (this.state.questionType === '') {
       console.log('Question Type not set!')
-    } else if (this.state.question === '' && this.state.questionType !== 'CompileQuestion') {
+    } else if (
+      this.state.question === '' &&
+      this.state.questionType !== 'CompileQuestion'
+    ) {
       console.log('Question is empty!')
     } else if (this.state.correctAnswer === '') {
       console.log('Correct answer is empty')
@@ -154,15 +181,31 @@ export class QuestionForm extends Component {
       this.setState({ step: this.state.step + 1 })
       // new array for concepts to be saved as references to the the question
       // TODO: save (only) indices of concept objects
-      const concepts = this.state.checkedConcepts.map((value, i) => value === true ? this.state.concepts[i] : null).filter(c => c !== null)
+      const concepts = this.state.checkedConcepts
+        .map((value, i) => (value === true ? this.state.concepts[i] : null))
+        .filter(c => c !== null)
       console.log('concepts to be saved: ', concepts)
       if (this.state.questionType === 'PrintQuestion') {
-        this.props.postPrintQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postPrintQuestion(
+          this.state.groupId,
+          this.state.question,
+          this.state.correctAnswer,
+          this.state.incorrectAnswers
+        )
       } else if (this.state.questionType === 'CompileQuestion') {
-        this.props.postCompileQuestion(this.state.groupId, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postCompileQuestion(
+          this.state.groupId,
+          this.state.correctAnswer,
+          this.state.incorrectAnswers
+        )
       } else {
         //TODO: input concepts to be saved as parameters
-        this.props.postGeneralQuestion(this.state.groupId, this.state.question, this.state.correctAnswer, this.state.incorrectAnswers)
+        this.props.postGeneralQuestion(
+          this.state.groupId,
+          this.state.question,
+          this.state.correctAnswer,
+          this.state.incorrectAnswers
+        )
       }
       this.setState({
         course: '',
@@ -189,10 +232,18 @@ export class QuestionForm extends Component {
     } else if (this.state.step === 1 && this.state.questionType === '') {
       notify.show('Valitse kysymystyyppi', 'error', 2000)
       return
-    } else if (this.state.step === 2 && this.state.questionType === 'PrintQuestion' && this.state.question === '') {
+    } else if (
+      this.state.step === 2 &&
+      this.state.questionType === 'PrintQuestion' &&
+      this.state.question === ''
+    ) {
       notify.show('Kirjoita tulostettava koodi', 'error', 2000)
       return
-    } else if (this.state.step === 2 && (this.state.correctAnswer === '' || this.state.incorrectAnswers.includes(''))) {
+    } else if (
+      this.state.step === 2 &&
+      (this.state.correctAnswer === '' ||
+        this.state.incorrectAnswers.includes(''))
+    ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 2000)
       return
     }
@@ -200,34 +251,44 @@ export class QuestionForm extends Component {
     question.kind = this.state.questionType
     question.item.value = this.state.question
     if (this.state.step > 1) {
-      question.item.options = this.state.incorrectAnswers.concat(this.state.correctAnswer)
+      question.item.options = this.state.incorrectAnswers.concat(
+        this.state.correctAnswer
+      )
     }
   }
 
   render() {
     const { step, questionType } = this.state
     let questionTypeSelected = false
-    if (questionType === 'PrintQuestion' || questionType === 'GeneralQuestion') {
+    if (
+      questionType === 'PrintQuestion' ||
+      questionType === 'GeneralQuestion'
+    ) {
       questionTypeSelected = true
     }
-    const possibleCourses = this.props.courses.filter(obj => { return obj.name === this.state.course })
-    const selectedCourse = (possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] })
-    if (selectedCourse.concepts !== null && selectedCourse.concepts !== undefined && this.state.concepts.length < 2) {
-      this.initializeConcepts(selectedCourse)
-      // console.log('selected course', selectedCourse)
-      // console.log(selectedCourse.concepts)
-      // console.log(this.state.concepts)
-    }
-    const concepts = [...this.state.concepts]
+    const possibleCourses = this.props.courses.filter(obj => {
+      return obj.name === this.state.course
+    })
+    const selectedCourse =
+      possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] }
+    // if (
+    //   selectedCourse.concepts !== null &&
+    //   selectedCourse.concepts !== undefined &&
+    //   this.state.concepts.length < 2
+    // ) {
+    //   this.initializeConcepts(selectedCourse)
+    // console.log('selected course', selectedCourse)
+    // console.log(selectedCourse.concepts)
+    // console.log(this.state.concepts)
+    // }
+    // const concepts = [...this.state.concepts]
 
     return (
-      <div className='questionFormContainer'>
-
+      <div className="questionFormContainer">
         <Notifications ref={this.notificationRef} />
 
-        <form noValidate autoComplete="off" className='questionForm'>
-
-          {step === 4 && (<DumbQuestion question={question} />)}
+        <form noValidate autoComplete="off" className="questionForm">
+          {step === 4 && <DumbQuestion question={question} />}
 
           {step === 0 && (
             <React.Fragment>
@@ -245,8 +306,8 @@ export class QuestionForm extends Component {
                   </MenuItem>
                 ))}
               </Select>
-              {(this.state.course !== '') ?
-                (<div>
+              {this.state.course !== '' ? (
+                <div>
                   <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
                   <Select
                     fullWidth
@@ -260,8 +321,7 @@ export class QuestionForm extends Component {
                     ))}
                   </Select>
                 </div>
-                ) : null
-              }
+              ) : null}
             </React.Fragment>
           )}
 
@@ -285,64 +345,90 @@ export class QuestionForm extends Component {
 
           {step === 2 && (
             <React.Fragment>
-              <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Valitse kysymys listasta</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleClickOpen}
+              >
+                Valitse kysymys listasta
+              </Button>
               <div>
-                <SimpleDialog selectedValue={this.state.selectedValue}
+                <SimpleDialog
+                  selectedValue={this.state.selectedValue}
                   open={this.state.modalOpen}
                   onClose={this.handleClose}
                   questions={this.state.questions}
                 />
               </div>
-              {questionTypeSelected ?
-                (<TextField
-                  label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
+              {questionTypeSelected ? (
+                <TextField
+                  label={`${
+                    questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'
+                  }`}
                   multiline
                   fullWidth
-                  rowsMax='6'
+                  rowsMax="6"
                   value={this.state.question}
                   onChange={this.handleChange('question')}
-                  className='questionField'
-                  helperText={`Kirjoita tähän ${questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'}`}
-                  margin='normal'
+                  className="questionField"
+                  helperText={`Kirjoita tähän ${
+                    questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'
+                  }`}
+                  margin="normal"
                 />
-                ) : <h2>Valitse mikä koodeista kääntyy</h2>
-              }
+              ) : (
+                <h2>Valitse mikä koodeista kääntyy</h2>
+              )}
 
               <TextField
-                label='Oikea vastaus'
+                label="Oikea vastaus"
                 multiline
                 fullWidth
-                rowsMax='6'
+                rowsMax="6"
                 value={this.state.correctAnswer}
                 onChange={this.handleChange('correctAnswer')}
-                className='rightAnswerField'
-                helperText='Kirjoita oikea vastaus kysymyksellesi, vastaukset saavat sisältää monta riviä'
-                margin='normal'
+                className="rightAnswerField"
+                helperText="Kirjoita oikea vastaus kysymyksellesi, vastaukset saavat sisältää monta riviä"
+                margin="normal"
               />
 
               {this.state.incorrectAnswers.map((option, i) => (
                 <TextField
                   key={i}
-                  label='Väärä vastaus'
+                  label="Väärä vastaus"
                   multiline
                   fullWidth
-                  rowsMax='6'
+                  rowsMax="6"
                   value={option}
                   onChange={this.handleArrayChange(option, i)}
-                  className='wrongAnswerField'
-                  helperText='Kirjoita jokin väärä vastaus kysymyksellesi, lisää vääriä vastauksia painamalla +'
-                  margin='normal'
+                  className="wrongAnswerField"
+                  helperText="Kirjoita jokin väärä vastaus kysymyksellesi, lisää vääriä vastauksia painamalla +"
+                  margin="normal"
                 />
               ))}
 
-              <div className='addButtonContainer'>
-                <Button onClick={this.addIncorrectAnswer} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                  <AddIcon className='addIcon' />
+              <div className="addButtonContainer">
+                <Button
+                  onClick={this.addIncorrectAnswer}
+                  variant="fab"
+                  mini
+                  color="primary"
+                  aria-label="Add"
+                  className="addButton"
+                >
+                  <AddIcon className="addIcon" />
                 </Button>
               </div>
-              <div className='removeButtonContainer'>
-                <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>
-                  <DeleteIcon className='deleteIcon' />
+              <div className="removeButtonContainer">
+                <Button
+                  onClick={this.removeIncorrectAnswer}
+                  variant="fab"
+                  mini
+                  color="secondary"
+                  aria-label="Delete"
+                  className="deleteButton"
+                >
+                  <DeleteIcon className="deleteIcon" />
                 </Button>
               </div>
             </React.Fragment>
@@ -351,7 +437,16 @@ export class QuestionForm extends Component {
           {step === 3 && (
             <React.Fragment>
               <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
-              <FormGroup>
+              {selectedCourse.concepts.map(concept => (
+                // <FormControlLabel
+                //   control={<Concept concept={concept} />}
+                //   label={concept.name}
+                //   key={concept._id}
+                // />
+                <Concept concept={concept} key={concept._id} />
+              ))}
+
+              {/* <FormGroup>
                 {concepts.map((concept, i) => (
                   <FormControlLabel
                     key={i}
@@ -390,42 +485,78 @@ export class QuestionForm extends Component {
                 <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                   <AddIcon className='addIcon' />
                 </Button>
-              </div>
+              </div> */}
             </React.Fragment>
           )}
         </form>
 
-        <div className='stepContainer'>
-          <Steps disabled current={this.state.step} steps={['Valitse kurssi', 'Valitse tyyppi', 'Täytä kentät', 'Valitse konseptit', 'Tallenna']} />
-          <div className='stepperButtonContainer' style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className="stepContainer">
+          <Steps
+            disabled
+            current={this.state.step}
+            steps={[
+              'Valitse kurssi',
+              'Valitse tyyppi',
+              'Täytä kentät',
+              'Valitse konseptit',
+              'Tallenna'
+            ]}
+          />
+          <div
+            className="stepperButtonContainer"
+            style={{ display: 'flex', justifyContent: 'space-between' }}
+          >
             <div>
-              <Button disabled={this.state.step < 1 || this.state.step > 4} onClick={() => this.setState({ step: this.state.step - 1 })} variant="contained" className='backwardButton'>
-                {<ArrowBackward className='backwardIcon' />}
+              <Button
+                disabled={this.state.step < 1 || this.state.step > 4}
+                onClick={() => this.setState({ step: this.state.step - 1 })}
+                variant="contained"
+                className="backwardButton"
+              >
+                {<ArrowBackward className="backwardIcon" />}
                 Takaisin
               </Button>
             </div>
             <div>
-              <Button variant="contained" onClick={() => this.props.history.push('/courses')} color="primary">
+              <Button
+                variant="contained"
+                onClick={() => this.props.history.push('/courses')}
+                color="primary"
+              >
                 Etusivu
               </Button>
             </div>
             <div>
               {step < 4 && (
-                <Button style={{ float: 'right' }} onClick={() => this.stepForward()} variant="contained" className='forwardButton'>
+                <Button
+                  style={{ float: 'right' }}
+                  onClick={() => this.stepForward()}
+                  variant="contained"
+                  className="forwardButton"
+                >
                   Seuraava
-                  {<ArrowForward className='forwardIcon' />}
+                  {<ArrowForward className="forwardIcon" />}
                 </Button>
               )}
               {step === 4 && (
-                <Button color='primary' onClick={() => this.handleSave()} variant="contained" className='saveButton'>
+                <Button
+                  color="primary"
+                  onClick={() => this.handleSave()}
+                  variant="contained"
+                  className="saveButton"
+                >
                   Tallenna
-                  {<SaveIcon className='saveIcon' />}
+                  {<SaveIcon className="saveIcon" />}
                 </Button>
               )}
               {step > 4 && (
-                <Button onClick={() => this.setState({ step: 0 })} variant='contained' color='primary'>
+                <Button
+                  onClick={() => this.setState({ step: 0 })}
+                  variant="contained"
+                  color="primary"
+                >
                   Uusi kysymys
-                  <AddIcon className='addIcon' />
+                  <AddIcon className="addIcon" />
                 </Button>
               )}
             </div>
@@ -443,12 +574,15 @@ const mapDispatchToProps = {
   fetchCourses
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     courses: state.course.courses
   }
 }
 
-const ConnectedQuestionForm = connect(mapStateToProps, mapDispatchToProps)(QuestionForm)
+const ConnectedQuestionForm = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QuestionForm)
 
 export default ConnectedQuestionForm
