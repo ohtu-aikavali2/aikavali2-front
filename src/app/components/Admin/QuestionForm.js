@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -14,7 +14,6 @@ import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBackward from '@material-ui/icons/ArrowBack'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormGroup from '@material-ui/core/FormGroup'
 import DumbQuestion from '../Question/DumbQuestion'
 import './admin.css'
 import Notifications, { notify } from 'react-notify-toast'
@@ -39,25 +38,6 @@ let question = {
   item: { value: '', options: [] }
 }
 
-const Concept = concept => () => {
-  const [checked, setChecked] = useState(false)
-
-  const handleChecked = () => {
-    setChecked(!checked)
-  }
-
-  return (
-    <div>
-      <Checkbox
-        checked={checked}
-        onChange={handleChecked}
-        value={concept.name}
-        color="primary"
-      />
-    </div>
-  )
-}
-
 export class QuestionForm extends Component {
   constructor() {
     super()
@@ -71,8 +51,13 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concepts: [''],
-      checkedConcepts: [''],
+      concepts: [
+        {
+          // need to replace initial '' or check when saving that id !== ''?
+          id: '',
+          checked: false
+        }
+      ],
       modalOpen: false,
       selectedValue: null
     }
@@ -87,10 +72,6 @@ export class QuestionForm extends Component {
           questions: res
         })
       })
-      // this.setState({
-      //   concepts: ['for-loop', 'while-loop'],
-      //   checkedConcepts: [false, false]
-      // })
     } catch (e) {
       console.log(e)
       return
@@ -122,22 +103,28 @@ export class QuestionForm extends Component {
     }
   }
 
-  handleConceptCheckBox = i => event => {
-    console.log(event)
-    const newCheckedConcepts = [...this.state.checkedConcepts]
-    newCheckedConcepts[i] = !newCheckedConcepts[i]
+  handleConceptCheckBox = id => () => {
+    if (!this.state.concepts.includes(c => c.id === id)) {
+      const newConcept = {
+        id: id,
+        checked: true
+      }
+      const newConcepts = this.state.concepts.concat(newConcept)
+      console.log(newConcepts)
+      this.setState({
+        concepts: [...newConcepts]
+      })
+      console.log(this.state.concepts)
+    }
+
+    const newConcepts = this.state.concepts.map(c =>
+      c.id === id ? (c.checked = !c.checked) : c
+    )
+    // console.log(this.state.concepts.find(c => c.id === id))
     this.setState({
-      checkedConcepts: newCheckedConcepts
+      concepts: [...newConcepts]
     })
   }
-
-  // initializeConcepts = (selectedCourse) => () => {
-  //   console.log('selected course', selectedCourse)
-  //   console.log('concepts to be initialized', selectedCourse.concepts)
-  //   this.setState({ concepts: selectedCourse.concepts })
-  //   console.log('------------------', this.state.concepts)
-  //   this.setState({ checkedConcepts: new Array(selectedCourse.concepts.length).fill(false) })
-  // }
 
   //handles changes of incorrectAnswers in state
   handleArrayChange = (option, i) => event => {
@@ -179,12 +166,6 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      // new array for concepts to be saved as references to the the question
-      // TODO: save (only) indices of concept objects
-      const concepts = this.state.checkedConcepts
-        .map((value, i) => (value === true ? this.state.concepts[i] : null))
-        .filter(c => c !== null)
-      console.log('concepts to be saved: ', concepts)
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
           this.state.groupId,
@@ -214,8 +195,12 @@ export class QuestionForm extends Component {
         question: '',
         correctAnswer: '',
         incorrectAnswers: [''],
-        concepts: [''],
-        checkedConcepts: ['']
+        concepts: [
+          {
+            id: '',
+            checked: false
+          }
+        ]
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -271,17 +256,6 @@ export class QuestionForm extends Component {
     })
     const selectedCourse =
       possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] }
-    // if (
-    //   selectedCourse.concepts !== null &&
-    //   selectedCourse.concepts !== undefined &&
-    //   this.state.concepts.length < 2
-    // ) {
-    //   this.initializeConcepts(selectedCourse)
-    // console.log('selected course', selectedCourse)
-    // console.log(selectedCourse.concepts)
-    // console.log(this.state.concepts)
-    // }
-    // const concepts = [...this.state.concepts]
 
     return (
       <div className="questionFormContainer">
@@ -438,54 +412,19 @@ export class QuestionForm extends Component {
             <React.Fragment>
               <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
               {selectedCourse.concepts.map(concept => (
-                // <FormControlLabel
-                //   control={<Concept concept={concept} />}
-                //   label={concept.name}
-                //   key={concept._id}
-                // />
-                <Concept concept={concept} key={concept._id} />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      key={concept._id}
+                      onChange={this.handleConceptCheckBox(concept._id)}
+                      value={concept.name}
+                      color="primary"
+                    />
+                  }
+                  label={concept.name}
+                  key={concept._id}
+                />
               ))}
-
-              {/* <FormGroup>
-                {concepts.map((concept, i) => (
-                  <FormControlLabel
-                    key={i}
-                    control={
-                      <Checkbox
-                        // checked={this.state.checkedConcepts[i]}
-                        onChange={this.handleConceptCheckBox(i)}
-                        value={concept.name}
-                        color="primary"
-                      />
-                    }
-                    label={concept.name}
-
-                  // {selectedCourse.concepts.map(concept => (
-                  //   <FormControlLabel control={
-                  //     <Checkbox checked={this.state.checkedA} onChange={this.handleChange('concept')} value='concept' color="primary" />
-                  //   }
-                  //   label={concept.name} key={concept._id}
-                  />
-                ))}
-              </FormGroup>
-
-              <TextField
-                label='Lisää uusi konsepti'
-                multiline
-                fullWidth
-                rowsMax='6'
-                value={this.state.concept}
-                onChange={this.handleChange('concept')}
-                className='conceptField'
-                helperText='Kirjoita kysymykseesi liittyvä konsepti'
-                margin='normal'
-              />
-
-              <div className='addButtonContainer'>
-                <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                  <AddIcon className='addIcon' />
-                </Button>
-              </div> */}
             </React.Fragment>
           )}
         </form>
