@@ -51,7 +51,7 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      checkedValues: [],
+      concepts: [],
       modalOpen: false,
       selectedValue: null
     }
@@ -99,11 +99,11 @@ export class QuestionForm extends Component {
 
   handleCheck(e, x) {
     this.setState(state => ({
-      checkedValues: state.checkedValues.includes(x)
-        ? state.checkedValues.filter(c => c !== x)
-        : [...state.checkedValues, x]
+      concepts: state.concepts.includes(x)
+        ? state.concepts.filter(c => c !== x)
+        : [...state.concepts, x]
     }))
-    console.log(this.state.checkedValues)
+    console.log(this.state.concepts)
   }
 
   //handles changes of incorrectAnswers in state
@@ -143,6 +143,7 @@ export class QuestionForm extends Component {
       console.log('Correct answer is empty')
     } else if (this.state.incorrectAnswers.includes('')) {
       console.log('Atleast one of incorrect answers are empty')
+      // } else if (this.state.concepts)... - check for at least 1 concept
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
@@ -151,13 +152,15 @@ export class QuestionForm extends Component {
           this.state.groupId,
           this.state.question,
           this.state.correctAnswer,
-          this.state.incorrectAnswers
+          this.state.incorrectAnswers,
+          this.state.concepts
         )
       } else if (this.state.questionType === 'CompileQuestion') {
         this.props.postCompileQuestion(
           this.state.groupId,
           this.state.correctAnswer,
-          this.state.incorrectAnswers
+          this.state.incorrectAnswers,
+          this.state.concepts
         )
       } else {
         //TODO: input concepts to be saved as parameters
@@ -165,7 +168,8 @@ export class QuestionForm extends Component {
           this.state.groupId,
           this.state.question,
           this.state.correctAnswer,
-          this.state.incorrectAnswers
+          this.state.incorrectAnswers,
+          this.state.concepts
         )
       }
       this.setState({
@@ -175,7 +179,7 @@ export class QuestionForm extends Component {
         question: '',
         correctAnswer: '',
         incorrectAnswers: [''],
-        checkedValues: []
+        concepts: []
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -387,7 +391,7 @@ export class QuestionForm extends Component {
                       <Checkbox
                         label={concept.name} key={concept._id}
                         onChange={e => this.handleCheck(e, concept._id)}
-                        checked={this.state.checkedValues.includes(concept._id)}
+                        checked={this.state.concepts.includes(concept._id)}
                         color='primary'
                       />
                     }
@@ -398,7 +402,7 @@ export class QuestionForm extends Component {
               </FormGroup>
 
               <TextField
-                label='Lisää uusi konsepti'
+                label='Uusi konsepti'
                 multiline
                 fullWidth
                 rowsMax='6'

@@ -23,15 +23,12 @@ class SimpleDialog extends React.Component {
   }
 
   render() {
-    const { onClose, selectedValue, questions, ...other } = this.props
-    console.log(selectedValue)
-    console.log(onClose)
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
+      <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.props.open}>
         <DialogTitle id="simple-dialog-title">Valitse kysymys</DialogTitle>
         <div>
           <List>
-            {this.sortQuestions(questions).map(question => (
+            {this.sortQuestions(this.props.questions).map(question => (
               <ListItem button onClick={() => this.handleListItemClick(question)} key={question}>
                 <ListItemText primary={question} />
               </ListItem>
