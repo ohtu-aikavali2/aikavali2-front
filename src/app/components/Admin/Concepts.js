@@ -14,16 +14,34 @@ class Courses extends Component {
     this.props.fetchCourses()
   }
 
+  handleClick = (course) => {
+    return () => {
+      this.setState({
+        step: this.state.step + 1,
+        selectedCourse: course
+      })
+    }
+  }
+
   render() {
     const step = this.state.step
     const { courses } = this.props
-    console.log(courses)
     return (
       <div>
         {step === 0 && (
           <React.Fragment>
             <h2>Valitse kurssi</h2>
-            {courses.map(course => <ClickBox key={course._id} title={course.name} onClick={() => console.log('painettu')}/>)}
+            {courses.map(course => <ClickBox key={course._id} title={course.name} onClick={this.handleClick(course)}/>)}
+          </React.Fragment>
+        )}
+        {step === 1 && (
+          <React.Fragment>
+            <h2>Kurssin {this.state.selectedCourse.name} käsitteet</h2>
+            <ul>
+              {this.state.selectedCourse.concepts.map(concept =>
+                <li key = {concept._id}>{concept.name}</li>
+              )}
+            </ul>
           </React.Fragment>
         )}
       </div>
