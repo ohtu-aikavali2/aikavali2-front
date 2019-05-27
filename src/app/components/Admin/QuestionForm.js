@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -13,6 +12,7 @@ import Steps from 'react-simple-steps'
 import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBackward from '@material-ui/icons/ArrowBack'
 import Checkbox from '@material-ui/core/Checkbox'
+import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import DumbQuestion from '../Question/DumbQuestion'
 import './admin.css'
@@ -38,8 +38,14 @@ let question = {
   item: { value: '', options: [] }
 }
 
+// let concept = {
+//   id: '',
+//   checked: false
+// }
+
 export class QuestionForm extends Component {
   constructor() {
+    //this.handleCheck = this.handleCheck.bind(this)
     super()
     this.state = {
       course: '',
@@ -51,13 +57,8 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concepts: [
-        {
-          // need to replace initial '' or check when saving that id !== ''?
-          id: '',
-          checked: false
-        }
-      ],
+      // concepts: [],
+      checkedValues: [],
       modalOpen: false,
       selectedValue: null
     }
@@ -103,28 +104,37 @@ export class QuestionForm extends Component {
     }
   }
 
-  handleConceptCheckBox = id => () => {
-    if (!this.state.concepts.includes(c => c.id === id)) {
-      const newConcept = {
-        id: id,
-        checked: true
-      }
-      const newConcepts = this.state.concepts.concat(newConcept)
-      console.log(newConcepts)
-      this.setState({
-        concepts: [...newConcepts]
-      })
-      console.log(this.state.concepts)
-    }
-
-    const newConcepts = this.state.concepts.map(c =>
-      c.id === id ? (c.checked = !c.checked) : c
-    )
-    // console.log(this.state.concepts.find(c => c.id === id))
-    this.setState({
-      concepts: [...newConcepts]
-    })
+  handleCheck(e, x) {
+    this.setState(state => ({
+      checkedValues: state.checkedValues.includes(x)
+        ? state.checkedValues.filter(c => c !== x)
+        : [...state.checkedValues, x]
+    }))
+    console.log(this.state.checkedValues)
   }
+
+  // handleConceptCheckBox = id => e => {
+  //   console.log(e)
+  //   if (!this.state.concepts.includes(c => c.id === id)) {
+  //     concept.id = id
+  //     concept.checked = true
+  //     const newConcepts = this.state.concepts.concat(concept)
+  //     console.log('newConcepts', newConcepts)
+  //     this.setState({
+  //       concepts: [...newConcepts]
+  //     })
+  //     console.log(this.state.concepts)
+  //   } else {
+  //     const newConcepts = this.state.concepts.map(c =>
+  //       c.id === id ? (c.checked = !c.checked) : c
+  //     )
+  //     console.log('newConcepts', newConcepts)
+  //     this.setState({
+  //       concepts: [...newConcepts]
+  //     })
+  //     console.log(this.state.concepts)
+  //   }
+  // }
 
   //handles changes of incorrectAnswers in state
   handleArrayChange = (option, i) => event => {
@@ -195,12 +205,8 @@ export class QuestionForm extends Component {
         question: '',
         correctAnswer: '',
         incorrectAnswers: [''],
-        concepts: [
-          {
-            id: '',
-            checked: false
-          }
-        ]
+        checkedValues: []
+        // concepts: []
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -336,23 +342,17 @@ export class QuestionForm extends Component {
               </div>
               {questionTypeSelected ? (
                 <TextField
-                  label={`${
-                    questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'
-                  }`}
+                  label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
                   multiline
                   fullWidth
                   rowsMax="6"
                   value={this.state.question}
                   onChange={this.handleChange('question')}
                   className="questionField"
-                  helperText={`Kirjoita tähän ${
-                    questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'
-                  }`}
+                  helperText={`Kirjoita tähän ${questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'}`}
                   margin="normal"
                 />
-              ) : (
-                <h2>Valitse mikä koodeista kääntyy</h2>
-              )}
+              ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
 
               <TextField
                 label="Oikea vastaus"
@@ -411,20 +411,46 @@ export class QuestionForm extends Component {
           {step === 3 && (
             <React.Fragment>
               <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
-              {selectedCourse.concepts.map(concept => (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      key={concept._id}
-                      onChange={this.handleConceptCheckBox(concept._id)}
-                      value={concept.name}
-                      color="primary"
-                    />
-                  }
-                  label={concept.name}
-                  key={concept._id}
-                />
-              ))}
+              <FormGroup>
+                {selectedCourse.concepts.map(concept => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        label={concept.name} key={concept._id}
+                        onChange={e => this.handleCheck(e, concept._id)}
+                        checked={this.state.checkedValues.includes(concept._id)}
+                        color='primary'
+                      />
+                      // <Checkbox
+                      //   key={concept._id}
+                      //   onChange={this.handleConceptCheckBox(concept._id)}
+                      //   value={concept.name}
+                      //   color="primary"
+                      // />
+                    }
+                    label={concept.name}
+                    key={concept._id}
+                  />
+                ))}
+              </FormGroup>
+
+              {/* <TextField
+                label='Lisää uusi konsepti'
+                multiline
+                fullWidth
+                rowsMax='6'
+                value={this.state.concept}
+                onChange={this.handleChange('concept')}
+                className='conceptField'
+                helperText='Kirjoita kysymykseesi liittyvä konsepti'
+                margin='normal'
+              />
+
+              <div className='addButtonContainer'>
+                <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                  <AddIcon className='addIcon' />
+                </Button>
+              </div> */}
             </React.Fragment>
           )}
         </form>
