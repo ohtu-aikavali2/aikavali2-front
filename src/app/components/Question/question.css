@@ -5,7 +5,11 @@
 }
 
 .titleContainer {
-  display: flex;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: block;
+  text-align: center;
+  overflow-wrap: break-word;
   justify-content: center;
 }
 
