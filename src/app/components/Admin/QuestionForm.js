@@ -20,7 +20,6 @@ import Notifications, { notify } from 'react-notify-toast'
 import { postCompileQuestion, postPrintQuestion, postGeneralQuestion } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
-import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
@@ -49,7 +48,6 @@ export class QuestionForm extends Component {
       courses: [],
       questions: [],
       concept: '',
-      //concepts: [],
       modalOpen: false,
       selectedValue: null
     }
@@ -67,13 +65,6 @@ export class QuestionForm extends Component {
           })
         })
 
-      conceptService
-        .getConcepts()
-        .then(res => {
-          this.setState({
-            concepts: res
-          })
-        })
     } catch (e) {
       console.log(e)
       return

@@ -4,7 +4,7 @@ let token = null
 let baseUrl = ''
 // This can not be tested. It's ok tho
 if (process.env.NODE_ENV === 'production') {
-  baseUrl = 'https://aikavali-back.herokuapp.com'
+  baseUrl = 'https://aikavali-back2.herokuapp.com'
 }
 
 const apiUrl = '/api/v1/concepts'
@@ -39,30 +39,12 @@ const postConcept = async (concept) => {
   return response.data
 }
 
-const deleteConcepts = async (conceptIDs) => {
+const deleteConcept = async (conceptId) => {
   try {
-    await axios.put(`${baseUrl}${apiUrl}/delete`, { conceptIDs }, getConfig())
+    await axios.put(`${baseUrl}${apiUrl}/delete`, { conceptId }, getConfig())
   } catch (e) {
     return { error: 'Could not delete concepts' }
   }
-}
-
-const restoreConcepts = async (conceptIDs) => {
-  try {
-    await axios.put(`${baseUrl}${apiUrl}/restore`, { conceptIDs }, getConfig())
-  } catch (e) {
-    return { error: 'Could not restore the concepts' }
-  }
-}
-
-const getDeletedConcepts = async () => {
-  const response = await axios.get(`${baseUrl}${apiUrl}/deleted`, getConfig())
-  return response.data
-}
-
-const getAvailableQuestions = async () => {
-  const response = await axios.get(`${baseUrl}${apiUrl}/available`, getConfig())
-  return response.data
 }
 
 export default {
@@ -71,8 +53,5 @@ export default {
   setToken,
   getToken,
   reload,
-  deleteConcepts,
-  getDeletedConcepts,
-  restoreConcepts,
-  getAvailableQuestions
+  deleteConcept
 }
