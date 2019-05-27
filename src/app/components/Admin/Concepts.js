@@ -4,11 +4,12 @@ import { fetchCourses} from '../../reducers/actions/courseActions'
 import ClickBox from '../common/ClickBox'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import DeleteIcon from '@material-ui/icons/Delete'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
 import './admin.css'
 
 class Courses extends Component {
@@ -56,15 +57,26 @@ class Courses extends Component {
                           <ListItemText
                             primary={concept.name}
                           />
-                          <ListItemIcon>
-                            <DeleteIcon />
-                          </ListItemIcon>
+                          <div className='removeButtonContainer'>
+                            <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>
+                              <DeleteIcon className='deleteIcon' />
+                            </Button>
+                          </div>
                         </ListItem>
                       )
                   )}
                 </List>
               </div>
             </Grid>
+            <TextField
+              label='Lisää uusi konsepti kursille'
+              fullWidth
+              value={this.state.concept}
+              onChange={() => console.log('moro')}
+              className='conceptField'
+              helperText={'Kirjoita kurssiin liittyvä uusi konsepti tähän'}
+              margin='normal'
+            />
           </React.Fragment>
         )}
       </div>
