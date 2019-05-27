@@ -12,7 +12,8 @@ describe('questionReducer', () => {
       loading: false,
       flaggedQuestions: [],
       deletedQuestions: [],
-      questions: []
+      questions: [],
+      concepts: []
     }
     questionData = {
       type: 'test',

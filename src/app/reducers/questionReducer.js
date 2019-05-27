@@ -9,7 +9,7 @@ const initialState = {
   flaggedQuestions: [],
   deletedQuestions: [],
   questions: [],
-  concept: null
+  concepts: []
 }
 
 const questionReducer = (state = initialState, action) => {
