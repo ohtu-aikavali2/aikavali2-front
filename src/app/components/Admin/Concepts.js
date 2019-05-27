@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { fetchCourses} from '../../reducers/actions/courseActions'
+import conceptService from '../../services/conceptService'
 import ClickBox from '../common/ClickBox'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -31,6 +32,30 @@ class Courses extends Component {
       })
     }
   }
+
+  handleChange = (name) => e => {
+    this.setState({
+      [name]: e.target.value
+    })
+  }
+
+  addConcept = () => {
+    const newConcept = {
+      name: this.state.concept,
+      course: this.state.selectedCourse._id
+    }
+
+    conceptService
+      .postConcept(newConcept)
+      .then(res => {
+        console.log(res)
+      })
+
+    this.setState({
+      concept: ''
+    })
+  }
+
   render() {
     const step = this.state.step
     const { courses } = this.props
@@ -68,15 +93,20 @@ class Courses extends Component {
                 </List>
               </div>
             </Grid>
-            <TextField
-              label='Lisää uusi konsepti kursille'
-              fullWidth
-              value={this.state.concept}
-              onChange={() => console.log('moro')}
-              className='conceptField'
-              helperText={'Kirjoita kurssiin liittyvä uusi konsepti tähän'}
-              margin='normal'
-            />
+            <form>
+              <TextField
+                label='Lisää uusi konsepti kursille'
+                fullWidth
+                value={this.state.concept}
+                onChange={this.handleChange('concept')}
+                className='conceptField'
+                helperText={'Kirjoita kurssiin liittyvä uusi konsepti tähän'}
+                margin='normal'
+              />
+              <Button color='primary' onClick={() => this.addConcept()} variant="contained" className='saveButton'>
+                Lisää konsepti
+              </Button>
+            </form>
           </React.Fragment>
         )}
       </div>
