@@ -105,3 +105,11 @@
 .course-groups {
   margin-top: 10px;
 }
+
+.conceptFormContainer {
+    padding-top: 30px;
+    margin: 2%;
+    margin-bottom: 0;
+    flex-direction: column;
+    height: 100%;
+}
