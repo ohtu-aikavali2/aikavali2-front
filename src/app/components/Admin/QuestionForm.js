@@ -5,18 +5,21 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
-import SaveIcon from '@material-ui/icons/Save'
-import AddIcon from '@material-ui/icons/Add'
-import DeleteIcon from '@material-ui/icons/Delete'
-import Steps from 'react-simple-steps'
-import ArrowForward from '@material-ui/icons/ArrowForward'
-import ArrowBackward from '@material-ui/icons/ArrowBack'
+import Card from '@material-ui/core/Card'
+//import CardActionArea from '@material-ui/core/CardActionArea'
+import CardContent from '@material-ui/core/CardContent'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import SaveIcon from '@material-ui/icons/Save'
+import AddIcon from '@material-ui/icons/Add'
+import DeleteIcon from '@material-ui/icons/Delete'
+import ArrowForward from '@material-ui/icons/ArrowForward'
+import ArrowBackward from '@material-ui/icons/ArrowBack'
 import DumbQuestion from '../Question/DumbQuestion'
-import './admin.css'
+import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
+import './admin.css'
 import {
   postCompileQuestion,
   postPrintQuestion,
@@ -29,7 +32,7 @@ import SimpleDialog from '../common/Dialog'
 const questionTypes = [
   {
     value: 'GeneralQuestion',
-    label: 'Valitse yleinen kysymys'
+    label: 'Yleinen kysymys'
   }
 ]
 
@@ -97,15 +100,6 @@ export class QuestionForm extends Component {
     }
   }
 
-  handleCheck(e, x) {
-    this.setState(state => ({
-      concepts: state.concepts.includes(x)
-        ? state.concepts.filter(c => c !== x)
-        : [...state.concepts, x]
-    }))
-    console.log(this.state.concepts)
-  }
-
   //handles changes of incorrectAnswers in state
   handleArrayChange = (option, i) => event => {
     let newArray = this.state.incorrectAnswers.slice(0, i)
@@ -125,6 +119,26 @@ export class QuestionForm extends Component {
         )
       })
     }
+  }
+
+  handleCheck(e, x) {
+    this.setState(state => ({
+      concepts: state.concepts.includes(x)
+        ? state.concepts.filter(c => c !== x)
+        : [...state.concepts, x]
+    }))
+  }
+
+  handleSelectType(e, x) {
+    this.setState(state => ({
+      questionType: state.questionType === x ? '' : x
+    }))
+  }
+
+  determineTypeCardStyle = (type) => {
+    return (type === this.state.questionType
+      ? { backgroundColor: 'rgb(230, 243, 255)' } : { backgroundColor: 'white' }
+    )
   }
 
   handleSave = () => {
@@ -282,17 +296,16 @@ export class QuestionForm extends Component {
             <React.Fragment>
               <h2>Valitse tyyppi</h2>
               <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
-              <Select
-                fullWidth
-                value={this.state.questionType}
-                onChange={this.handleChange('questionType')}
-              >
-                {questionTypes.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
+              {questionTypes.map(option => (
+                <Card style={this.determineTypeCardStyle(option.value)} key={option.value}>
+                  <CardContent
+                    value={option.value}
+                    onClick={e => this.handleSelectType(e, option.value)}
+                  >
                     {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
+                  </CardContent>
+                </Card>
+              ))}
             </React.Fragment>
           )}
 
