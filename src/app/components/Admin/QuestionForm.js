@@ -25,7 +25,7 @@ import {
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
 import SimpleDialog from '../common/Dialog'
-import ClickBox from '../common/ClickBox';
+import ClickBox from '../common/ClickBox'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
