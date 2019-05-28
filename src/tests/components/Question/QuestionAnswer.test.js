@@ -162,9 +162,9 @@ describe('<QuestionAnswer />', () => {
       const gridStyle = question.find(Grid).at(1).props().style
       expect(gridStyle).toEqual({ color: 'grey' })
     })
-    it('if user has not selected any option, style is null', () => {
+    it('if user has not selected any option, style is empty', () => {
       const paperStyle = question.find(Card).props().style
-      expect(paperStyle).toEqual(null)
+      expect(paperStyle).toEqual({ backgroundColor: '' })
     })
   })
 })
