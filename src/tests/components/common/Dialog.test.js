@@ -43,6 +43,6 @@ describe('Dialog', () => {
     expect(dialogTitle.length).toBe(1)
   })
   it('renders content', () => {
-    expect(dialog.find(List).find(ListItem).find(ListItemText).length).toBe(1)
+    expect(dialog.find(List).find(ListItem).find(ListItemText).props().primary).toBe('testquestion')
   })
 })
