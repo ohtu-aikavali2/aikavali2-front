@@ -339,17 +339,20 @@ export class QuestionForm extends Component {
             <React.Fragment>
               <h2>Valitse tyyppi</h2>
               <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
-              {questionTypes.map(option => (
-                <div className='clickbox' key={option.value}>
-                  <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
-                    <Card style={this.determineTypeCardStyle(option.value)} className='clickbox-container'>
-                      <CardContent style={{ color: this.determineTypeCardStyle(option.value).textColor }}>
-                        {option.label}
-                      </CardContent>
-                    </Card>
+              {questionTypes.map(option => {
+                const style = this.determineTypeCardStyle(option.value)
+                return (
+                  <div className='clickbox' key={option.value}>
+                    <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
+                      <Card style={{ background: style.background }} className='clickbox-container'>
+                        <CardContent style={{ color: style.textColor }}>
+                          {option.label}
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </React.Fragment>
           )}
 
