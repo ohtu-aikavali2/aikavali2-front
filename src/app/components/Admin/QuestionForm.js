@@ -8,6 +8,8 @@ import InputLabel from '@material-ui/core/InputLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
 import SaveIcon from '@material-ui/icons/Save'
 import AddIcon from '@material-ui/icons/Add'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -27,7 +29,6 @@ import questionService from '../../services/questionService'
 //import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
-import ClickBox from '../common/ClickBox'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -137,7 +138,13 @@ export class QuestionForm extends Component {
 
   determineTypeCardStyle = (type) => {
     return (type === this.state.questionType
-      ? { backgroundColor: 'rgb(195, 206, 216)' } : { backgroundColor: 'white' }
+      ? {
+        background: '#3f51b5',
+        textColor: 'white'
+      } : {
+        background: 'white',
+        textColor: 'black'
+      }
     )
   }
 
@@ -333,7 +340,15 @@ export class QuestionForm extends Component {
               <h2>Valitse tyyppi</h2>
               <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
               {questionTypes.map(option => (
-                <ClickBox key={option.value} style={this.determineTypeCardStyle(option.value)} title={option.label} onClick={e => this.handleSelectType(e, option.value)} />
+                <div className='clickbox' key={option.value}>
+                  <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
+                    <Card style={this.determineTypeCardStyle(option.value)} className='clickbox-container'>
+                      <CardContent style={{ color: this.determineTypeCardStyle(option.value).textColor }}>
+                        {option.label}
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
               ))}
             </React.Fragment>
           )}
