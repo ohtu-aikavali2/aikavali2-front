@@ -24,6 +24,8 @@ import {
 } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
+//import conceptService from '../../services/conceptService'
+import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
 import ClickBox from '../common/ClickBox'
 //toistaiseksi tyypit kovakoodattu
@@ -139,6 +141,35 @@ export class QuestionForm extends Component {
     )
   }
 
+  determineSelectedCourse = () => {
+    const possibleCourses = this.props.courses.filter(obj => {
+      return obj.name === this.state.course
+    })
+    return possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] }
+  }
+
+  mapConceptIDsToObjects = () => {
+    const selectedCourse = this.determineSelectedCourse()
+    return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
+  }
+
+  addConceptsToCourses = () => {
+    const conceptObjects = this.mapConceptIDsToObjects()
+    const selectedCourse = this.determineSelectedCourse()
+    const newCourse = {
+      ...selectedCourse,
+      concepts: conceptObjects
+    }
+    courseService
+      .updateCourse(newCourse, newCourse._id)
+      .then(() => {
+        this.setState({
+          concept: '',
+          selectedCourse: newCourse
+        })
+      })
+  }
+
   handleSave = () => {
     if (this.state.course === '') {
       console.log('Course is not set!')
@@ -160,21 +191,24 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
+      const concepts = this.mapConceptIDsToObjects()
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
           this.state.groupId,
           this.state.question,
           this.state.correctAnswer,
           this.state.incorrectAnswers,
-          this.state.concepts
+          concepts
         )
+        this.addConceptsToCourses()
       } else if (this.state.questionType === 'CompileQuestion') {
         this.props.postCompileQuestion(
           this.state.groupId,
           this.state.correctAnswer,
           this.state.incorrectAnswers,
-          this.state.concepts
+          concepts
         )
+        this.addConceptsToCourses()
       } else {
         //TODO: input concepts to be saved as parameters
         this.props.postGeneralQuestion(
@@ -182,8 +216,9 @@ export class QuestionForm extends Component {
           this.state.question,
           this.state.correctAnswer,
           this.state.incorrectAnswers,
-          this.state.concepts
+          concepts
         )
+        this.addConceptsToCourses()
       }
       this.setState({
         course: '',
@@ -249,11 +284,7 @@ export class QuestionForm extends Component {
     ) {
       questionTypeSelected = true
     }
-    const possibleCourses = this.props.courses.filter(obj => {
-      return obj.name === this.state.course
-    })
-    const selectedCourse =
-      possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] }
+    const selectedCourse = this.determineSelectedCourse()
 
     return (
       <div className="questionFormContainer">
