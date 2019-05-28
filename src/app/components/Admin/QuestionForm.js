@@ -5,8 +5,6 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -27,6 +25,7 @@ import {
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
 import SimpleDialog from '../common/Dialog'
+import ClickBox from '../common/ClickBox';
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -136,7 +135,7 @@ export class QuestionForm extends Component {
 
   determineTypeCardStyle = (type) => {
     return (type === this.state.questionType
-      ? { backgroundColor: 'rgb(230, 243, 255)' } : { backgroundColor: 'white' }
+      ? { backgroundColor: 'rgb(195, 206, 216)' } : { backgroundColor: 'white' }
     )
   }
 
@@ -155,8 +154,9 @@ export class QuestionForm extends Component {
     } else if (this.state.correctAnswer === '') {
       console.log('Correct answer is empty')
     } else if (this.state.incorrectAnswers.includes('')) {
-      console.log('Atleast one of incorrect answers are empty')
-      // } else if (this.state.concepts)... - check for at least 1 concept
+      console.log('At least one of incorrect answers are empty')
+    } else if (this.state.concepts.length < 1) {
+      console.log('Concept is not set!')
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
@@ -222,6 +222,12 @@ export class QuestionForm extends Component {
         this.state.incorrectAnswers.includes(''))
     ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 3 &&
+      this.state.concepts.length < 1
+    ) {
+      notify.show('Valitse ainakin yksi käsite', 'error', 2000)
       return
     }
     this.setState({ step: this.state.step + 1 })
@@ -296,14 +302,7 @@ export class QuestionForm extends Component {
               <h2>Valitse tyyppi</h2>
               <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
               {questionTypes.map(option => (
-                <Card style={this.determineTypeCardStyle(option.value)} key={option.value}>
-                  <CardContent
-                    value={option.value}
-                    onClick={e => this.handleSelectType(e, option.value)}
-                  >
-                    {option.label}
-                  </CardContent>
-                </Card>
+                <ClickBox key={option.value} style={this.determineTypeCardStyle(option.value)} title={option.label} onClick={e => this.handleSelectType(e, option.value)} />
               ))}
             </React.Fragment>
           )}

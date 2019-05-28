@@ -80,7 +80,6 @@ export class QuestionAnswer extends Component {
 
   render() {
     const style = this.determineStyle()
-    console.log(style)
     const textStyle = {}
     const { classes, value, userAnswer, selected, answering, dumb } = this.props
     if (answering || (!selected && userAnswer && userAnswer.correctAnswer !== value)) {

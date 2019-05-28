@@ -7,12 +7,12 @@ import CardActionArea from '@material-ui/core/CardActionArea'
 import './common.css'
 
 class ClickBox extends Component {
-  render () {
-    const { title, onClick } = this.props
+  render() {
+    const { title, onClick, style } = this.props
     return (
       <div className='clickbox'>
         <div className='clickbox-link' onClick={onClick}>
-          <Card className='clickbox-container'>
+          <Card style={style} className='clickbox-container'>
             <CardActionArea style={{ width: '100%' }}>
               <CardHeader title={title} />
               <CardContent>
