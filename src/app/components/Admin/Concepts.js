@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { fetchCourses} from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
+import courseService from '../../services/courseService'
 import ClickBox from '../common/ClickBox'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -48,12 +49,20 @@ class Courses extends Component {
     conceptService
       .postConcept(newConcept)
       .then(res => {
-        console.log(res)
+        const conceptList = this.state.selectedCourse.concepts.concat(res)
+        const newCourse = {
+          ...this.state.selectedCourse,
+          concepts: conceptList
+        }
+        courseService
+          .updateCourse(newCourse, newCourse._id)
+          .then(() => {
+            this.setState({
+              concept: '',
+              selectedCourse: newCourse
+            })
+          })
       })
-
-    this.setState({
-      concept: ''
-    })
   }
 
   render() {
