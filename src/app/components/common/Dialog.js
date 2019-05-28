@@ -25,7 +25,7 @@ class SimpleDialog extends React.Component {
       onClose(value)
     }
     return (
-      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" {...other}>
+      <Dialog className='dialog' onClose={handleClose} aria-labelledby="simple-dialog-title" {...other}>
         <DialogTitle id="simple-dialog-title">Valitse kysymys</DialogTitle>
         <div>
           <List>
