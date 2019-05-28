@@ -41,7 +41,8 @@ const postConcept = async (concept) => {
 
 const deleteConcept = async (conceptId) => {
   try {
-    await axios.put(`${baseUrl}${apiUrl}/delete`, { conceptId }, getConfig())
+    const response = await axios.delete(`${baseUrl}${apiUrl}/${conceptId}`, getConfig())
+    return response.data
   } catch (e) {
     return { error: 'Could not delete concepts' }
   }

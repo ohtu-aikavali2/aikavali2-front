@@ -65,6 +65,21 @@ class Courses extends Component {
       })
   }
 
+  removeConcept = (id) => {
+    conceptService
+      .deleteConcept(id)
+      .then(() => {
+        courseService
+          .getCourse(this.state.selectedCourse.name)
+          .then(res => {
+            this.setState({
+              selectedCourse: res
+            })
+          })
+      })
+
+  }
+
   render() {
     const step = this.state.step
     const { courses } = this.props
@@ -92,7 +107,7 @@ class Courses extends Component {
                             primary={concept.name}
                           />
                           <div className='removeButtonContainer'>
-                            <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>
+                            <Button onClick={() => this.removeConcept(concept._id)} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>
                               <DeleteIcon className='deleteIcon' />
                             </Button>
                           </div>
