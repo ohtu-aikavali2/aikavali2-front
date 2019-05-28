@@ -26,7 +26,7 @@ import {
 } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
-//import conceptService from '../../services/conceptService'
+import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
 //toistaiseksi tyypit kovakoodattu
@@ -48,6 +48,7 @@ export class QuestionForm extends Component {
     this.state = {
       course: '',
       groupId: '',
+      newConcept: '',
       questionType: '',
       question: '',
       correctAnswer: '',
@@ -56,6 +57,7 @@ export class QuestionForm extends Component {
       courses: [],
       questions: [],
       concepts: [],
+      newConcepts: [],
       modalOpen: false,
       selectedValue: null
     }
@@ -160,21 +162,36 @@ export class QuestionForm extends Component {
     return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
   }
 
-  addConceptsToCourses = () => {
-    const conceptObjects = this.mapConceptIDsToObjects()
+  postConceptsToCourses = () => {
     const selectedCourse = this.determineSelectedCourse()
+    const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
     const newCourse = {
       ...selectedCourse,
-      concepts: conceptObjects
+      concepts: [...newConcepts]
     }
     courseService
       .updateCourse(newCourse, newCourse._id)
-      .then(() => {
-        this.setState({
-          concept: '',
-          selectedCourse: newCourse
-        })
-      })
+  }
+
+  postNewConcepts = () => {
+    const conceptsToBeSaved = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
+    for (let c of conceptsToBeSaved) {
+      conceptService
+        .postConcept(c)
+    }
+  }
+
+  addNewConcept = (e, conceptName) => {
+    const newConcept = {
+      name: conceptName,
+      course: this.determineSelectedCourse()
+    }
+    const newConcepts = this.state.newConcepts.concat(newConcept)
+    this.setState({
+      concepts: [...this.state.concepts, newConcept],
+      newConcept: '',
+      newConcepts: [...newConcepts]
+    })
   }
 
   handleSave = () => {
@@ -198,7 +215,9 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const concepts = this.mapConceptIDsToObjects()
+      const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
+      const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
+      console.log('concepts to be saved', concepts)
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
           this.state.groupId,
@@ -207,7 +226,8 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.addConceptsToCourses()
+        this.postConceptsToCourses()
+        this.postNewConcepts()
       } else if (this.state.questionType === 'CompileQuestion') {
         this.props.postCompileQuestion(
           this.state.groupId,
@@ -215,7 +235,8 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.addConceptsToCourses()
+        this.postConceptsToCourses()
+        this.postNewConcepts()
       } else {
         //TODO: input concepts to be saved as parameters
         this.props.postGeneralQuestion(
@@ -225,7 +246,8 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.addConceptsToCourses()
+        this.postConceptsToCourses()
+        this.postNewConcepts()
       }
       this.setState({
         course: '',
@@ -234,7 +256,9 @@ export class QuestionForm extends Component {
         question: '',
         correctAnswer: '',
         incorrectAnswers: [''],
-        concepts: []
+        concepts: [],
+        newConcept: '',
+        newConcepts: []
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -459,6 +483,20 @@ export class QuestionForm extends Component {
                     key={concept._id}
                   />
                 ))}
+                {this.state.newConcepts.map(concept => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        label={concept.name} key={concept.name}
+                        onChange={e => this.handleCheck(e, concept.name)}
+                        checked={this.state.concepts.includes(concept.name)}
+                        color='primary'
+                      />
+                    }
+                    label={concept.name}
+                    key={concept.name}
+                  />
+                ))}
               </FormGroup>
 
               <TextField
@@ -466,15 +504,15 @@ export class QuestionForm extends Component {
                 multiline
                 fullWidth
                 rowsMax='6'
-                // value={this.state.concept}
-                // onChange={this.handleChange('concept')}
+                value={this.state.newConcept}
+                onChange={this.handleChange('newConcept')}
                 className='conceptField'
                 helperText='Kirjoita kysymykseesi liittyvä konsepti'
                 margin='normal'
               />
 
               <div className='addButtonContainer'>
-                <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                <Button onClick={e => this.addNewConcept(e, this.state.newConcept)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                   <AddIcon className='addIcon' />
                 </Button>
               </div>
