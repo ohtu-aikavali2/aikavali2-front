@@ -207,7 +207,7 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.addConceptsToCourses()
+        //this.addConceptsToCourses()
       } else if (this.state.questionType === 'CompileQuestion') {
         this.props.postCompileQuestion(
           this.state.groupId,
@@ -215,9 +215,8 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.addConceptsToCourses()
+        //this.addConceptsToCourses()
       } else {
-        //TODO: input concepts to be saved as parameters
         this.props.postGeneralQuestion(
           this.state.groupId,
           this.state.question,
@@ -225,7 +224,7 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.addConceptsToCourses()
+        //this.addConceptsToCourses()
       }
       this.setState({
         course: '',
@@ -461,7 +460,7 @@ export class QuestionForm extends Component {
                 ))}
               </FormGroup>
 
-              <TextField
+              {/* <TextField
                 label='Uusi konsepti'
                 multiline
                 fullWidth
@@ -477,7 +476,7 @@ export class QuestionForm extends Component {
                 <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                   <AddIcon className='addIcon' />
                 </Button>
-              </div>
+              </div> */}
             </React.Fragment>
           )}
         </form>
