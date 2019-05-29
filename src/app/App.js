@@ -9,6 +9,7 @@ import ConnectedQuestionForm from './components/Admin/QuestionForm'
 import IntroScreen from './components/common/IntroScreen'
 import Questions from './components/Admin/Questions'
 import Courses from './components/Admin/Courses'
+import Concepts from './components/Admin/Concepts'
 import { connect } from 'react-redux'
 import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
@@ -77,6 +78,10 @@ export class App extends React.Component {
                   <Route
                     exact path='/admin/courses'
                     render={() => <Courses />}
+                  />
+                  <Route
+                    exact path='/admin/concepts'
+                    render={() => <Concepts />}
                   />
                 </Switch>
               </ProtectedRoute>
