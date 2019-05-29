@@ -8,11 +8,11 @@ import Dialog from '@material-ui/core/Dialog'
 
 class SimpleDialog extends React.Component {
 
-  handleClose = () => {
-    this.props.onClose('')
-  }
-  handleListItemClick = value => {
-    this.props.onClose(value)
+  sortQuestions = questions => {
+    const questionItems = questions.map(question => question.question.item.value)
+    const uniqueItemsWithCounts = questionItems.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map())
+    const sortedQuestions = new Map([...uniqueItemsWithCounts.entries()].sort((a, b) => b[1] - a[1])).keys()
+    return Array.from(sortedQuestions)
   }
 
   sortQuestions = questions => {
@@ -24,15 +24,20 @@ class SimpleDialog extends React.Component {
 
   render() {
     const { onClose, selectedValue, questions, ...other } = this.props
-    console.log(selectedValue)
-    console.log(onClose)
+    const handleClose = () => {
+      onClose('')
+    }
+    const handleListItemClick = value => {
+      onClose(selectedValue)
+      onClose(value)
+    }
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
+      <Dialog className='dialog' onClose={handleClose} aria-labelledby="simple-dialog-title" {...other}>
         <DialogTitle id="simple-dialog-title">Valitse kysymys</DialogTitle>
         <div>
           <List>
             {this.sortQuestions(questions).map(question => (
-              <ListItem button onClick={() => this.handleListItemClick(question)} key={question}>
+              <ListItem button onClick={() => handleListItemClick(question)} key={question}>
                 <ListItemText primary={question} />
               </ListItem>
             ))}

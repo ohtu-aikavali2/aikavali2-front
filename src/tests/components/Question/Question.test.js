@@ -18,9 +18,9 @@ describe('<Question />', () => {
           'option3'
         ],
         value: 'testi kysymys',
-        _id: '12345'
+        _id: '06660'
       },
-      _id: '9876'
+      _id: '4321'
     },
     {
       kind: 'CompileQuestion',
@@ -33,12 +33,25 @@ describe('<Question />', () => {
         _id: '6789'
       },
       _id: '6544'
+    },
+    {
+      kind: 'GeneralQuestion',
+      item: {
+        options: [
+          'option1',
+          'option2',
+          'option3'
+        ],
+        value: 'Yleinen kysymys',
+        _id: '12345'
+      },
+      _id: '9876'
     }
   ]
 
   beforeAll(() => {
     props = {
-      question: questions[0],
+      question: questions[2],
       game: {
         paused: false,
         ended: false
@@ -80,6 +93,14 @@ describe('<Question />', () => {
     })
   })
   it('renders only PrintQuestion when question.kind is PrintQuestion', () => {
+    question.setProps({
+      ...props,
+      question: questions[0],
+      game: {
+        started: true,
+        ended: false
+      }
+    })
     expect(question.find(CompileQuestion).length).toBe(0)
     expect(question.find(PrintQuestion).length).toBe(1)
   })

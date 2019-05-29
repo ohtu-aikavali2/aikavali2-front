@@ -8,6 +8,15 @@
     float: left;
 }
 
+.clickbox {
+    margin: 2%;
+    cursor: pointer;
+}
+
+.clickbox-link {
+  all: unset;
+}
+
 .removeButtonContainer {
     float: left;
     margin-left: 5px;
@@ -104,4 +113,12 @@
 
 .course-groups {
   margin-top: 10px;
+}
+
+.conceptFormContainer {
+    padding-top: 30px;
+    margin: 2%;
+    margin-bottom: 0;
+    flex-direction: column;
+    height: 100%;
 }

@@ -7,7 +7,7 @@ import CardActionArea from '@material-ui/core/CardActionArea'
 import './common.css'
 
 class ClickBox extends Component {
-  render () {
+  render() {
     const { title, onClick } = this.props
     return (
       <div className='clickbox'>
