@@ -176,15 +176,27 @@ export class QuestionForm extends Component {
   postNewConcepts = () => {
     const conceptsToBeSaved = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
     for (let c of conceptsToBeSaved) {
-      conceptService
-        .postConcept(c)
+      //there might be a more elegant solution to calling the next function?
+      const posting = this.postNewConcept(c)
+      posting()
     }
+  }
+
+  postNewConcept = (concept) => () => {
+    conceptService
+      .postConcept(concept)
+      .then(res => {
+        this.setState({
+          newConcepts: this.state.newConcepts.map(c =>
+            (c.name === res.name ? res : 'fail'))
+        })
+      })
   }
 
   addNewConcept = (e, conceptName) => {
     const newConcept = {
       name: conceptName,
-      course: this.determineSelectedCourse()
+      course: this.determineSelectedCourse()._id
     }
     const newConcepts = this.state.newConcepts.concat(newConcept)
     this.setState({
@@ -215,8 +227,13 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
-      const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
+      // TODO: PROBLEM: concepts need to be saved before courses and questions
+      // to get the id as a response from the conceptservice
+      this.postNewConcepts()
+      this.postConceptsToCourses()
+      // const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
+      // const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
+      const concepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
       console.log('concepts to be saved', concepts)
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
@@ -226,8 +243,6 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.postConceptsToCourses()
-        this.postNewConcepts()
       } else if (this.state.questionType === 'CompileQuestion') {
         this.props.postCompileQuestion(
           this.state.groupId,
@@ -235,10 +250,7 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.postConceptsToCourses()
-        this.postNewConcepts()
       } else {
-        //TODO: input concepts to be saved as parameters
         this.props.postGeneralQuestion(
           this.state.groupId,
           this.state.question,
@@ -246,8 +258,6 @@ export class QuestionForm extends Component {
           this.state.incorrectAnswers,
           concepts
         )
-        this.postConceptsToCourses()
-        this.postNewConcepts()
       }
       this.setState({
         course: '',
