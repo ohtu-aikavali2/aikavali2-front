@@ -12,7 +12,6 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import SaveIcon from '@material-ui/icons/Save'
 import AddIcon from '@material-ui/icons/Add'
-import DeleteIcon from '@material-ui/icons/Delete'
 import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBackward from '@material-ui/icons/ArrowBack'
 import DumbQuestion from '../Question/DumbQuestion'
@@ -29,6 +28,7 @@ import questionService from '../../services/questionService'
 //import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
+import { CardActions } from '@material-ui/core'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -50,8 +50,8 @@ export class QuestionForm extends Component {
       groupId: '',
       questionType: '',
       question: '',
-      correctAnswer: '',
-      incorrectAnswers: [''],
+      correctAnswers: [''],
+      answerOptions: [''],
       step: 0,
       courses: [],
       questions: [],
@@ -83,43 +83,52 @@ export class QuestionForm extends Component {
     })
   }
 
+  //handles modal's open status
   handleClickOpen = () => {
     this.setState({
       modalOpen: true
     })
   }
-
+  //gets the value from modal
   handleClose = value => {
     this.setState({ selectedValue: value, modalOpen: false, question: value })
   }
 
   addIncorrectAnswer = () => {
-    if (this.state.incorrectAnswers.length < 4) {
+    if (this.state.answerOptions.length < 6) {
       this.setState({
-        incorrectAnswers: [...this.state.incorrectAnswers, '']
+        answerOptions: [...this.state.answerOptions, '']
       })
     }
   }
 
-  //handles changes of incorrectAnswers in state
+  //handles changes of answerOptions in state
   handleArrayChange = (option, i) => event => {
-    let newArray = this.state.incorrectAnswers.slice(0, i)
+    let newArray = this.state.answerOptions.slice(0, i)
     newArray.push(event.target.value)
-    newArray = newArray.concat(this.state.incorrectAnswers.slice(i + 1))
+    newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
     this.setState({
-      incorrectAnswers: newArray
+      answerOptions: newArray
     })
   }
 
   removeIncorrectAnswer = () => {
-    if (this.state.incorrectAnswers.length > 1) {
+    if (this.state.answerOptions.length > 1) {
       this.setState({
-        incorrectAnswers: this.state.incorrectAnswers.slice(
+        answerOptions: this.state.answerOptions.slice(
           0,
-          this.state.incorrectAnswers.length - 1
+          this.state.answerOptions.length - 1
         )
       })
     }
+  }
+  //handles checkboxes for correct answers
+  handleCheckForCorrectAnswers (e, x) {
+    this.setState(state => ({
+      correctAnswers: state.correctAnswers.includes(x)
+        ? state.correctAnswers.filter(c => c !== x)
+        : [...state.correctAnswers, x]
+    }))
   }
 
   handleCheck(e, x) {
@@ -191,7 +200,7 @@ export class QuestionForm extends Component {
       console.log('Question is empty!')
     } else if (this.state.correctAnswer === '') {
       console.log('Correct answer is empty')
-    } else if (this.state.incorrectAnswers.includes('')) {
+    } else if (this.state.answerOptions.includes('')) {
       console.log('At least one of incorrect answers are empty')
     } else if (this.state.concepts.length < 1) {
       console.log('Concept is not set!')
@@ -204,7 +213,7 @@ export class QuestionForm extends Component {
           this.state.groupId,
           this.state.question,
           this.state.correctAnswer,
-          this.state.incorrectAnswers,
+          this.state.answerOptions,
           concepts
         )
         //this.addConceptsToCourses()
@@ -212,7 +221,7 @@ export class QuestionForm extends Component {
         this.props.postCompileQuestion(
           this.state.groupId,
           this.state.correctAnswer,
-          this.state.incorrectAnswers,
+          this.state.answerOptions,
           concepts
         )
         //this.addConceptsToCourses()
@@ -220,8 +229,8 @@ export class QuestionForm extends Component {
         this.props.postGeneralQuestion(
           this.state.groupId,
           this.state.question,
-          this.state.correctAnswer,
-          this.state.incorrectAnswers,
+          this.state.correctAnswers,
+          this.state.answerOptions,
           concepts
         )
         //this.addConceptsToCourses()
@@ -231,8 +240,8 @@ export class QuestionForm extends Component {
         groupId: '',
         questionType: '',
         question: '',
-        correctAnswer: '',
-        incorrectAnswers: [''],
+        correctAnswers: [''],
+        answerOptions: [''],
         concepts: []
       })
       console.log('Post succesful')
@@ -259,8 +268,8 @@ export class QuestionForm extends Component {
       return
     } else if (
       this.state.step === 2 &&
-      (this.state.correctAnswer === '' ||
-        this.state.incorrectAnswers.includes(''))
+      (this.state.correctAnswers.includes('') ||
+        this.state.answerOptions.includes(''))
     ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 2000)
       return
@@ -275,9 +284,7 @@ export class QuestionForm extends Component {
     question.kind = this.state.questionType
     question.item.value = this.state.question
     if (this.state.step > 1) {
-      question.item.options = this.state.incorrectAnswers.concat(
-        this.state.correctAnswer
-      )
+      question.item.options = this.state.answerOptions.concat(this.state.correctAnswers)
     }
   }
 
@@ -386,57 +393,45 @@ export class QuestionForm extends Component {
                 />
               ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
 
-              <TextField
-                label="Oikea vastaus"
-                multiline
-                fullWidth
-                rowsMax="6"
-                value={this.state.correctAnswer}
-                onChange={this.handleChange('correctAnswer')}
-                className="rightAnswerField"
-                helperText="Kirjoita oikea vastaus kysymyksellesi, vastaukset saavat sisältää monta riviä"
-                margin="normal"
-              />
-
-              {this.state.incorrectAnswers.map((option, i) => (
-                <TextField
-                  key={i}
-                  label="Väärä vastaus"
-                  multiline
-                  fullWidth
-                  rowsMax="6"
-                  value={option}
-                  onChange={this.handleArrayChange(option, i)}
-                  className="wrongAnswerField"
-                  helperText="Kirjoita jokin väärä vastaus kysymyksellesi, lisää vääriä vastauksia painamalla +"
-                  margin="normal"
-                />
+              {this.state.answerOptions.map((option, i) => (
+                <Card key={i}>
+                  <CardContent>
+                    <CardActions style={{ float:'right' }}>
+                      <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>X</Button>
+                    </CardActions>
+                    <TextField
+                      key={i}
+                      label="Vastaus"
+                      multiline
+                      fullWidth
+                      rowsMax="6"
+                      value={option}
+                      onChange={this.handleArrayChange(option, i)}
+                      className="wrongAnswerField"
+                      helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää'"
+                      margin="normal"
+                    />
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            label="Oikea vastaus"
+                            onChange={e => this.handleCheckForCorrectAnswers(e, option)}
+                            checked={this.state.correctAnswers.includes(option)}
+                            color='primary'
+                          />
+                        }
+                        label="Oikea vastaus"
+                        // key={i}
+                      />
+                    </FormGroup>
+                  </CardContent>
+                </Card>
               ))}
-
               <div className="addButtonContainer">
-                <Button
-                  onClick={this.addIncorrectAnswer}
-                  variant="fab"
-                  mini
-                  color="primary"
-                  aria-label="Add"
-                  className="addButton"
-                >
-                  <AddIcon className="addIcon" />
-                </Button>
+                <Button onClick={this.addIncorrectAnswer} fullWidth variant="contained" color="primary" aria-label="Add">+ Lisää</Button>
               </div>
-              <div className="removeButtonContainer">
-                <Button
-                  onClick={this.removeIncorrectAnswer}
-                  variant="fab"
-                  mini
-                  color="secondary"
-                  aria-label="Delete"
-                  className="deleteButton"
-                >
-                  <DeleteIcon className="deleteIcon" />
-                </Button>
-              </div>
+
             </React.Fragment>
           )}
 

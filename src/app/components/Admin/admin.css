@@ -5,7 +5,8 @@
     padding: 0;
 }
 .addButtonContainer {
-    float: left;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .clickbox {
