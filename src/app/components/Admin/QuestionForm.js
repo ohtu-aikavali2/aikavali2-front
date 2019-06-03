@@ -56,7 +56,7 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concepts: [],
+      concepts: [], // checked concepts
       newConcepts: [],
       modalOpen: false,
       selectedValue: null
@@ -162,53 +162,43 @@ export class QuestionForm extends Component {
     return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
   }
 
-  postConceptsToCourses = () => {
-    const selectedCourse = this.determineSelectedCourse()
-    const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
-    const newCourse = {
-      ...selectedCourse,
-      concepts: [...newConcepts]
-    }
-    courseService
-      .updateCourse(newCourse, newCourse._id)
-  }
-
-  postNewConcepts = async () => {
-    const conceptsToBeSaved = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
-    for (let c of conceptsToBeSaved) {
-      //there might be a more elegant solution to calling the next function?
-      const posting = this.postNewConcept(c)
-      posting()
-    }
-    console.log(this.state.newConcepts)
-    return 'done'
-  }
-
-  postNewConcept = (concept) => () => {
+  postNewConcept = (concept, selectedCourse) => {
     conceptService
       .postConcept(concept)
       .then(res => {
+        // console.log(res)
         this.setState({
-          newConcepts: this.state.newConcepts.map(c =>
-            (c.name === res.name ? res : 'fail'))
+          concepts: this.state.concepts.concat(concept.name),
+          newConcept: '',
+          newConcepts: this.state.newConcepts.concat(res)
         })
-        // console.log('saving new concept: ', res.name)
-        console.log('newConcepts when posting one: ', this.state.newConcepts.filter(c => c.name === res.name))
+        const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
+        const newCourse = {
+          ...selectedCourse,
+          concepts: [...newConcepts]
+        }
+        courseService.updateCourse(newCourse, newCourse._id)
       })
   }
 
   addNewConcept = (e, conceptName) => {
-    if (this.state.newConcepts.map(c => c.name).includes(conceptName)) return
-    const newConcept = {
-      name: conceptName,
-      course: this.determineSelectedCourse()._id
+    conceptName = conceptName.trim()
+    const selectedCourse = this.determineSelectedCourse()
+    if (conceptName.length < 2) {
+      notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 2000)
+      return
+    } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
+      notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 2000)
+      return
+    } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
+      // console.log(this.state.newConcepts)
+      const newConcept = {
+        name: conceptName,
+        course: this.determineSelectedCourse()._id
+      }
+      // immediately posts the new concept to concepts and courses
+      this.postNewConcept(newConcept, selectedCourse)
     }
-    const newConcepts = this.state.newConcepts.concat(newConcept)
-    this.setState({
-      concepts: [...this.state.concepts, newConcept],
-      newConcept: '',
-      newConcepts: [...newConcepts]
-    })
   }
 
   handleSave = () => {
@@ -232,9 +222,8 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      // const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
-      // const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
-      const concepts = this.state.newConcepts //debugging sacing new concepts
+      const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
+      const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
       console.log('concepts to be saved', concepts)
       this.postNewConcepts()
       // .then(
