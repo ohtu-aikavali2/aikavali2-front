@@ -11,6 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import SaveIcon from '@material-ui/icons/Save'
+import CloseIcon from '@material-ui/icons/Close'
 import AddIcon from '@material-ui/icons/Add'
 import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBackward from '@material-ui/icons/ArrowBack'
@@ -28,7 +29,7 @@ import questionService from '../../services/questionService'
 //import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
-import { CardActions } from '@material-ui/core'
+import { CardActions, IconButton } from '@material-ui/core'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -50,8 +51,8 @@ export class QuestionForm extends Component {
       groupId: '',
       questionType: '',
       question: '',
-      correctAnswers: [''],
-      answerOptions: [''],
+      correctAnswers: [],
+      answerOptions: [],
       step: 0,
       courses: [],
       questions: [],
@@ -112,23 +113,47 @@ export class QuestionForm extends Component {
     })
   }
 
-  removeIncorrectAnswer = () => {
-    if (this.state.answerOptions.length > 1) {
+  removeIncorrectAnswer = (option, i) => event => {
+    console.log(i)
+    console.log(this.state.correctAnswers)
+    console.log(event.target.value)
+    if (this.state.answerOptions.length > 1 && !this.state.correctAnswers.includes(option)) {
       this.setState({
-        answerOptions: this.state.answerOptions.slice(
-          0,
-          this.state.answerOptions.length - 1
-        )
+        answerOptions: this.state.answerOptions.splice(i, 1)
       })
     }
+    // if (this.state.answerOptions.length > 1) {
+    //   this.setState({
+    //     answerOptions: this.state.answerOptions.slice(
+    //       0,
+    //       this.state.answerOptions.length - 1
+    //     )
+    //   })
+    // }
   }
-  //handles checkboxes for correct answers
-  handleCheckForCorrectAnswers (e, x) {
-    this.setState(state => ({
-      correctAnswers: state.correctAnswers.includes(x)
-        ? state.correctAnswers.filter(c => c !== x)
-        : [...state.correctAnswers, x]
-    }))
+  //handles checkboxes for correct answers, currently removes the trailing elements if value is changed
+  handleCheckForCorrectAnswers (e, x, i) {
+    console.log(this.state.correctAnswers)
+    if (this.state.correctAnswers.includes(x)) {
+      console.log('found')
+      const newArray = this.state.correctAnswers.filter(item => item !== x)
+      this.setState({
+        correctAnswers: newArray
+      })
+    } else {
+      let newArray = this.state.correctAnswers.slice(0, i)
+      newArray.push(x)
+      newArray = newArray.concat(this.state.correctAnswers.slice(i + 1))
+      this.setState({
+        correctAnswers: newArray
+      })
+    }
+    // this.setState(state => ({
+    //   correctAnswers: state.correctAnswers.includes(x)
+    //     ? state.correctAnswers.filter(c => c !== x)
+    //     : [...state.correctAnswers, x]
+    // }))
+    console.log(this.state.correctAnswers)
   }
 
   handleCheck(e, x) {
@@ -394,39 +419,44 @@ export class QuestionForm extends Component {
               ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
 
               {this.state.answerOptions.map((option, i) => (
-                <Card key={i}>
-                  <CardContent>
-                    <CardActions style={{ float:'right' }}>
-                      <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>X</Button>
-                    </CardActions>
-                    <TextField
-                      key={i}
-                      label="Vastaus"
-                      multiline
-                      fullWidth
-                      rowsMax="6"
-                      value={option}
-                      onChange={this.handleArrayChange(option, i)}
-                      className="wrongAnswerField"
-                      helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää'"
-                      margin="normal"
-                    />
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            label="Oikea vastaus"
-                            onChange={e => this.handleCheckForCorrectAnswers(e, option)}
-                            checked={this.state.correctAnswers.includes(option)}
-                            color='primary'
-                          />
-                        }
-                        label="Oikea vastaus"
-                        // key={i}
+                <div key={i} className='cardContainer'>
+                  <Card>
+                    <CardContent>
+                      <CardActions style={{ float:'right' }}>
+                        <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
+                          <CloseIcon />
+                        </IconButton>
+                        {/* <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>X</Button> */}
+                      </CardActions>
+                      <TextField
+                        key={i}
+                        label="Vastaus"
+                        multiline
+                        fullWidth
+                        rowsMax="6"
+                        value={option}
+                        onChange={this.handleArrayChange(option, i)}
+                        className="wrongAnswerField"
+                        helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää'"
+                        margin="normal"
                       />
-                    </FormGroup>
-                  </CardContent>
-                </Card>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              label="Oikea vastaus"
+                              onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
+                              checked={this.state.correctAnswers.includes(option)}
+                              color='primary'
+                            />
+                          }
+                          label="Oikea vastaus"
+                          // key={i}
+                        />
+                      </FormGroup>
+                    </CardContent>
+                  </Card>
+                </div>
               ))}
               <div className="addButtonContainer">
                 <Button onClick={this.addIncorrectAnswer} fullWidth variant="contained" color="primary" aria-label="Add">+ Lisää</Button>
@@ -490,7 +520,7 @@ export class QuestionForm extends Component {
           />
           <div
             className="stepperButtonContainer"
-            style={{ display: 'flex', justifyContent: 'space-between' }}
+            style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}
           >
             <div>
               <Button
