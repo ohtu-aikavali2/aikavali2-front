@@ -168,7 +168,7 @@ export class QuestionForm extends Component {
       .then(res => {
         // console.log(res)
         this.setState({
-          concepts: this.state.concepts.concat(res),
+          concepts: this.state.concepts.concat(concept.name),
           newConcept: '',
           newConcepts: this.state.newConcepts.concat(res)
         })
