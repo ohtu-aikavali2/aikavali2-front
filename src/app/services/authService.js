@@ -39,7 +39,7 @@ const login = async (username, password) => {
 
 const setHasSeenIntro = async (value) => {
   try {
-    const { data} = await axios.patch(`${baseUrl}${apiUrl}/hasSeenIntro`, { hasSeenIntro: value }, getConfig())
+    const { data } = await axios.patch(`${baseUrl}${apiUrl}/hasSeenIntro`, { hasSeenIntro: value }, getConfig())
     return data
   } catch (e) {
     return { error: 'Virhe' }
