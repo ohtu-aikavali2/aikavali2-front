@@ -19,7 +19,6 @@ import DumbQuestion from '../Question/DumbQuestion'
 import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
 import './admin.css'
-//import './Popups/ConfirmPopup'
 import {
   postCompileQuestion,
   postPrintQuestion,
@@ -163,17 +162,16 @@ export class QuestionForm extends Component {
     return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
   }
 
-  postNewConcept = (concept) => {
+  postNewConcept = (concept, selectedCourse) => {
     conceptService
       .postConcept(concept)
       .then(res => {
         console.log(res)
         this.setState({
-          concepts: [...this.state.concepts, res], //??
+          concepts: this.state.concepts.concat(res),
           newConcept: '',
           newConcepts: this.state.newConcepts.concat(res)
         })
-        const selectedCourse = this.determineSelectedCourse()
         const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
         const newCourse = {
           ...selectedCourse,
@@ -184,14 +182,18 @@ export class QuestionForm extends Component {
   }
 
   addNewConcept = (e, conceptName) => {
-    if (!this.state.newConcepts.includes(conceptName) && (window.confirm(
-      `Valitsemalla OK käsite "${conceptName}" lisätään tämän kurssin käsitteisiin. Toimintoa ei voi perua.`))) {
+    const selectedCourse = this.determineSelectedCourse()
+    if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
+      notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 2000)
+      return
+    } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
+      console.log(this.state.newConcepts)
       const newConcept = {
         name: conceptName,
         course: this.determineSelectedCourse()._id
       }
       // immediately posts the new concept to concepts and courses
-      this.postNewConcept(newConcept)
+      this.postNewConcept(newConcept, selectedCourse)
     }
   }
 
