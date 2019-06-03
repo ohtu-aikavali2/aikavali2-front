@@ -187,7 +187,8 @@ export class QuestionForm extends Component {
     if (conceptName.length < 2) {
       notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 2000)
       return
-    } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
+      //} else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
+    } else if (this.state.newConcepts.map(c => c.name).includes(conceptName)) {
       notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 2000)
       return
     } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
