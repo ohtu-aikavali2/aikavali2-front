@@ -59,7 +59,7 @@ export class QuestionForm extends Component {
       concepts: [], // checked concepts
       newConcepts: [],
       modalOpen: false,
-      selectedValue: null
+      selectedValue: ''
     }
   }
 
@@ -488,7 +488,7 @@ export class QuestionForm extends Component {
                 ))}
               </FormGroup>
 
-              <TextField
+              {/* <TextField
                 label='Uusi konsepti'
                 multiline
                 fullWidth
@@ -504,7 +504,7 @@ export class QuestionForm extends Component {
                 <Button onClick={e => this.addNewConcept(e, this.state.newConcept)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                   <AddIcon className='addIcon' />
                 </Button>
-              </div>
+              </div> */}
             </React.Fragment>
           )}
         </form>

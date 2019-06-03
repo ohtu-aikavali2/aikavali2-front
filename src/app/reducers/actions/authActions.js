@@ -5,6 +5,7 @@ import courseService from '../../services/courseService'
 import groupService from '../../services/groupService'
 import userManager from '../../utilities/userManager'
 import store from 'store-js'
+import conceptService from '../../services/conceptService'
 
 export const loggedUserInitialization = () => {
   return async (dispatch) => {
@@ -15,6 +16,7 @@ export const loggedUserInitialization = () => {
       await questionService.setToken(loggedUser.token)
       await authService.setToken(loggedUser.token)
       await courseService.setToken(loggedUser.token)
+      await conceptService.setToken(loggedUser.token)
     }
     dispatch({
       type: authConstants.INITIALIZE_USER,
@@ -38,6 +40,7 @@ export const login = (username, password) => {
     await authService.setToken(response.token)
     await courseService.setToken(response.token)
     await groupService.setToken(response.token)
+    await conceptService.setToken(response.token)
     dispatch({
       type: authConstants.LOGIN_SUCCESSFUL,
       data: { ...response }
@@ -54,6 +57,7 @@ export const logout = () => {
     await authService.setToken(null)
     await courseService.setToken(null)
     await groupService.setToken(null)
+    await conceptService.setToken(null)
     dispatch({
       type: authConstants.LOGOUT
     })

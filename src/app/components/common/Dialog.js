@@ -15,6 +15,13 @@ class SimpleDialog extends React.Component {
     return Array.from(sortedQuestions)
   }
 
+  sortQuestions = questions => {
+    const questionItems = questions.map(question => question.question.item.value)
+    const uniqueItemsWithCounts = questionItems.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map())
+    const sortedQuestions = new Map([...uniqueItemsWithCounts.entries()].sort((a, b) => b[1] - a[1])).keys()
+    return Array.from(sortedQuestions)
+  }
+
   render() {
     const { onClose, selectedValue, questions, ...other } = this.props
     const handleClose = () => {
