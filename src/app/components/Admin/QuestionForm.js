@@ -327,184 +327,185 @@ export class QuestionForm extends Component {
     return (
       <div className="questionFormContainer">
         <Notifications ref={this.notificationRef} />
+        <div>
+          <form noValidate autoComplete="off" className="questionForm">
+            {step === 4 && <DumbQuestion question={question} />}
 
-        <form noValidate autoComplete="off" className="questionForm">
-          {step === 4 && <DumbQuestion question={question} />}
-
-          {step === 0 && (
-            <React.Fragment>
-              <h2>Valitse kurssi</h2>
-              <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
-              <Select
-                fullWidth
-                value={this.state.course}
-                onChange={this.handleChange('course')}
-                style={{ marginBottom: '10px' }}
-              >
-                {this.props.courses.map(course => (
-                  <MenuItem key={course.name} value={course.name}>
-                    {course.name}
-                  </MenuItem>
-                ))}
-              </Select>
-              {this.state.course !== '' ? (
-                <div>
-                  <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
-                  <Select
-                    fullWidth
-                    value={this.state.groupId}
-                    onChange={this.handleChange('groupId')}
-                  >
-                    {selectedCourse.groups.map(group => (
-                      <MenuItem key={group._id} value={group._id}>
-                        {group.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </div>
-              ) : null}
-            </React.Fragment>
-          )}
-
-          {step === 1 && (
-            <React.Fragment>
-              <h2>Valitse tyyppi</h2>
-              <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
-              {questionTypes.map(option => {
-                const style = this.determineTypeCardStyle(option.value)
-                return (
-                  <div className='clickbox' key={option.value}>
-                    <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
-                      <Card style={{ background: style.background }} className='clickbox-container'>
-                        <CardContent style={{ color: style.textColor }}>
-                          {option.label}
-                        </CardContent>
-                      </Card>
-                    </div>
+            {step === 0 && (
+              <React.Fragment>
+                <h2>Valitse kurssi</h2>
+                <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
+                <Select
+                  fullWidth
+                  value={this.state.course}
+                  onChange={this.handleChange('course')}
+                  style={{ marginBottom: '10px' }}
+                >
+                  {this.props.courses.map(course => (
+                    <MenuItem key={course.name} value={course.name}>
+                      {course.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {this.state.course !== '' ? (
+                  <div>
+                    <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
+                    <Select
+                      fullWidth
+                      value={this.state.groupId}
+                      onChange={this.handleChange('groupId')}
+                    >
+                      {selectedCourse.groups.map(group => (
+                        <MenuItem key={group._id} value={group._id}>
+                          {group.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </div>
-                )
-              })}
-            </React.Fragment>
-          )}
+                ) : null}
+              </React.Fragment>
+            )}
 
-          {step === 2 && (
-            <React.Fragment>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleClickOpen}
-              >
-                Valitse kysymys listasta
-              </Button>
-              <div>
-                <SimpleDialog
-                  selectedValue={this.state.selectedValue}
-                  open={this.state.modalOpen}
-                  onClose={this.handleClose}
-                  questions={this.state.questions}
-                />
-              </div>
-              {questionTypeSelected ? (
-                <TextField
-                  label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
+            {step === 1 && (
+              <React.Fragment>
+                <h2>Valitse tyyppi</h2>
+                <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
+                {questionTypes.map(option => {
+                  const style = this.determineTypeCardStyle(option.value)
+                  return (
+                    <div className='clickbox' key={option.value}>
+                      <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
+                        <Card style={{ background: style.background }} className='clickbox-container'>
+                          <CardContent style={{ color: style.textColor }}>
+                            {option.label}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )
+                })}
+              </React.Fragment>
+            )}
+
+            {step === 2 && (
+              <React.Fragment>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleClickOpen}
+                >
+                  Valitse kysymys listasta
+                </Button>
+                <div>
+                  <SimpleDialog
+                    selectedValue={this.state.selectedValue}
+                    open={this.state.modalOpen}
+                    onClose={this.handleClose}
+                    questions={this.state.questions}
+                  />
+                </div>
+                {questionTypeSelected ? (
+                  <TextField
+                    label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
+                    multiline
+                    fullWidth
+                    rowsMax="6"
+                    value={this.state.question}
+                    onChange={this.handleChange('question')}
+                    className="questionField"
+                    helperText={`Kirjoita tähän ${questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'}`}
+                    margin="normal"
+                  />
+                ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
+
+                {this.state.answerOptions.map((option, i) => (
+                  <div key={i} className='cardContainer'>
+                    <Card>
+                      <CardContent>
+                        <CardActions style={{ float:'right' }}>
+                          <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
+                            <CloseIcon />
+                          </IconButton>
+                          {/* <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>X</Button> */}
+                        </CardActions>
+                        <TextField
+                          key={i}
+                          label="Vastaus"
+                          multiline
+                          fullWidth
+                          rowsMax="6"
+                          value={option}
+                          onChange={this.handleArrayChange(option, i)}
+                          className="wrongAnswerField"
+                          helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää'"
+                          margin="normal"
+                        />
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                label="Oikea vastaus"
+                                onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
+                                checked={this.state.correctAnswers.includes(option)}
+                                color='primary'
+                              />
+                            }
+                            label="Oikea vastaus"
+                            // key={i}
+                          />
+                        </FormGroup>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+                <div className="addButtonContainer">
+                  <Button onClick={this.addIncorrectAnswer} fullWidth variant="contained" color="primary" aria-label="Add">+ Lisää</Button>
+                </div>
+
+              </React.Fragment>
+            )}
+
+            {step === 3 && (
+              <React.Fragment>
+                <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
+                <FormGroup>
+                  {selectedCourse.concepts.map(concept => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          label={concept.name} key={concept._id}
+                          onChange={e => this.handleCheck(e, concept._id)}
+                          checked={this.state.concepts.includes(concept._id)}
+                          color='primary'
+                        />
+                      }
+                      label={concept.name}
+                      key={concept._id}
+                    />
+                  ))}
+                </FormGroup>
+
+                {/* <TextField
+                  label='Uusi konsepti'
                   multiline
                   fullWidth
-                  rowsMax="6"
-                  value={this.state.question}
-                  onChange={this.handleChange('question')}
-                  className="questionField"
-                  helperText={`Kirjoita tähän ${questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'}`}
-                  margin="normal"
+                  rowsMax='6'
+                  // value={this.state.concept}
+                  // onChange={this.handleChange('concept')}
+                  className='conceptField'
+                  helperText='Kirjoita kysymykseesi liittyvä konsepti'
+                  margin='normal'
                 />
-              ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
 
-              {this.state.answerOptions.map((option, i) => (
-                <div key={i} className='cardContainer'>
-                  <Card>
-                    <CardContent>
-                      <CardActions style={{ float:'right' }}>
-                        <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
-                          <CloseIcon />
-                        </IconButton>
-                        {/* <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>X</Button> */}
-                      </CardActions>
-                      <TextField
-                        key={i}
-                        label="Vastaus"
-                        multiline
-                        fullWidth
-                        rowsMax="6"
-                        value={option}
-                        onChange={this.handleArrayChange(option, i)}
-                        className="wrongAnswerField"
-                        helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää'"
-                        margin="normal"
-                      />
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              label="Oikea vastaus"
-                              onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
-                              checked={this.state.correctAnswers.includes(option)}
-                              color='primary'
-                            />
-                          }
-                          label="Oikea vastaus"
-                          // key={i}
-                        />
-                      </FormGroup>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-              <div className="addButtonContainer">
-                <Button onClick={this.addIncorrectAnswer} fullWidth variant="contained" color="primary" aria-label="Add">+ Lisää</Button>
-              </div>
-
-            </React.Fragment>
-          )}
-
-          {step === 3 && (
-            <React.Fragment>
-              <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
-              <FormGroup>
-                {selectedCourse.concepts.map(concept => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        label={concept.name} key={concept._id}
-                        onChange={e => this.handleCheck(e, concept._id)}
-                        checked={this.state.concepts.includes(concept._id)}
-                        color='primary'
-                      />
-                    }
-                    label={concept.name}
-                    key={concept._id}
-                  />
-                ))}
-              </FormGroup>
-
-              {/* <TextField
-                label='Uusi konsepti'
-                multiline
-                fullWidth
-                rowsMax='6'
-                // value={this.state.concept}
-                // onChange={this.handleChange('concept')}
-                className='conceptField'
-                helperText='Kirjoita kysymykseesi liittyvä konsepti'
-                margin='normal'
-              />
-
-              <div className='addButtonContainer'>
-                <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                  <AddIcon className='addIcon' />
-                </Button>
-              </div> */}
-            </React.Fragment>
-          )}
-        </form>
+                <div className='addButtonContainer'>
+                  <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                    <AddIcon className='addIcon' />
+                  </Button>
+                </div> */}
+              </React.Fragment>
+            )}
+          </form>
+        </div>
 
         <div className="stepContainer">
           <Steps
