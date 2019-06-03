@@ -113,47 +113,44 @@ export class QuestionForm extends Component {
     })
   }
 
+  // removes incorrect answer and rearranges the card ids for correct answers
   removeIncorrectAnswer = (option, i) => event => {
     event.preventDefault()
-    if (this.state.answerOptions.length > 1 && !this.state.correctAnswers.includes(option)) {
+    if (this.state.answerOptions.length > 1 && !this.state.correctAnswers.map(e => e.value).includes(option)) {
       let newOptions = this.state.answerOptions
       newOptions.splice(i,1)
+      let reOrderCorrectAnswers = this.state.correctAnswers.map(item => {
+        let temp = Object.assign({}, item)
+        if (temp.cardId > i) {
+          temp.cardId = temp.cardId-1
+        }
+        return temp
+      })
+
       this.setState({
-        answerOptions: newOptions
+        answerOptions: newOptions,
+        correctAnswers: reOrderCorrectAnswers
       })
     }
-    // if (this.state.answerOptions.length > 1) {
-    //   this.setState({
-    //     answerOptions: this.state.answerOptions.slice(
-    //       0,
-    //       this.state.answerOptions.length - 1
-    //     )
-    //   })
-    // }
   }
-  //handles checkboxes for correct answers, currently removes the trailing elements if value is changed
-  handleCheckForCorrectAnswers (e, x, i) {
-    console.log(this.state.correctAnswers)
-    if (this.state.correctAnswers.includes(x)) {
-      console.log('found')
-      const newArray = this.state.correctAnswers.filter(item => item !== x)
+
+  //handles checkboxes for correct answers
+  handleCheckForCorrectAnswers (e, option, i) {
+    const ids = this.state.correctAnswers.map(item => item.cardId)
+
+    if (ids.includes(i)) {
+      const newArray = this.state.correctAnswers.filter(item => item.cardId !== i)
       this.setState({
         correctAnswers: newArray
       })
     } else {
       let newArray = this.state.correctAnswers.slice(0, i)
-      newArray.push(x)
-      newArray = newArray.concat(this.state.correctAnswers.slice(i + 1))
+      newArray.push({ cardId: i, value: option })
+      newArray = newArray.concat(this.state.correctAnswers.slice(i))
       this.setState({
         correctAnswers: newArray
       })
     }
-    // this.setState(state => ({
-    //   correctAnswers: state.correctAnswers.includes(x)
-    //     ? state.correctAnswers.filter(c => c !== x)
-    //     : [...state.correctAnswers, x]
-    // }))
-    console.log(this.state.correctAnswers)
   }
 
   handleCheck(e, x) {
@@ -254,7 +251,7 @@ export class QuestionForm extends Component {
         this.props.postGeneralQuestion(
           this.state.groupId,
           this.state.question,
-          this.state.correctAnswers,
+          this.state.correctAnswers.map(item => item.value),
           this.state.answerOptions,
           concepts
         )
@@ -426,7 +423,6 @@ export class QuestionForm extends Component {
                           <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
                             <CloseIcon />
                           </IconButton>
-                          {/* <Button onClick={this.removeIncorrectAnswer} variant="fab" mini color="secondary" aria-label="Delete" className='deleteButton'>X</Button> */}
                         </CardActions>
                         <TextField
                           key={i}
@@ -484,24 +480,6 @@ export class QuestionForm extends Component {
                     />
                   ))}
                 </FormGroup>
-
-                {/* <TextField
-                  label='Uusi konsepti'
-                  multiline
-                  fullWidth
-                  rowsMax='6'
-                  // value={this.state.concept}
-                  // onChange={this.handleChange('concept')}
-                  className='conceptField'
-                  helperText='Kirjoita kysymykseesi liittyvä konsepti'
-                  margin='normal'
-                />
-
-                <div className='addButtonContainer'>
-                  <Button variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                    <AddIcon className='addIcon' />
-                  </Button>
-                </div> */}
               </React.Fragment>
             )}
           </form>
