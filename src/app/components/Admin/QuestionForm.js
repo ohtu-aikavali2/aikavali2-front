@@ -95,7 +95,7 @@ export class QuestionForm extends Component {
     this.setState({ selectedValue: value, modalOpen: false, question: value })
   }
 
-  addIncorrectAnswer = () => {
+  addAnswerOption = () => {
     if (this.state.answerOptions.length < 6) {
       this.setState({
         answerOptions: [...this.state.answerOptions, '']
@@ -220,7 +220,7 @@ export class QuestionForm extends Component {
       this.state.questionType !== 'CompileQuestion'
     ) {
       console.log('Question is empty!')
-    } else if (this.state.correctAnswer === '') {
+    } else if (this.state.correctAnswers.map(item => item.value).includes('')) {
       console.log('Correct answer is empty')
     } else if (this.state.answerOptions.includes('')) {
       console.log('At least one of incorrect answers are empty')
@@ -248,10 +248,11 @@ export class QuestionForm extends Component {
         )
         //this.addConceptsToCourses()
       } else {
+        let correctAnswersAsStrings = this.state.correctAnswers.map(item => item.value)
         this.props.postGeneralQuestion(
           this.state.groupId,
           this.state.question,
-          this.state.correctAnswers.map(item => item.value),
+          correctAnswersAsStrings,
           this.state.answerOptions,
           concepts
         )
@@ -262,8 +263,8 @@ export class QuestionForm extends Component {
         groupId: '',
         questionType: '',
         question: '',
-        correctAnswers: [''],
-        answerOptions: [''],
+        correctAnswers: [],
+        answerOptions: [],
         concepts: []
       })
       console.log('Post succesful')
@@ -306,7 +307,7 @@ export class QuestionForm extends Component {
     question.kind = this.state.questionType
     question.item.value = this.state.question
     if (this.state.step > 1) {
-      question.item.options = this.state.answerOptions.concat(this.state.correctAnswers)
+      question.item.options = this.state.answerOptions
     }
   }
 
@@ -432,9 +433,10 @@ export class QuestionForm extends Component {
                           rowsMax="6"
                           value={option}
                           onChange={this.handleArrayChange(option, i)}
-                          className="wrongAnswerField"
+                          className="answerField"
                           helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää'"
                           margin="normal"
+                          disabled={this.state.correctAnswers.map(item => item.cardId).includes(i)}
                         />
                         <FormGroup>
                           <FormControlLabel
@@ -442,12 +444,11 @@ export class QuestionForm extends Component {
                               <Checkbox
                                 label="Oikea vastaus"
                                 onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
-                                checked={this.state.correctAnswers.includes(option)}
+                                checked={this.state.correctAnswers.map(item => item.value).includes(option)}
                                 color='primary'
                               />
                             }
                             label="Oikea vastaus"
-                            // key={i}
                           />
                         </FormGroup>
                       </CardContent>
@@ -455,7 +456,7 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <div className="addButtonContainer">
-                  <Button onClick={this.addIncorrectAnswer} fullWidth variant="contained" color="primary" aria-label="Add">+ Lisää</Button>
+                  <Button onClick={this.addAnswerOption} fullWidth variant="contained" color="primary" aria-label="Add">+ Lisää</Button>
                 </div>
 
               </React.Fragment>
