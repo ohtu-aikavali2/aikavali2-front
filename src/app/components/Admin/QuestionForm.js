@@ -114,12 +114,12 @@ export class QuestionForm extends Component {
   }
 
   removeIncorrectAnswer = (option, i) => event => {
-    console.log(i)
-    console.log(this.state.correctAnswers)
-    console.log(event.target.value)
+    event.preventDefault()
     if (this.state.answerOptions.length > 1 && !this.state.correctAnswers.includes(option)) {
+      let newOptions = this.state.answerOptions
+      newOptions.splice(i,1)
       this.setState({
-        answerOptions: this.state.answerOptions.splice(i, 1)
+        answerOptions: newOptions
       })
     }
     // if (this.state.answerOptions.length > 1) {
