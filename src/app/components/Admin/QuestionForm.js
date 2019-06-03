@@ -173,13 +173,15 @@ export class QuestionForm extends Component {
       .updateCourse(newCourse, newCourse._id)
   }
 
-  postNewConcepts = () => {
+  postNewConcepts = async () => {
     const conceptsToBeSaved = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
     for (let c of conceptsToBeSaved) {
       //there might be a more elegant solution to calling the next function?
       const posting = this.postNewConcept(c)
       posting()
     }
+    console.log(this.state.newConcepts)
+    return 'done'
   }
 
   postNewConcept = (concept) => () => {
@@ -190,10 +192,13 @@ export class QuestionForm extends Component {
           newConcepts: this.state.newConcepts.map(c =>
             (c.name === res.name ? res : 'fail'))
         })
+        // console.log('saving new concept: ', res.name)
+        console.log('newConcepts when posting one: ', this.state.newConcepts.filter(c => c.name === res.name))
       })
   }
 
   addNewConcept = (e, conceptName) => {
+    if (this.state.newConcepts.map(c => c.name).includes(conceptName)) return
     const newConcept = {
       name: conceptName,
       course: this.determineSelectedCourse()._id
@@ -227,38 +232,22 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      // TODO: PROBLEM: concepts need to be saved before courses and questions
-      // to get the id as a response from the conceptservice
-      this.postNewConcepts()
-      this.postConceptsToCourses()
       // const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
       // const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
-      const concepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
+      const concepts = this.state.newConcepts //debugging sacing new concepts
       console.log('concepts to be saved', concepts)
-      if (this.state.questionType === 'PrintQuestion') {
-        this.props.postPrintQuestion(
-          this.state.groupId,
-          this.state.question,
-          this.state.correctAnswer,
-          this.state.incorrectAnswers,
-          concepts
-        )
-      } else if (this.state.questionType === 'CompileQuestion') {
-        this.props.postCompileQuestion(
-          this.state.groupId,
-          this.state.correctAnswer,
-          this.state.incorrectAnswers,
-          concepts
-        )
-      } else {
-        this.props.postGeneralQuestion(
-          this.state.groupId,
-          this.state.question,
-          this.state.correctAnswer,
-          this.state.incorrectAnswers,
-          concepts
-        )
-      }
+      this.postNewConcepts()
+      // .then(
+      // this.postConceptsToCourses()
+      // .then(
+      this.props.postGeneralQuestion(
+        this.state.groupId,
+        this.state.question,
+        this.state.correctAnswer,
+        this.state.incorrectAnswers,
+        concepts
+      )
+      // .then(
       this.setState({
         course: '',
         groupId: '',
@@ -581,7 +570,10 @@ export class QuestionForm extends Component {
               {step === 4 && (
                 <Button
                   color="primary"
-                  onClick={() => this.handleSave()}
+                  onClick={() => {
+                    this.postNewConcepts()
+                      .then(() => this.handleSave())
+                  }}
                   variant="contained"
                   className="saveButton"
                 >
