@@ -160,6 +160,10 @@ export class QuestionForm extends Component {
   mapConceptIDsToObjects = () => {
     const selectedCourse = this.determineSelectedCourse()
     return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
+    // return newConcepts.map(c => ({
+    //   name: c.name,
+    //   course: selectedCourse
+    // }))
   }
 
   postConceptsToCourses = () => {
