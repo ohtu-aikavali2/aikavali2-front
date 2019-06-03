@@ -166,7 +166,6 @@ export class QuestionForm extends Component {
     conceptService
       .postConcept(concept)
       .then(res => {
-        // console.log(res)
         this.setState({
           concepts: this.state.concepts.concat(concept.name),
           newConcept: '',
@@ -187,12 +186,10 @@ export class QuestionForm extends Component {
     if (conceptName.length < 2) {
       notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 2000)
       return
-      //} else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
-    } else if (this.state.newConcepts.map(c => c.name).includes(conceptName)) {
+    } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
       notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 2000)
       return
     } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
-      // console.log(this.state.newConcepts)
       const newConcept = {
         name: conceptName,
         course: this.determineSelectedCourse()._id
@@ -225,11 +222,6 @@ export class QuestionForm extends Component {
       this.setState({ step: this.state.step + 1 })
       const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
       const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
-      console.log('concepts to be saved', concepts)
-      this.postNewConcepts()
-      // .then(
-      // this.postConceptsToCourses()
-      // .then(
       this.props.postGeneralQuestion(
         this.state.groupId,
         this.state.question,
@@ -237,7 +229,6 @@ export class QuestionForm extends Component {
         this.state.incorrectAnswers,
         concepts
       )
-      // .then(
       this.setState({
         course: '',
         groupId: '',
@@ -488,7 +479,7 @@ export class QuestionForm extends Component {
                 ))}
               </FormGroup>
 
-              {/* <TextField
+              <TextField
                 label='Uusi konsepti'
                 multiline
                 fullWidth
@@ -504,7 +495,7 @@ export class QuestionForm extends Component {
                 <Button onClick={e => this.addNewConcept(e, this.state.newConcept)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                   <AddIcon className='addIcon' />
                 </Button>
-              </div> */}
+              </div>
             </React.Fragment>
           )}
         </form>
@@ -560,10 +551,7 @@ export class QuestionForm extends Component {
               {step === 4 && (
                 <Button
                   color="primary"
-                  onClick={() => {
-                    this.postNewConcepts()
-                      .then(() => this.handleSave())
-                  }}
+                  onClick={() => this.handleSave()}
                   variant="contained"
                   className="saveButton"
                 >
