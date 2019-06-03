@@ -19,6 +19,7 @@ import DumbQuestion from '../Question/DumbQuestion'
 import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
 import './admin.css'
+//import './Popups/ConfirmPopup'
 import {
   postCompileQuestion,
   postPrintQuestion,
@@ -160,54 +161,38 @@ export class QuestionForm extends Component {
   mapConceptIDsToObjects = () => {
     const selectedCourse = this.determineSelectedCourse()
     return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
-    // return newConcepts.map(c => ({
-    //   name: c.name,
-    //   course: selectedCourse
-    // }))
   }
 
-  postConceptsToCourses = () => {
-    const selectedCourse = this.determineSelectedCourse()
-    const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
-    const newCourse = {
-      ...selectedCourse,
-      concepts: [...newConcepts]
-    }
-    courseService
-      .updateCourse(newCourse, newCourse._id)
-  }
-
-  postNewConcepts = () => {
-    const conceptsToBeSaved = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
-    for (let c of conceptsToBeSaved) {
-      //there might be a more elegant solution to calling the next function?
-      const posting = this.postNewConcept(c)
-      posting()
-    }
-  }
-
-  postNewConcept = (concept) => () => {
+  postNewConcept = (concept) => {
     conceptService
       .postConcept(concept)
       .then(res => {
+        console.log(res)
         this.setState({
-          newConcepts: this.state.newConcepts.map(c =>
-            (c.name === res.name ? res : 'fail'))
+          concepts: [...this.state.concepts, res], //??
+          newConcept: '',
+          newConcepts: this.state.newConcepts.concat(res)
         })
+        const selectedCourse = this.determineSelectedCourse()
+        const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
+        const newCourse = {
+          ...selectedCourse,
+          concepts: [...newConcepts]
+        }
+        courseService.updateCourse(newCourse, newCourse._id)
       })
   }
 
   addNewConcept = (e, conceptName) => {
-    const newConcept = {
-      name: conceptName,
-      course: this.determineSelectedCourse()._id
+    if (!this.state.newConcepts.includes(conceptName) && (window.confirm(
+      `Valitsemalla OK käsite "${conceptName}" lisätään tämän kurssin käsitteisiin. Toimintoa ei voi perua.`))) {
+      const newConcept = {
+        name: conceptName,
+        course: this.determineSelectedCourse()._id
+      }
+      // immediately posts the new concept to concepts and courses
+      this.postNewConcept(newConcept)
     }
-    const newConcepts = this.state.newConcepts.concat(newConcept)
-    this.setState({
-      concepts: [...this.state.concepts, newConcept],
-      newConcept: '',
-      newConcepts: [...newConcepts]
-    })
   }
 
   handleSave = () => {
@@ -231,13 +216,8 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      // TODO: PROBLEM: concepts need to be saved before courses and questions
-      // to get the id as a response from the conceptservice
-      this.postNewConcepts()
-      this.postConceptsToCourses()
-      // const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
-      // const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
-      const concepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
+      const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
+      const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
       console.log('concepts to be saved', concepts)
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
