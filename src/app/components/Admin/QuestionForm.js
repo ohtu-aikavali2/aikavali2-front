@@ -56,7 +56,7 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concepts: [],
+      concepts: [], // checked concepts
       newConcepts: [],
       modalOpen: false,
       selectedValue: null
@@ -166,7 +166,7 @@ export class QuestionForm extends Component {
     conceptService
       .postConcept(concept)
       .then(res => {
-        console.log(res)
+        // console.log(res)
         this.setState({
           concepts: this.state.concepts.concat(res),
           newConcept: '',
@@ -182,12 +182,16 @@ export class QuestionForm extends Component {
   }
 
   addNewConcept = (e, conceptName) => {
+    conceptName = conceptName.trim()
     const selectedCourse = this.determineSelectedCourse()
-    if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
+    if (conceptName.length < 2) {
+      notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 2000)
+      return
+    } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
       notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 2000)
       return
     } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
-      console.log(this.state.newConcepts)
+      // console.log(this.state.newConcepts)
       const newConcept = {
         name: conceptName,
         course: this.determineSelectedCourse()._id
