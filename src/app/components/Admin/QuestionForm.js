@@ -132,7 +132,7 @@ export class QuestionForm extends Component {
     // }
   }
   //handles checkboxes for correct answers, currently removes the trailing elements if value is changed
-  handleCheckForCorrectAnswers (e, x, i) {
+  handleCheckForCorrectAnswers(e, x, i) {
     console.log(this.state.correctAnswers)
     if (this.state.correctAnswers.includes(x)) {
       console.log('found')
@@ -422,7 +422,7 @@ export class QuestionForm extends Component {
                 <div key={i} className='cardContainer'>
                   <Card>
                     <CardContent>
-                      <CardActions style={{ float:'right' }}>
+                      <CardActions style={{ float: 'right' }}>
                         <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
                           <CloseIcon />
                         </IconButton>
@@ -451,7 +451,7 @@ export class QuestionForm extends Component {
                             />
                           }
                           label="Oikea vastaus"
-                          // key={i}
+                        // key={i}
                         />
                       </FormGroup>
                     </CardContent>
