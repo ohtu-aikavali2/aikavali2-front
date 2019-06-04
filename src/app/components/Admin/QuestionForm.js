@@ -56,7 +56,7 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concepts: [], // checked concepts
+      concepts: [], // checked concepts: holds the id's of existing concepts of selected course and the names of new concepts
       newConcepts: [],
       modalOpen: false,
       selectedValue: ''
