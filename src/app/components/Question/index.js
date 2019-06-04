@@ -112,10 +112,8 @@ export class Question extends Component {
     if (!this.props.userAnswer) {
       if (!this.state.selected || this.state.selected.value !== value) {
         this.setState({ selected: { id, value } })
-        console.log('setting new selected: ', value)
       } else {
         this.setState({ selected: null })
-        console.log('setting selected to null: ', this.state.selected.value)
       }
     }
   }
@@ -229,7 +227,7 @@ export class Question extends Component {
             answered={!!userAnswer}
           />
         )}
-        <Button onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
+        <Button style={{ maxWidth: '600px', margin: '0 auto' }} onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         <div style={{ width: '100%', height: 70 }} className='offset' />

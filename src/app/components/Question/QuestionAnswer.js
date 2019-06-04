@@ -34,7 +34,7 @@ export class QuestionAnswer extends Component {
   determineStyle = () => {
     const { userAnswer, value, selected, correctAnswer } = this.props
     const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' }
-    // const selectedStyle = { backgroundColor: '#3f51b5', cursor: 'default' }
+    // const selectedStyle = { backgroundColor: '#3f51b5', cursor: 'default' } // darker blue
     const correctStyle = { backgroundColor: 'rgb(113, 218, 113)' }
     const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)', cursor: 'default' }
     const notSelectedWrongStyle = { cursor: 'default' }
