@@ -220,6 +220,8 @@ export class QuestionForm extends Component {
       this.state.questionType !== 'CompileQuestion'
     ) {
       console.log('Question is empty!')
+    } else if (this.state.correctAnswers.length === 0) {
+      console.log('No correct answers')
     } else if (this.state.correctAnswers.map(item => item.value).includes('')) {
       console.log('Correct answer is empty')
     } else if (this.state.answerOptions.includes('')) {
@@ -284,10 +286,10 @@ export class QuestionForm extends Component {
       return
     } else if (
       this.state.step === 2 &&
-      this.state.questionType === 'PrintQuestion' &&
-      this.state.question === ''
+      this.state.questionType === 'GeneralQuestion' &&
+      this.state.question.length < 3
     ) {
-      notify.show('Kirjoita tulostettava koodi', 'error', 2000)
+      notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 2000)
       return
     } else if (
       this.state.step === 2 &&
@@ -295,6 +297,24 @@ export class QuestionForm extends Component {
         this.state.answerOptions.includes(''))
     ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      this.state.answerOptions.length < 2
+    ) {
+      notify.show('Kysymyksellä tulee olla ainakin kaksi vaihtoehtoa', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      this.state.correctAnswers.length < 1
+    ) {
+      notify.show('Valitse ainakin yksi oikea vastaus', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      (this.state.answerOptions.length - this.state.correctAnswers.length) < 1
+    ) {
+      notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 2000)
       return
     } else if (
       this.state.step === 3 &&
@@ -494,7 +514,7 @@ export class QuestionForm extends Component {
               'Valitse kurssi',
               'Valitse tyyppi',
               'Täytä kentät',
-              'Valitse konseptit',
+              'Valitse käsitteet',
               'Tallenna'
             ]}
           />
