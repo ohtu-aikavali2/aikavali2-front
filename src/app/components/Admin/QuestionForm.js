@@ -11,8 +11,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import SaveIcon from '@material-ui/icons/Save'
+import CloseIcon from '@material-ui/icons/Close'
 import AddIcon from '@material-ui/icons/Add'
-import DeleteIcon from '@material-ui/icons/Delete'
 import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBackward from '@material-ui/icons/ArrowBack'
 import DumbQuestion from '../Question/DumbQuestion'
@@ -29,6 +29,7 @@ import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
+import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } from '@material-ui/core'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -51,15 +52,16 @@ export class QuestionForm extends Component {
       newConcept: '',
       questionType: '',
       question: '',
-      correctAnswer: '',
-      incorrectAnswers: [''],
+      correctAnswers: [],
+      answerOptions: [],
       step: 0,
       courses: [],
       questions: [],
       concepts: [], // checked concepts: holds the id's of existing concepts of selected course and the names of new concepts
       newConcepts: [],
       modalOpen: false,
-      selectedValue: ''
+      selectedValue: '',
+      selectedValueForRadioButton: ''
     }
   }
 
@@ -85,41 +87,78 @@ export class QuestionForm extends Component {
     })
   }
 
+  //handles modal's open status
   handleClickOpen = () => {
     this.setState({
       modalOpen: true
     })
   }
-
+  //gets the value from modal
   handleClose = value => {
-    this.setState({ selectedValue: value, modalOpen: false, question: value })
+    this.setState({
+      selectedValue: value,
+      modalOpen: false,
+      question: value
+    })
   }
 
-  addIncorrectAnswer = () => {
-    if (this.state.incorrectAnswers.length < 4) {
+  addAnswerOption = () => {
+    if (this.state.answerOptions.length < 6) {
       this.setState({
-        incorrectAnswers: [...this.state.incorrectAnswers, '']
+        answerOptions: [...this.state.answerOptions, '']
       })
     }
   }
 
-  //handles changes of incorrectAnswers in state
+  //handles changes of answerOptions in state
   handleArrayChange = (option, i) => event => {
-    let newArray = this.state.incorrectAnswers.slice(0, i)
+    let newArray = this.state.answerOptions.slice(0, i)
     newArray.push(event.target.value)
-    newArray = newArray.concat(this.state.incorrectAnswers.slice(i + 1))
+    newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+    if (this.state.answerOptions.includes(event.target.value)) {
+      notify.show('Vastausvaihto on jo luotu', 'error', 2000)
+    }
     this.setState({
-      incorrectAnswers: newArray
+      answerOptions: newArray
     })
   }
 
-  removeIncorrectAnswer = () => {
-    if (this.state.incorrectAnswers.length > 1) {
+  // removes incorrect answer and rearranges the card ids for correct answers
+  removeIncorrectAnswer = (option, i) => event => {
+    event.preventDefault()
+    if (this.state.answerOptions.length > 1 && !this.state.correctAnswers.map(e => e.value).includes(option)) {
+      let newOptions = this.state.answerOptions
+      newOptions.splice(i,1)
+      let reOrderCorrectAnswers = this.state.correctAnswers.map(item => {
+        let temp = Object.assign({}, item)
+        if (temp.cardId > i) {
+          temp.cardId = temp.cardId-1
+        }
+        return temp
+      })
+
       this.setState({
-        incorrectAnswers: this.state.incorrectAnswers.slice(
-          0,
-          this.state.incorrectAnswers.length - 1
-        )
+        answerOptions: newOptions,
+        correctAnswers: reOrderCorrectAnswers
+      })
+    }
+  }
+
+  //handles checkboxes for correct answers
+  handleCheckForCorrectAnswers (e, option, i) {
+    const ids = this.state.correctAnswers.map(item => item.cardId)
+
+    if (ids.includes(i)) {
+      const newArray = this.state.correctAnswers.filter(item => item.cardId !== i)
+      this.setState({
+        correctAnswers: newArray
+      })
+    } else {
+      let newArray = this.state.correctAnswers.slice(0, i)
+      newArray.push({ cardId: i, value: option })
+      newArray = newArray.concat(this.state.correctAnswers.slice(i))
+      this.setState({
+        correctAnswers: newArray
       })
     }
   }
@@ -211,34 +250,58 @@ export class QuestionForm extends Component {
       this.state.questionType !== 'CompileQuestion'
     ) {
       console.log('Question is empty!')
-    } else if (this.state.correctAnswer === '') {
-      console.log('Correct answer is empty')
-    } else if (this.state.incorrectAnswers.includes('')) {
-      console.log('At least one of incorrect answers are empty')
+    } else if (this.state.correctAnswers.length === 0) {
+      console.log('No correct answers')
+    } else if (this.state.correctAnswers.map(item => item.value).includes('')) {
+      console.log('At least one of correct answers is empty')
+    } else if (this.state.answerOptions.includes('')) {
+      console.log('At least one of incorrect answers is empty')
     } else if (this.state.concepts.length < 1) {
       console.log('Concept is not set!')
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const newConcepts = this.state.newConcepts.filter(c => this.state.concepts.includes(c.name))
-      const concepts = this.mapConceptIDsToObjects().concat(newConcepts)
-      this.props.postGeneralQuestion(
-        this.state.groupId,
-        this.state.question,
-        this.state.correctAnswer,
-        this.state.incorrectAnswers,
-        concepts
-      )
+      const concepts = this.mapConceptIDsToObjects()
+      if (this.state.questionType === 'PrintQuestion') {
+        this.props.postPrintQuestion(
+          this.state.groupId,
+          this.state.question,
+          this.state.correctAnswer,
+          this.state.answerOptions,
+          concepts
+        )
+        //this.addConceptsToCourses()
+      } else if (this.state.questionType === 'CompileQuestion') {
+        this.props.postCompileQuestion(
+          this.state.groupId,
+          this.state.correctAnswer,
+          this.state.answerOptions,
+          concepts
+        )
+        //this.addConceptsToCourses()
+      } else {
+        let correctAnswersAsStrings = this.state.correctAnswers.map(item => item.value)
+        this.props.postGeneralQuestion(
+          this.state.groupId,
+          this.state.question,
+          correctAnswersAsStrings,
+          this.state.answerOptions,
+          concepts
+        )
+        //this.addConceptsToCourses()
+      }
       this.setState({
         course: '',
         groupId: '',
         questionType: '',
         question: '',
-        correctAnswer: '',
-        incorrectAnswers: [''],
+        correctAnswers: [],
+        answerOptions: [],
         concepts: [],
         newConcept: '',
-        newConcepts: []
+        newConcepts: [],
+        selectedValue: '',
+        selectedValueForRadioButton: ''
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -246,6 +309,7 @@ export class QuestionForm extends Component {
   }
 
   stepForward = () => {
+    const hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
     if (this.state.step === 0 && this.state.course === '') {
       notify.show('Valitse kurssi', 'error', 2000)
       return
@@ -257,17 +321,47 @@ export class QuestionForm extends Component {
       return
     } else if (
       this.state.step === 2 &&
-      this.state.questionType === 'PrintQuestion' &&
-      this.state.question === ''
+      this.state.questionType === 'GeneralQuestion' &&
+      this.state.question.length < 3
     ) {
-      notify.show('Kirjoita tulostettava koodi', 'error', 2000)
+      notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 2000)
       return
     } else if (
       this.state.step === 2 &&
-      (this.state.correctAnswer === '' ||
-        this.state.incorrectAnswers.includes(''))
+      (this.state.correctAnswers.includes('') ||
+        this.state.answerOptions.includes(''))
     ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      this.state.answerOptions.length < 2
+    ) {
+      notify.show('Kysymyksellä tulee olla ainakin kaksi vaihtoehtoa', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      this.state.correctAnswers.length < 1
+    ) {
+      notify.show('Valitse ainakin yksi oikea vastaus', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      (this.state.answerOptions.length - this.state.correctAnswers.length) < 1
+    ) {
+      notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      hasDuplicates
+    ) {
+      notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      this.state.selectedValueForRadioButton === ''
+    ) {
+      notify.show('Valitse tuleeko vastaajan valita yksi vai useampi vaihtoehto', 'error', 2000)
       return
     } else if (
       this.state.step === 3 &&
@@ -280,9 +374,7 @@ export class QuestionForm extends Component {
     question.kind = this.state.questionType
     question.item.value = this.state.question
     if (this.state.step > 1) {
-      question.item.options = this.state.incorrectAnswers.concat(
-        this.state.correctAnswer
-      )
+      question.item.options = this.state.answerOptions
     }
   }
 
@@ -300,205 +392,215 @@ export class QuestionForm extends Component {
     return (
       <div className="questionFormContainer">
         <Notifications ref={this.notificationRef} />
+        <div className="questionFormBody">
+          <form noValidate autoComplete="off" className="questionForm">
+            {step === 4 && <DumbQuestion question={question} />}
 
-        <form noValidate autoComplete="off" className="questionForm">
-          {step === 4 && <DumbQuestion question={question} />}
-
-          {step === 0 && (
-            <React.Fragment>
-              <h2>Valitse kurssi</h2>
-              <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
-              <Select
-                fullWidth
-                value={this.state.course}
-                onChange={this.handleChange('course')}
-                style={{ marginBottom: '10px' }}
-              >
-                {this.props.courses.map(course => (
-                  <MenuItem key={course.name} value={course.name}>
-                    {course.name}
-                  </MenuItem>
-                ))}
-              </Select>
-              {this.state.course !== '' ? (
-                <div>
-                  <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
-                  <Select
-                    fullWidth
-                    value={this.state.groupId}
-                    onChange={this.handleChange('groupId')}
-                  >
-                    {selectedCourse.groups.map(group => (
-                      <MenuItem key={group._id} value={group._id}>
-                        {group.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </div>
-              ) : null}
-            </React.Fragment>
-          )}
-
-          {step === 1 && (
-            <React.Fragment>
-              <h2>Valitse tyyppi</h2>
-              <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
-              {questionTypes.map(option => {
-                const style = this.determineTypeCardStyle(option.value)
-                return (
-                  <div className='clickbox' key={option.value}>
-                    <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
-                      <Card style={{ background: style.background }} className='clickbox-container'>
-                        <CardContent style={{ color: style.textColor }}>
-                          {option.label}
-                        </CardContent>
-                      </Card>
-                    </div>
+            {step === 0 && (
+              <React.Fragment>
+                <h2>Valitse kurssi</h2>
+                <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
+                <Select
+                  fullWidth
+                  value={this.state.course}
+                  onChange={this.handleChange('course')}
+                  style={{ marginBottom: '10px' }}
+                >
+                  {this.props.courses.map(course => (
+                    <MenuItem key={course.name} value={course.name}>
+                      {course.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {this.state.course !== '' ? (
+                  <div>
+                    <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
+                    <Select
+                      fullWidth
+                      value={this.state.groupId}
+                      onChange={this.handleChange('groupId')}
+                    >
+                      {selectedCourse.groups.map(group => (
+                        <MenuItem key={group._id} value={group._id}>
+                          {group.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </div>
-                )
-              })}
-            </React.Fragment>
-          )}
+                ) : null}
+              </React.Fragment>
+            )}
 
-          {step === 2 && (
-            <React.Fragment>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleClickOpen}
-              >
-                Valitse kysymys listasta
-              </Button>
-              <div>
-                <SimpleDialog
-                  selectedValue={this.state.selectedValue}
-                  open={this.state.modalOpen}
-                  onClose={this.handleClose}
-                  questions={this.state.questions}
-                />
-              </div>
-              {questionTypeSelected ? (
-                <TextField
-                  label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
-                  multiline
-                  fullWidth
-                  rowsMax="6"
-                  value={this.state.question}
-                  onChange={this.handleChange('question')}
-                  className="questionField"
-                  helperText={`Kirjoita tähän ${questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'}`}
-                  margin="normal"
-                />
-              ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
+            {step === 1 && (
+              <React.Fragment>
+                <h2>Valitse tyyppi</h2>
+                <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
+                {questionTypes.map(option => {
+                  const style = this.determineTypeCardStyle(option.value)
+                  return (
+                    <div className='clickbox' key={option.value}>
+                      <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
+                        <Card style={{ background: style.background }} className='clickbox-container'>
+                          <CardContent style={{ color: style.textColor }}>
+                            {option.label}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )
+                })}
+              </React.Fragment>
+            )}
 
-              <TextField
-                label="Oikea vastaus"
-                multiline
-                fullWidth
-                rowsMax="6"
-                value={this.state.correctAnswer}
-                onChange={this.handleChange('correctAnswer')}
-                className="rightAnswerField"
-                helperText="Kirjoita oikea vastaus kysymyksellesi, vastaukset saavat sisältää monta riviä"
-                margin="normal"
-              />
-
-              {this.state.incorrectAnswers.map((option, i) => (
-                <TextField
-                  key={i}
-                  label="Väärä vastaus"
-                  multiline
-                  fullWidth
-                  rowsMax="6"
-                  value={option}
-                  onChange={this.handleArrayChange(option, i)}
-                  className="wrongAnswerField"
-                  helperText="Kirjoita jokin väärä vastaus kysymyksellesi, lisää vääriä vastauksia painamalla +"
-                  margin="normal"
-                />
-              ))}
-
-              <div className="addButtonContainer">
+            {step === 2 && (
+              <React.Fragment>
                 <Button
-                  onClick={this.addIncorrectAnswer}
-                  variant="fab"
-                  mini
+                  variant="contained"
                   color="primary"
-                  aria-label="Add"
-                  className="addButton"
+                  onClick={this.handleClickOpen}
                 >
-                  <AddIcon className="addIcon" />
+                  Valitse kysymys listasta
                 </Button>
-              </div>
-              <div className="removeButtonContainer">
-                <Button
-                  onClick={this.removeIncorrectAnswer}
-                  variant="fab"
-                  mini
-                  color="secondary"
-                  aria-label="Delete"
-                  className="deleteButton"
-                >
-                  <DeleteIcon className="deleteIcon" />
-                </Button>
-              </div>
-            </React.Fragment>
-          )}
-
-          {step === 3 && (
-            <React.Fragment>
-              <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
-              <FormGroup>
-                {selectedCourse.concepts.map(concept => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        label={concept.name} key={concept._id}
-                        onChange={e => this.handleCheck(e, concept._id)}
-                        checked={this.state.concepts.includes(concept._id)}
-                        color='primary'
-                      />
-                    }
-                    label={concept.name}
-                    key={concept._id}
+                <div>
+                  <SimpleDialog
+                    selectedValue={this.state.selectedValue}
+                    open={this.state.modalOpen}
+                    onClose={this.handleClose}
+                    questions={this.state.questions}
                   />
-                ))}
-                {this.state.newConcepts.map(concept => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        label={concept.name} key={concept.name}
-                        onChange={e => this.handleCheck(e, concept.name)}
-                        checked={this.state.concepts.includes(concept.name)}
-                        color='primary'
-                      />
-                    }
-                    label={concept.name}
-                    key={concept.name}
+                </div>
+                {questionTypeSelected ? (
+                  <TextField
+                    label="Kysymyksesi"
+                    multiline
+                    fullWidth
+                    rowsMax="6"
+                    value={this.state.question}
+                    onChange={this.handleChange('question')}
+                    className="questionField"
+                    helperText="Kirjoita tähän kysymyksesi"
+                    margin="normal"
                   />
+                ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
+                <div className="RadioButtonForm">
+                  <FormControl component="fieldset" className="RadioButtonFormControl">
+                    <FormLabel component="legend">Montako vastausta voi valita?</FormLabel>
+                    <RadioGroup
+                      aria-label="howManyAnswers"
+                      name="howManyAnswers"
+                      className="Radiogroup"
+                      value={this.state.selectedValueForRadioButton}
+                      onChange={this.handleChange('selectedValueForRadioButton')}
+                    >
+                      <FormControlLabel value="selectOne" control={<Radio color="primary" />} label="Voi valita yhden vastauksen" />
+                      <FormControlLabel value="selectMany" control={<Radio color="primary" />} label="Voi valita monta vastausta" />
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+
+                {this.state.answerOptions.map((option, i) => (
+                  <div key={i} className='cardContainer'>
+                    <Card>
+                      <CardContent>
+                        <CardActions style={{ float:'right' }}>
+                          <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
+                            <CloseIcon />
+                          </IconButton>
+                        </CardActions>
+                        <TextField
+                          key={i}
+                          label="Vastaus"
+                          multiline
+                          fullWidth
+                          rowsMax="6"
+                          value={option}
+                          onChange={this.handleArrayChange(option, i)}
+                          className="answerField"
+                          helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää vastausvaihtoehto'"
+                          margin="normal"
+                          disabled={this.state.correctAnswers.map(item => item.cardId).includes(i)}
+                        />
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                label="Oikea vastaus"
+                                onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
+                                checked={this.state.correctAnswers.map(item => item.value).includes(option)}
+                                color='primary'
+                              />
+                            }
+                            label="Oikea vastaus"
+                          />
+                        </FormGroup>
+                      </CardContent>
+                    </Card>
+                  </div>
                 ))}
-              </FormGroup>
+                <div className="addButtonContainer">
+                  <Button onClick={this.addAnswerOption} fullWidth variant="contained" color="primary" aria-label="Add">
+                    + Lisää vastausvaihtoehto
+                  </Button>
+                </div>
 
-              <TextField
-                label='Uusi konsepti'
-                multiline
-                fullWidth
-                rowsMax='6'
-                value={this.state.newConcept}
-                onChange={this.handleChange('newConcept')}
-                className='conceptField'
-                helperText='Kirjoita kysymykseesi liittyvä konsepti'
-                margin='normal'
-              />
+              </React.Fragment>
+            )}
 
-              <div className='addButtonContainer'>
-                <Button onClick={e => this.addNewConcept(e, this.state.newConcept)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                  <AddIcon className='addIcon' />
-                </Button>
-              </div>
-            </React.Fragment>
-          )}
-        </form>
+            {step === 3 && (
+              <React.Fragment>
+                <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
+                <FormGroup>
+                  {selectedCourse.concepts.map(concept => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          label={concept.name} key={concept._id}
+                          onChange={e => this.handleCheck(e, concept._id)}
+                          checked={this.state.concepts.includes(concept._id)}
+                          color='primary'
+                        />
+                      }
+                      label={concept.name}
+                      key={concept._id}
+                    />
+                  ))}
+                  {this.state.newConcepts.map(concept => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          label={concept.name} key={concept.name}
+                          onChange={e => this.handleCheck(e, concept.name)}
+                          checked={this.state.concepts.includes(concept.name)}
+                          color='primary'
+                        />
+                      }
+                      label={concept.name}
+                      key={concept.name}
+                    />
+                  ))}
+                </FormGroup>
+
+                <TextField
+                  label='Uusi konsepti'
+                  multiline
+                  fullWidth
+                  rowsMax='6'
+                  value={this.state.newConcept}
+                  onChange={this.handleChange('newConcept')}
+                  className='conceptField'
+                  helperText='Kirjoita kysymykseesi liittyvä konsepti'
+                  margin='normal'
+                />
+
+                <div className='addButtonContainer'>
+                  <Button onClick={e => this.addNewConcept(e, this.state.newConcept)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                    <AddIcon className='addIcon' />
+                  </Button>
+                </div>
+              </React.Fragment>
+            )}
+          </form>
+        </div>
 
         <div className="stepContainer">
           <Steps
@@ -508,13 +610,13 @@ export class QuestionForm extends Component {
               'Valitse kurssi',
               'Valitse tyyppi',
               'Täytä kentät',
-              'Valitse konseptit',
+              'Valitse käsitteet',
               'Tallenna'
             ]}
           />
           <div
             className="stepperButtonContainer"
-            style={{ display: 'flex', justifyContent: 'space-between' }}
+            style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}
           >
             <div>
               <Button
