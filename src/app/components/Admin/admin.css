@@ -44,8 +44,15 @@
     height: 100%;
 }
 
+.questionFormBody {
+    padding-bottom: 70px;
+}
+
 .stepContainer {
-    padding-top: 40vh;
+    position: sticky;
+    bottom: 0;
+    height: 70px;
+    width: 100%;
 }
 
 .flaggedQuestionsContainer {

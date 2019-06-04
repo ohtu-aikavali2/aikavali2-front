@@ -368,7 +368,7 @@ export class QuestionForm extends Component {
     return (
       <div className="questionFormContainer">
         <Notifications ref={this.notificationRef} />
-        <div>
+        <div className="questionFormBody">
           <form noValidate autoComplete="off" className="questionForm">
             {step === 4 && <DumbQuestion question={question} />}
 
