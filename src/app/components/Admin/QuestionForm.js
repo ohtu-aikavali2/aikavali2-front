@@ -29,7 +29,7 @@ import questionService from '../../services/questionService'
 //import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton } from '@material-ui/core'
+import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } from '@material-ui/core'
 //toistaiseksi tyypit kovakoodattu
 const questionTypes = [
   {
@@ -58,7 +58,8 @@ export class QuestionForm extends Component {
       questions: [],
       concepts: [],
       modalOpen: false,
-      selectedValue: ''
+      selectedValue: '',
+      selectedValueForRadioButton: ''
     }
   }
 
@@ -92,7 +93,11 @@ export class QuestionForm extends Component {
   }
   //gets the value from modal
   handleClose = value => {
-    this.setState({ selectedValue: value, modalOpen: false, question: value })
+    this.setState({
+      selectedValue: value,
+      modalOpen: false,
+      question: value
+    })
   }
 
   addAnswerOption = () => {
@@ -108,6 +113,9 @@ export class QuestionForm extends Component {
     let newArray = this.state.answerOptions.slice(0, i)
     newArray.push(event.target.value)
     newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+    if (this.state.answerOptions.includes(event.target.value)) {
+      notify.show('Vastausvaihto on jo luotu', 'error', 2000)
+    }
     this.setState({
       answerOptions: newArray
     })
@@ -223,9 +231,9 @@ export class QuestionForm extends Component {
     } else if (this.state.correctAnswers.length === 0) {
       console.log('No correct answers')
     } else if (this.state.correctAnswers.map(item => item.value).includes('')) {
-      console.log('Correct answer is empty')
+      console.log('At least one of correct answers is empty')
     } else if (this.state.answerOptions.includes('')) {
-      console.log('At least one of incorrect answers are empty')
+      console.log('At least one of incorrect answers is empty')
     } else if (this.state.concepts.length < 1) {
       console.log('Concept is not set!')
     } else {
@@ -267,7 +275,9 @@ export class QuestionForm extends Component {
         question: '',
         correctAnswers: [],
         answerOptions: [],
-        concepts: []
+        concepts: [],
+        selectedValue: '',
+        selectedValueForRadioButton: ''
       })
       console.log('Post succesful')
       notify.show('Kysymys tallennettu', 'success', 2000)
@@ -275,6 +285,7 @@ export class QuestionForm extends Component {
   }
 
   stepForward = () => {
+    const hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
     if (this.state.step === 0 && this.state.course === '') {
       notify.show('Valitse kurssi', 'error', 2000)
       return
@@ -315,6 +326,18 @@ export class QuestionForm extends Component {
       (this.state.answerOptions.length - this.state.correctAnswers.length) < 1
     ) {
       notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      hasDuplicates
+    ) {
+      notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 2000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      this.state.selectedValueForRadioButton === ''
+    ) {
+      notify.show('Valitse tuleeko vastaajan valita yksi vai useampi vaihtoehto', 'error', 2000)
       return
     } else if (
       this.state.step === 3 &&
@@ -424,17 +447,32 @@ export class QuestionForm extends Component {
                 </div>
                 {questionTypeSelected ? (
                   <TextField
-                    label={`${questionType === 'PrintQuestion' ? 'Koodisi' : 'Kysymyksesi'}`}
+                    label="Kysymyksesi"
                     multiline
                     fullWidth
                     rowsMax="6"
                     value={this.state.question}
                     onChange={this.handleChange('question')}
                     className="questionField"
-                    helperText={`Kirjoita tähän ${questionType === 'PrintQuestion' ? 'koodisi' : 'kysymyksesi'}`}
+                    helperText="Kirjoita tähän kysymyksesi"
                     margin="normal"
                   />
                 ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
+                <div className="RadioButtonForm">
+                  <FormControl component="fieldset" className="RadioButtonFormControl">
+                    <FormLabel component="legend">Montako vastausta voi valita?</FormLabel>
+                    <RadioGroup
+                      aria-label="howManyAnswers"
+                      name="howManyAnswers"
+                      className="Radiogroup"
+                      value={this.state.selectedValueForRadioButton}
+                      onChange={this.handleChange('selectedValueForRadioButton')}
+                    >
+                      <FormControlLabel value="selectOne" control={<Radio color="primary" />} label="Voi valita yhden vastauksen" />
+                      <FormControlLabel value="selectMany" control={<Radio color="primary" />} label="Voi valita monta vastausta" />
+                    </RadioGroup>
+                  </FormControl>
+                </div>
 
                 {this.state.answerOptions.map((option, i) => (
                   <div key={i} className='cardContainer'>
@@ -454,7 +492,7 @@ export class QuestionForm extends Component {
                           value={option}
                           onChange={this.handleArrayChange(option, i)}
                           className="answerField"
-                          helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää'"
+                          helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää vastausvaihtoehto'"
                           margin="normal"
                           disabled={this.state.correctAnswers.map(item => item.cardId).includes(i)}
                         />
@@ -476,7 +514,9 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <div className="addButtonContainer">
-                  <Button onClick={this.addAnswerOption} fullWidth variant="contained" color="primary" aria-label="Add">+ Lisää</Button>
+                  <Button onClick={this.addAnswerOption} fullWidth variant="contained" color="primary" aria-label="Add">
+                    + Lisää vastausvaihtoehto
+                  </Button>
                 </div>
 
               </React.Fragment>

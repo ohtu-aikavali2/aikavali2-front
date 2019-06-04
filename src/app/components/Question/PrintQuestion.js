@@ -9,7 +9,7 @@ export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, du
   return (
     <div className='printQuestion'>
       <Typography className='typography' variant="headline" align="center" color="default" gutterBottom>
-        {kind !== 'GeneralQuestion' && 'Mitä koodi tulostaa?'}
+        {kind === 'GeneralQuestion' && 'Mitä koodi tulostaa?'}
       </Typography>
       <Collapse in={answered} timeout={400}>
         <FeedbackBar topLeftContent={topLeftContent} topRightContent={topRightContent} />

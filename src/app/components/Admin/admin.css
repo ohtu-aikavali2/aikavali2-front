@@ -13,6 +13,11 @@
     padding-block-end: 10px;
 }
 
+.RadioButtonForm {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .clickbox {
     margin: 2%;
     cursor: pointer;
