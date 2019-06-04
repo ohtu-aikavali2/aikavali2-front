@@ -69,32 +69,32 @@ describe('<QuestionAnswer />', () => {
       question.instance().handleClick()
       expect(props.handleSelect).toHaveBeenCalledTimes(1)
     })
-    it('calls the prop handleSkip() if user clicks on the right answer when already answered', () => {
-      props = {
-        ...props,
-        userAnswer: {
-          isCorrect: false,
-          correctAnswer: 'Option'
-        }
-      }
-      question = shallow(<QuestionAnswer {...props} />)
-      question.instance().handleClick()
-      expect(props.handleSelect).toHaveBeenCalledTimes(0)
-      expect(props.handleSkip).toHaveBeenCalledTimes(1)
-      props.handleSkip.mockClear()
+    // it('calls the prop handleSkip() if user clicks on the right answer when already answered', () => {
+    //   props = {
+    //     ...props,
+    //     userAnswer: {
+    //       isCorrect: false,
+    //       correctAnswer: 'Option'
+    //     }
+    //   }
+    //   question = shallow(<QuestionAnswer {...props} />)
+    //   question.instance().handleClick()
+    //   expect(props.handleSelect).toHaveBeenCalledTimes(0)
+    //   expect(props.handleSkip).toHaveBeenCalledTimes(1)
+    //   props.handleSkip.mockClear()
 
-      props = {
-        ...props,
-        userAnswer: {
-          isCorrect: true
-        },
-        selected: true
-      }
-      question = shallow(<QuestionAnswer {...props} />)
-      question.instance().handleClick()
-      expect(props.handleSelect).toHaveBeenCalledTimes(0)
-      expect(props.handleSkip).toHaveBeenCalledTimes(1)
-    })
+    //   props = {
+    //     ...props,
+    //     userAnswer: {
+    //       isCorrect: true
+    //     },
+    //     selected: true
+    //   }
+    //   question = shallow(<QuestionAnswer {...props} />)
+    //   question.instance().handleClick()
+    //   expect(props.handleSelect).toHaveBeenCalledTimes(0)
+    //   expect(props.handleSkip).toHaveBeenCalledTimes(1)
+    // })
   })
   it('calls determineStyle() when rendered', () => {
     const spy = jest.spyOn(question.instance(), 'determineStyle')
