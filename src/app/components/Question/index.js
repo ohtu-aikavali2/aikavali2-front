@@ -110,10 +110,12 @@ export class Question extends Component {
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleSelect = async (id, value) => {
     if (!this.props.userAnswer) {
-      if (!this.state.selected || this.state.selected.id !== id) {
+      if (!this.state.selected || this.state.selected.value !== value) {
         this.setState({ selected: { id, value } })
+        console.log('setting new selected: ', value)
       } else {
         this.setState({ selected: null })
+        console.log('setting selected to null: ', this.state.selected.value)
       }
     }
   }

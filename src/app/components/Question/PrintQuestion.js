@@ -22,7 +22,6 @@ export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, du
         </div>
       </div>
       {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selected={selected && selected.value === option} dumb={dumb} correctAnswer={correctAnswer} />)}
-      {/* <Button onClick={console.log('klik')} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button> */}
     </div>
   )
 }
