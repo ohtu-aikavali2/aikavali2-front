@@ -108,12 +108,22 @@ export class Question extends Component {
   }
 
   // Ensimmäinen painallus kysymysvaihtoehtoon
-  handleAnswer = async (id, value) => {
-    if (!(this.state.selected && !this.props.userAnswer)) {
-      this.setState({ selected: { id, value } })
-      const time = Date.now() - this.state.startTime
-      await this.props.answerQuestion(id, value, time)
+  handleSelect = async (id, value) => {
+    if (!this.props.userAnswer) {
+      if (!this.state.selected || this.state.selected.if !== id)
+        this.setState({ selected: { id, value } })
+    } else {
+      this.setState({ selected: null })
     }
+  }
+
+  handleAnswer = async () => {
+    if (this.state.selected === null) {
+      notify.show('Valitse ainakin yksi oikea vastaus', 'error', 2000)
+      return
+    }
+    const time = Date.now() - this.state.startTime
+    await this.props.answerQuestion(this.state.selected.id, this.state.selected.value, time)
   }
 
   // Tätä kutsutaan painetaan skip ekan kerran
@@ -196,7 +206,7 @@ export class Question extends Component {
             question={question.item}
             kind={question.kind}
             handleQuestionReview={this.handleQuestionReview}
-            handleSelect={this.handleAnswer}
+            handleSelect={this.handleSelect}
             handleSkip={this.getNewQuestion}
             selected={this.state.selected}
             topLeftContent={this.renderReviewText()}
@@ -208,7 +218,7 @@ export class Question extends Component {
           <CompileQuestion
             question={question.item}
             handleQuestionReview={this.handleQuestionReview}
-            handleSelect={this.handleAnswer}
+            handleSelect={this.handleSelect}
             handleSkip={this.getNewQuestion}
             selected={this.state.selected}
             topLeftContent={this.renderReviewText()}
@@ -216,6 +226,7 @@ export class Question extends Component {
             answered={!!userAnswer}
           />
         )}
+        <Button onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         <div style={{ width: '100%', height: 70 }} className='offset' />

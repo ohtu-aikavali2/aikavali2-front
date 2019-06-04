@@ -1,8 +1,9 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
 import QuestionAnswer from './QuestionAnswer'
 import FeedbackBar from '../common/FeedbackBar'
+import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
+// import Button from '@material-ui/core/Button'
 
 export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, dumb, topLeftContent, topRightContent, answered, correctAnswer, kind }) => {
 
@@ -17,9 +18,11 @@ export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, du
       <div className='titleContainer'>
         <div className='rowContainer'>
           <h4>{question.value}</h4>
+          <p>Valitse kaikki oikeat</p>
         </div>
       </div>
       {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selected={selected && selected.value === option} dumb={dumb} correctAnswer={correctAnswer} />)}
+      {/* <Button onClick={console.log('klik')} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button> */}
     </div>
   )
 }
