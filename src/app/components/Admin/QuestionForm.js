@@ -286,7 +286,8 @@ export class QuestionForm extends Component {
           this.state.question,
           correctAnswersAsStrings,
           this.state.answerOptions,
-          concepts
+          concepts,
+          this.state.selectedValueForRadioButton
         )
         //this.addConceptsToCourses()
       }
