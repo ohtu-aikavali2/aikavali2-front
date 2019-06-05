@@ -41,6 +41,7 @@
 }
 
 .questionForm {
+    min-height: 410px;
     height: 100%;
 }
 
