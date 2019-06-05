@@ -128,11 +128,11 @@ export class QuestionForm extends Component {
     event.preventDefault()
     if (this.state.answerOptions.length > 1 && !this.state.correctAnswers.map(e => e.value).includes(option)) {
       let newOptions = this.state.answerOptions
-      newOptions.splice(i,1)
+      newOptions.splice(i, 1)
       let reOrderCorrectAnswers = this.state.correctAnswers.map(item => {
         let temp = Object.assign({}, item)
         if (temp.cardId > i) {
-          temp.cardId = temp.cardId-1
+          temp.cardId = temp.cardId - 1
         }
         return temp
       })
@@ -145,7 +145,7 @@ export class QuestionForm extends Component {
   }
 
   //handles checkboxes for correct answers
-  handleCheckForCorrectAnswers (e, option, i) {
+  handleCheckForCorrectAnswers(e, option, i) {
     const ids = this.state.correctAnswers.map(item => item.cardId)
 
     if (ids.includes(i)) {
@@ -502,7 +502,7 @@ export class QuestionForm extends Component {
                   <div key={i} className='cardContainer'>
                     <Card>
                       <CardContent>
-                        <CardActions style={{ float:'right' }}>
+                        <CardActions style={{ float: 'right' }}>
                           <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
                             <CloseIcon />
                           </IconButton>
@@ -581,14 +581,14 @@ export class QuestionForm extends Component {
                 </FormGroup>
 
                 <TextField
-                  label='Uusi konsepti'
+                  label='Uusi käsite'
                   multiline
                   fullWidth
                   rowsMax='6'
                   value={this.state.newConcept}
                   onChange={this.handleChange('newConcept')}
                   className='conceptField'
-                  helperText='Kirjoita kysymykseesi liittyvä konsepti'
+                  helperText='Kirjoita kysymykseesi liittyvä käsite'
                   margin='normal'
                 />
 
