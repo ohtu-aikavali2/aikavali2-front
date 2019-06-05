@@ -120,7 +120,7 @@ export class Question extends Component {
 
   handleAnswer = async () => {
     if (this.state.selected === null) {
-      notify.show('Valitse ainakin yksi oikea vastaus', 'error', 2000)
+      notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
     const time = Date.now() - this.state.startTime
