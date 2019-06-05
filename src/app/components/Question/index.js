@@ -37,11 +37,11 @@ export class Question extends Component {
     this.notificationRef = React.createRef()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ startTime: Date.now() })
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { course } = this.props
     // Peli paussille, paitsi jos kyseessä eka kysymys. (Siitä ei mitata aikaa)
     if (nextProps.game.paused) {
