@@ -204,14 +204,20 @@ describe('<Question />', () => {
       expect(props.initializeGame).toHaveBeenCalledTimes(1)
     })
   })
+  describe('handleSelect()', () => {
+    beforeAll(() => {
+      question.setState({ startTime: 0 })
+      question.instance().handleSelect('1234', 'value')
+    })
+    it('sets selected option to state', () => {
+      expect(question.state().selected).toEqual({ id: '1234', value: 'value' })
+    })
+  })
   describe('handleAnswer()', () => {
     beforeAll(() => {
       question.setState({ startTime: 0 })
       question.instance().handleAnswer('1234', 'value')
     })
-    // it('sets selected option to state', () => {
-    //   expect(question.state().selected).toEqual({ id: '1234', value: 'value' })
-    // })
     it('calls props.answerQuestion with the right parameters', () => {
       setTimeout(() => {
         expect(props.answerQuestion).toHaveBeenCalledWith('1234', 'value', 0)
