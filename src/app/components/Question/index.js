@@ -26,6 +26,7 @@ export class Question extends Component {
     super()
     this.state = {
       selected: null,
+      selectedList: [],
       startTime: 0,
       pauseStart: 0,
       timer: null,
@@ -56,7 +57,7 @@ export class Question extends Component {
     if (this.props.loggedUser.loggedUser && !nextProps.loggedUser.loggedUser) {
       // Jos käyttäjä kirjautuu ulos, nollataan kaikki
       clearInterval(this.state.timer)
-      this.setState({ selected: null, startTime: 0, timer: null })
+      this.setState({ selectedList: [], selected: null, startTime: 0, timer: null })
     } else if (nextProps.questionMessage && !nextProps.game.ended) {
       // Kysymykset loppuneet. nexProps.game.ended = false, koska seuraavassa vasta asetetaan
       this.props.endGame()
@@ -67,7 +68,7 @@ export class Question extends Component {
     } else if (!nextProps.questionMessage && nextProps.game.ended) {
       // intervalli lopetetaan kun message on poissa ja ended = totta.
       clearInterval(this.state.timer)
-      this.setState({ timer: null, startTime: Date.now(), selected: null })
+      this.setState({ timer: null, startTime: Date.now(), selected: null, selectedList: [] })
       this.props.initializeGame()
     }
   }
@@ -77,6 +78,7 @@ export class Question extends Component {
     if (!prevProps.userAnswer && userAnswer && this.notificationRef.current) {
       if (userAnswer.isCorrect) {
         notify.show('Oikein, hyvä!', 'success', 2000)
+        //TODO: if any selected is wrong
       } else if (this.state.selected.value !== 'Note: questionSkipped') {
         notify.show('Väärin, voi ei!', 'error', 2000)
       }
@@ -110,21 +112,30 @@ export class Question extends Component {
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleSelect = async (id, value) => {
     if (!this.props.userAnswer) {
-      if (!this.state.selected || this.state.selected.value !== value) {
-        this.setState({ selected: { id, value } })
+      if (!this.state.selectedList.map(s => s.value).includes(value)) {
+        this.setState({
+          selected: { id, value },
+          selectedList: this.state.selectedList.concat({ id, value })
+        })
       } else {
-        this.setState({ selected: null })
+        this.setState({
+          selected: null,
+          selectedList: this.state.selectedList.filter(s => s.value !== value)
+        })
       }
     }
   }
 
   handleAnswer = async () => {
-    if (this.state.selected === null) {
+    if (this.state.selectedList.length < 1) {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
     const time = Date.now() - this.state.startTime
+    // TODO: if only one answer
     await this.props.answerQuestion(this.state.selected.id, this.state.selected.value, time)
+    // else if multiple choices
+    // send list
   }
 
   // Tätä kutsutaan painetaan skip ekan kerran
@@ -210,6 +221,7 @@ export class Question extends Component {
             handleSelect={this.handleSelect}
             handleSkip={this.getNewQuestion}
             selected={this.state.selected}
+            selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
@@ -222,16 +234,19 @@ export class Question extends Component {
             handleSelect={this.handleSelect}
             handleSkip={this.getNewQuestion}
             selected={this.state.selected}
+            selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
           />
         )}
-        <Button style={{ maxWidth: '600px', margin: '0 auto' }} onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
+        {!userAnswer && !loading && (
+          <Button style={{ maxWidth: '600px', margin: '0 auto' }} onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
+        )}
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         <div style={{ width: '100%', height: 70 }} className='offset' />
-      </div>
+      </div >
     )
   }
 }

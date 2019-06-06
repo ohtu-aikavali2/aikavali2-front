@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
 // import Button from '@material-ui/core/Button'
 
-export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, dumb, topLeftContent, topRightContent, answered, correctAnswer, kind }) => {
+export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, dumb, topLeftContent, topRightContent, answered, correctAnswer, kind, selectedList }) => {
 
   return (
     <div className='printQuestion'>
@@ -21,7 +21,7 @@ export const PrintQuestion = ({ question, handleSelect, handleSkip, selected, du
           <p>Valitse kaikki oikeat</p>
         </div>
       </div>
-      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selected={selected && selected.value === option} dumb={dumb} correctAnswer={correctAnswer} />)}
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selected={selected && selected.value === option} selectedList={selectedList} dumb={dumb} correctAnswer={correctAnswer} />)}
     </div>
   )
 }
