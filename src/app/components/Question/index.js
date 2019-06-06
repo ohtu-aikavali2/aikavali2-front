@@ -75,11 +75,11 @@ export class Question extends Component {
 
   componentDidUpdate(prevProps) {
     const { userAnswer } = this.props
+    //TODO: handle multiple answers
     if (!prevProps.userAnswer && userAnswer && this.notificationRef.current) {
       if (userAnswer.isCorrect) {
         notify.show('Oikein, hyvä!', 'success', 2000)
-        //TODO: if any selected is wrong
-      } else if (this.state.selected.value !== 'Note: questionSkipped') {
+      } else if (this.state.selectedList[0].value !== 'Note: questionSkipped') {
         notify.show('Väärin, voi ei!', 'error', 2000)
       }
     }
@@ -91,12 +91,12 @@ export class Question extends Component {
 
   getNewQuestion = async () => {
     const { course } = this.props
-    if (!this.props.userAnswer && !this.state.selected) {
+    if (!this.props.userAnswer && !this.state.selectedList.length < 1) {
       // If the question has not been answered
       this.skipQuestion()
       // Do nothing else
-    } else if (this.props.userAnswer && this.state.selected) {
-      this.setState({ selected: null, startTime: Date.now(), reviewed: false, flagged: false })
+    } else if (this.props.userAnswer && this.state.selectedList.length > 0) {
+      this.setState({ selected: null, selectedList: [], startTime: Date.now(), reviewed: false, flagged: false })
       await this.props.getRandomQuestion(course)
     } else {
       console.log('Ei voi painaa nyt!')
@@ -132,13 +132,14 @@ export class Question extends Component {
   }
 
   handleAnswer = async () => {
+    console.log(this.state.selectedList)
     if (this.state.selectedList.length < 1) {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
     const time = Date.now() - this.state.startTime
     // TODO: if only one answer
-    await this.props.answerQuestion(this.state.selected.id, this.state.selected.value, time)
+    await this.props.answerQuestion(this.state.selectedList[0].id, this.state.selectedList[0].value, time)
     // else if multiple choices
     // send list
   }
