@@ -5,7 +5,6 @@ import FrontPage from '../../../app/components/FrontPage'
 import { Provider } from 'react-redux'
 import store from '../../../app/reducers'
 import AppBar from '../../../app/components/common/AppBar'
-import TemporaryDrawer from '../../../app/components/common/TemporaryDrawer'
 import { MemoryRouter } from 'react-router'
 import AdminPage from '../../../app/components/Admin'
 import LoginPage from '../../../app/components/LoginPage'
@@ -17,7 +16,6 @@ describe('<App />', () => {
       loggedUserInitialization: jest.fn(),
       initializeGame: jest.fn(),
       pauseGame: jest.fn(),
-      toggleDrawer: jest.fn(),
       logout: jest.fn(),
       loggedUser: {
         id: 123,
@@ -26,7 +24,6 @@ describe('<App />', () => {
       },
       loadingUser: false,
       ui: {
-        drawerOpen: false
       }
     }
     app = mount(
@@ -39,7 +36,6 @@ describe('<App />', () => {
     props.loggedUserInitialization.mockClear()
     props.initializeGame.mockClear()
     props.pauseGame.mockClear()
-    props.toggleDrawer.mockClear()
     props.logout.mockClear()
   })
   afterAll(() => {
@@ -56,10 +52,6 @@ describe('<App />', () => {
   it('renders AppBar', () => {
     const appBarComponents = app.find(AppBar)
     expect(appBarComponents.length).toBe(1)
-  })
-  it('renders TemporaryDrawer', () => {
-    const temporaryDrawerComponents = app.find(TemporaryDrawer)
-    expect(temporaryDrawerComponents.length).toBe(1)
   })
   describe('handleSidebarToggle()', () => {
     it('logout calls logout', () => {

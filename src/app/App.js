@@ -10,7 +10,6 @@ import Questions from './components/Admin/Questions'
 import Courses from './components/Admin/Courses'
 import Concepts from './components/Admin/Concepts'
 import { connect } from 'react-redux'
-import { toggleDrawer } from './reducers/actions/uiActions'
 import { logout, loggedUserInitialization } from './reducers/actions/authActions'
 import { pauseGame, initializeGame } from './reducers/actions/gameActions'
 import { HashRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
@@ -102,7 +101,7 @@ const mapStateToProps = (state) => {
 
 const ConnectedApp = connect(
   mapStateToProps,
-  { toggleDrawer, pauseGame, initializeGame, logout, loggedUserInitialization }
+  { pauseGame, initializeGame, logout, loggedUserInitialization }
 )(App)
 
 export default ConnectedApp

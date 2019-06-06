@@ -9,7 +9,6 @@ import Button from '@material-ui/core/Button'
 describe('<AppBar />', () => {
   let appBar
   const props = {
-    toggleDrawer: jest.fn(),
     logout: jest.fn(),
     user: {
       id: '123',
@@ -46,13 +45,6 @@ describe('<AppBar />', () => {
     expect(menuButtonContainer.children().find(IconButton).length).toBe(0)
     expect(menuButtonContainer.children().find(MenuIcon).length).toBe(0)
   })
-  /*   it('Menu button click should call given prop ToggleDrawer', () => {
-    const menuButton = appBar.find(IconButton)
-    expect(props.toggleDrawer).toHaveBeenCalledTimes(0)
-    menuButton.simulate('click')
-    expect(props.toggleDrawer).toHaveBeenCalledTimes(1)
-    props.toggleDrawer.mockClear()
-  }) */
   it('Logout button click should call given prop logout', () => {
     appBar.setProps({
       user: props.user

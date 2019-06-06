@@ -20,10 +20,6 @@
     position: absolute;
 }
 
-.drawerList {
-    width: 250px;
-}
-
 .clickbox {
     margin: 2%;
     cursor: pointer;
