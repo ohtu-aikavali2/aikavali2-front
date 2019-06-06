@@ -112,11 +112,16 @@ export class Question extends Component {
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleSelect = async (id, value) => {
     if (!this.props.userAnswer) {
+      //TODO: if only one answer choice
+      //if (!this.state.selected || this.state.selected.value !== value) {
+      //    this.setState({ selected: { id, value } })
+      // } else if multiple answers
       if (!this.state.selectedList.map(s => s.value).includes(value)) {
         this.setState({
           selected: { id, value },
           selectedList: this.state.selectedList.concat({ id, value })
         })
+        // the following is probably the same regardless of multiple or one choice
       } else {
         this.setState({
           selected: null,
@@ -140,6 +145,7 @@ export class Question extends Component {
 
   // Tätä kutsutaan painetaan skip ekan kerran
   skipQuestion = async () => {
+    //TODO: add skipped to selectedList?
     // ON tärkeää että setState on ekana, jotta saadaan välittömästi asetettua selected
     this.setState({ selected: { id: this.props.question.item._id, value: 'Note: questionSkipped' } })
     // Lähetetään vastaus, jossa value = 'Note: questionSkipped'
