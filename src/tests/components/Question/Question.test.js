@@ -194,6 +194,7 @@ describe('<Question />', () => {
       })
       expect(question.state()).toEqual({
         selected: null,
+        selectedList: [],
         startTime: question.state().startTime,
         pauseStart: 0,
         timer: null,
@@ -213,10 +214,10 @@ describe('<Question />', () => {
       expect(question.state().selected).toEqual({ id: '1234', value: 'value' })
     })
   })
-  describe('handleAnswer()', () => {
+  describe('handleSelect()', () => {
     beforeAll(() => {
       question.setState({ startTime: 0 })
-      question.instance().handleAnswer('1234', 'value')
+      question.instance().handleSelect('1234', 'value')
     })
     it('calls props.answerQuestion with the right parameters', () => {
       setTimeout(() => {
@@ -232,7 +233,7 @@ describe('<Question />', () => {
       const dateNowStub = jest.fn(() => startTime + 5)
       // eslint-disable-next-line
       global.Date.now = dateNowStub
-      question.instance().handleAnswer('1234', 'value')
+      question.instance().handleSelect('1234', 'value')
       setTimeout(() => {
         expect(props.answerQuestion).toHaveBeenCalledWith('1234', 'value', 5)
       }, 50)
