@@ -79,11 +79,15 @@ export class QuestionForm extends Component {
     }
   }
 
-  //handles change of questionType, question and correctAnswer in state
+  //handles change of questionType, question and selected value of radiobutton in state
   handleChange = name => e => {
     this.setState({
       [name]: e.target.value
     })
+    const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
+    if (checkedElements.length > 1 && e.target.value === ('selectOne')) {
+      notify.show('Muutettu valintojen määrää, poista ylimääräiset oikeat vastaukset', 'error', 3000)
+    }
   }
 
   //handles modal's open status
@@ -145,17 +149,39 @@ export class QuestionForm extends Component {
 
   //handles checkboxes for correct answers
   handleCheckForCorrectAnswers(e, option, i) {
-    let changedCheckedStatus = this.state.answerOptions.map(item => {
-      let temp = Object.assign({}, item)
-      if (temp.cardId === i) {
-        temp.checked = !temp.checked
+    // First if-else checks that only one correct answer can be checked if radiobutton is selected to be select one
+    // Other ifs are to make sure that the selection can be changed and the change is made to correct card
+    const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
+    if (checkedElements.length > 0 && this.state.selectedValueForRadioButton === 'selectOne') {
+      if (checkedElements.length > 2) {
+        notify.show('Oikeita vastauksia liikaa, vähennä oikeiden vastausten määrää tai muuta käyttäjän tekemien valintojen määrää', 'error', 3000)
       }
-      return temp
-    })
-    console.log('changed', changedCheckedStatus)
-    this.setState({
-      answerOptions: changedCheckedStatus
-    })
+      if (checkedElements.includes(option)) {
+        let changedCheckedStatus = this.state.answerOptions.map(item => {
+          let temp = Object.assign({}, item)
+          if (temp.cardId === i) {
+            temp.checked = !temp.checked
+          }
+          return temp
+        })
+        console.log('changedwhilelocked', changedCheckedStatus)
+        this.setState({
+          answerOptions: changedCheckedStatus
+        })
+      }
+    } else {
+      let changedCheckedStatus = this.state.answerOptions.map(item => {
+        let temp = Object.assign({}, item)
+        if (temp.cardId === i) {
+          temp.checked = !temp.checked
+        }
+        return temp
+      })
+      console.log('changed', changedCheckedStatus)
+      this.setState({
+        answerOptions: changedCheckedStatus
+      })
+    }
   }
 
   handleCheck(e, x) {
@@ -218,10 +244,10 @@ export class QuestionForm extends Component {
     conceptName = conceptName.trim()
     const selectedCourse = this.determineSelectedCourse()
     if (conceptName.length < 2) {
-      notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 2000)
+      notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 3000)
       return
     } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
-      notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 2000)
+      notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 3000)
       return
     } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
       const newConcept = {
@@ -484,7 +510,7 @@ export class QuestionForm extends Component {
                 ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
                 <div className="RadioButtonForm">
                   <FormControl component="fieldset" className="RadioButtonFormControl">
-                    <FormLabel component="legend">Montako vastausta voi valita?</FormLabel>
+                    <FormLabel component="legend">Montako vastausta käyttäjä voi valita?</FormLabel>
                     <RadioGroup
                       aria-label="howManyAnswers"
                       name="howManyAnswers"
