@@ -3,7 +3,6 @@ import FrontPage from './components/FrontPage'
 import AdminPage from './components/Admin'
 import CoursePage from './components/CoursePage'
 import AppBar from './components/common/AppBar'
-import TemporaryDrawer from './components/common/TemporaryDrawer'
 import LoginPage from './components/LoginPage'
 import ConnectedQuestionForm from './components/Admin/QuestionForm'
 import IntroScreen from './components/common/IntroScreen'
@@ -21,15 +20,6 @@ import Loading from './components/common/Loading'
 export class App extends React.Component {
   componentWillMount = async () => await this.props.loggedUserInitialization()
 
-  handleSidebarToggle = async () => {
-    if (this.props.ui.drawerOpen) {
-      await this.props.initializeGame()
-    } else {
-      await this.props.pauseGame()
-    }
-    await this.props.toggleDrawer()
-  }
-
   logout = () => this.props.logout()
 
   render() {
@@ -43,11 +33,10 @@ export class App extends React.Component {
     }
     return (
       <div className="App">
-        <TemporaryDrawer toggleDrawer={this.handleSidebarToggle} isOpen={this.props.ui.drawerOpen} />
         <IntroScreen />
         <Router>
           <React.Fragment>
-            <Route path='/' render={({ history }) => <AppBar toggleDrawer={this.handleSidebarToggle} user={loggedUser} logout={this.logout} history={history} />} />
+            <Route path='/' render={({ history }) => <AppBar user={loggedUser} logout={this.logout} history={history} />} />
             <Switch>
               <ProtectedRoute
                 path='/admin'

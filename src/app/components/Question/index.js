@@ -112,8 +112,8 @@ export class Question extends Component {
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleSelect = async (id, value) => {
     if (!this.props.userAnswer) {
-      //TODO: if only one answer choice
-      //if (!this.state.selected || this.state.selected.value !== value) {
+      // TODO: if only one answer choice
+      // if (!this.state.selected || this.state.selected.value !== value) {
       //    this.setState({ selected: { id, value } })
       // } else if multiple answers
       if (!this.state.selectedList.map(s => s.value).includes(value)) {
