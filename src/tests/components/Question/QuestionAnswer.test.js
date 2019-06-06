@@ -14,6 +14,7 @@ describe('<QuestionAnswer />', () => {
       handleSkip: jest.fn(),
       userAnswer: null,
       selected: false,
+      selectedList: [],
       value: 'Option',
       id: 1,
       classes: {
@@ -82,7 +83,13 @@ describe('<QuestionAnswer />', () => {
         userAnswer: {
           isCorrect: true
         },
-        selected: true
+        selected: true,
+        selectedList: [
+          {
+            id: '1234',
+            value: 'Option'
+          }
+        ]
       }
       question = shallow(<QuestionAnswer {...props} />)
       const paperStyle = question.find(Card).props().style
@@ -107,7 +114,13 @@ describe('<QuestionAnswer />', () => {
           isCorrect: false,
           correctAnswer: 'Something else'
         },
-        selected: true
+        selected: true,
+        selectedList: [
+          {
+            id: '1234',
+            value: 'Option'
+          }
+        ]
       }
       question = shallow(<QuestionAnswer {...props} />)
       const paperStyle = question.find(Card).props().style
@@ -116,7 +129,14 @@ describe('<QuestionAnswer />', () => {
     it('is set to selectedStyle when option is selected but not yet answered', () => {
       props = {
         ...props,
-        selected: true
+        selected: true,
+        userAnswer: null,
+        selectedList: [
+          {
+            id: '1234',
+            value: 'Option'
+          }
+        ]
       }
       question = shallow(<QuestionAnswer {...props} />)
       const paperStyle = question.find(Card).props().style
