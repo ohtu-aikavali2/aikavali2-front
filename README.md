@@ -1,5 +1,6 @@
 # aikavali-front
 [![Build Status](https://travis-ci.org/ohtu-aikavali2/aikavali2-front.svg?branch=master)](https://travis-ci.org/ohtu-aikavali2/aikavali2-front)
+[![codecov](https://codecov.io/gh/ohtu-aikavali2/aikavali2-front/branch/master/graph/badge.svg)](https://codecov.io/gh/ohtu-aikavali2/aikavali2-front)
 
 [Backlog](https://docs.google.com/spreadsheets/d/15_vCkjjTOUxaQN1zxxQHbL1P8U5bj6oboSiP0_snezE/edit?usp=sharing)  
 [opi.mooc.fi](https://opi.mooc.fi/)

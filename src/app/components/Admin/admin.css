@@ -5,7 +5,17 @@
     padding: 0;
 }
 .addButtonContainer {
-    float: left;
+    padding-top: 5px;
+    padding-block-end: 10px;
+}
+
+.cardContainer {
+    padding-block-end: 10px;
+}
+
+.RadioButtonForm {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .clickbox {
@@ -34,8 +44,15 @@
     height: 100%;
 }
 
+.questionFormBody {
+    padding-bottom: 70px;
+}
+
 .stepContainer {
-    margin-bottom: 1%;
+    position: sticky;
+    bottom: 0;
+    height: 70px;
+    width: 100%;
 }
 
 .flaggedQuestionsContainer {
