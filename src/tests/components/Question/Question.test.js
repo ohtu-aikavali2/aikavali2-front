@@ -193,7 +193,6 @@ describe('<Question />', () => {
         questionMessage: null
       })
       expect(question.state()).toEqual({
-        selected: null,
         selectedList: [],
         startTime: question.state().startTime,
         pauseStart: 0,
@@ -211,7 +210,7 @@ describe('<Question />', () => {
       question.instance().handleSelect('1234', 'value')
     })
     it('sets selected option to state', () => {
-      expect(question.state().selected).toEqual({ id: '1234', value: 'value' })
+      expect(question.state().selectedList[0]).toEqual({ id: '1234', value: 'value' })
     })
   })
   describe('handleSelect()', () => {
@@ -245,7 +244,7 @@ describe('<Question />', () => {
   describe('getNewQuestion()', () => {
     it('calls components method skipQuestion() if question has not been answered', () => {
       question.setProps({ userAnswer: null })
-      question.setState({ selected: null })
+      question.setState({ selectedList: [] })
       const spy = jest.spyOn(question.instance(), 'skipQuestion')
       expect(spy).toHaveBeenCalledTimes(0)
 
@@ -255,32 +254,24 @@ describe('<Question />', () => {
     })
     it('calls props.getRandomQuestion if question has been answered', () => {
       question.setProps({ userAnswer: 'not null' })
-      question.setState({
-        selectedList: [
-          {
-            id: '1234',
-            value: 'value'
-          }
-        ]
-      })
+      question.setState({ selectedList: [{ id: '1234', value: 'value' }] })
       question.instance().getNewQuestion()
       expect(props.getRandomQuestion).toHaveBeenCalledTimes(1)
     })
     it('sets selected: null and startTime: Date.now() to state', () => {
-      expect(question.state().selected).toEqual(null)
+      expect(question.state().selectedList.length).toEqual(0)
       expect(question.state().startTime > 0).toBe(true)
     })
   })
   describe('skipQuestion()', () => {
     beforeAll(() => {
-      question.setState({ selected: 'not null' })
       question.instance().skipQuestion()
     })
     it('calls props.answerQuestion with the correct parameters', () => {
       expect(props.answerQuestion).toHaveBeenCalledWith('12345', 'Note: questionSkipped', null)
     })
     it('sets selected: { id: props.question._id, value: } to state', () => {
-      expect(question.state().selected).toEqual({ id: '12345', value: 'Note: questionSkipped' })
+      expect(question.state().selectedList[0]).toEqual({ id: '12345', value: 'Note: questionSkipped' })
     })
   })
   it('componentWillUnmount clears interval', () => {
@@ -327,7 +318,7 @@ describe('<Question />', () => {
   describe('handleQuestionReview', () => {
     beforeAll(() => {
       question.setState({
-        selected: { id: '1337', value: 'whatever' }
+        selectedList: [{ id: '1337', value: 'whatever' }]
       })
       question.instance().handleQuestionReview('question', 'review')
     })

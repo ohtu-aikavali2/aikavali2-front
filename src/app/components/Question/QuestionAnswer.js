@@ -31,8 +31,9 @@ export class QuestionAnswer extends Component {
     if (!userAnswer) this.props.handleSelect(id, value)
   }
 
-  determineStyle = () => {
-    const { userAnswer, value, selectedList, correctAnswer } = this.props
+  determineStyle = (selected) => {
+    //TODO: handling multiple correct answers
+    const { userAnswer, value, correctAnswer } = this.props
     const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' }
     const correctStyle = { backgroundColor: 'rgb(113, 218, 113)' }
     const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)', cursor: 'default' }
@@ -44,8 +45,6 @@ export class QuestionAnswer extends Component {
       backgroundStyle: { backgroundColor: '' },
       answerIcon: ''
     }
-    let selected = false
-    if (selectedList.map(s => s.value).includes(value)) selected = true
     if ((userAnswer && userAnswer.isCorrect && selected) || correctAnswer === value) {
       style = {
         backgroundStyle: correctStyle,
@@ -76,9 +75,10 @@ export class QuestionAnswer extends Component {
   }
 
   render() {
-    const style = this.determineStyle()
+    const { classes, value, userAnswer, answering, dumb, selectedList } = this.props
+    const selected = (selectedList.map(s => s.value).includes(value))
+    const style = this.determineStyle(selected)
     const textStyle = {}
-    const { classes, value, userAnswer, selected, answering, dumb } = this.props
     if (answering || (!selected && userAnswer && userAnswer.correctAnswer !== value)) {
       textStyle['color'] = 'grey'
     }

@@ -13,7 +13,6 @@ describe('<QuestionAnswer />', () => {
       handleSelect: jest.fn(),
       handleSkip: jest.fn(),
       userAnswer: null,
-      selected: false,
       selectedList: [],
       value: 'Option',
       id: 1,
@@ -83,7 +82,6 @@ describe('<QuestionAnswer />', () => {
         userAnswer: {
           isCorrect: true
         },
-        selected: true,
         selectedList: [
           {
             id: '1234',
@@ -114,7 +112,6 @@ describe('<QuestionAnswer />', () => {
           isCorrect: false,
           correctAnswer: 'Something else'
         },
-        selected: true,
         selectedList: [
           {
             id: '1234',
@@ -129,7 +126,6 @@ describe('<QuestionAnswer />', () => {
     it('is set to selectedStyle when option is selected but not yet answered', () => {
       props = {
         ...props,
-        selected: true,
         userAnswer: null,
         selectedList: [
           {

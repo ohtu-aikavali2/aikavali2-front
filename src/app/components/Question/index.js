@@ -25,7 +25,6 @@ export class Question extends Component {
   constructor() {
     super()
     this.state = {
-      selected: null,
       selectedList: [],
       startTime: 0,
       pauseStart: 0,
@@ -57,7 +56,7 @@ export class Question extends Component {
     if (this.props.loggedUser.loggedUser && !nextProps.loggedUser.loggedUser) {
       // Jos käyttäjä kirjautuu ulos, nollataan kaikki
       clearInterval(this.state.timer)
-      this.setState({ selectedList: [], selected: null, startTime: 0, timer: null })
+      this.setState({ selectedList: [], startTime: 0, timer: null })
     } else if (nextProps.questionMessage && !nextProps.game.ended) {
       // Kysymykset loppuneet. nexProps.game.ended = false, koska seuraavassa vasta asetetaan
       this.props.endGame()
@@ -68,7 +67,7 @@ export class Question extends Component {
     } else if (!nextProps.questionMessage && nextProps.game.ended) {
       // intervalli lopetetaan kun message on poissa ja ended = totta.
       clearInterval(this.state.timer)
-      this.setState({ timer: null, startTime: Date.now(), selected: null, selectedList: [] })
+      this.setState({ timer: null, startTime: Date.now(), selectedList: [] })
       this.props.initializeGame()
     }
   }
@@ -91,12 +90,12 @@ export class Question extends Component {
 
   getNewQuestion = async () => {
     const { course } = this.props
-    if (!this.props.userAnswer && !this.state.selectedList.length < 1) {
+    if (!this.props.userAnswer) {
       // If the question has not been answered
       this.skipQuestion()
       // Do nothing else
     } else if (this.props.userAnswer && this.state.selectedList.length > 0) {
-      this.setState({ selected: null, selectedList: [], startTime: Date.now(), reviewed: false, flagged: false })
+      this.setState({ selectedList: [], startTime: Date.now(), reviewed: false, flagged: false })
       await this.props.getRandomQuestion(course)
     } else {
       console.log('Ei voi painaa nyt!')
@@ -113,18 +112,16 @@ export class Question extends Component {
   handleSelect = async (id, value) => {
     if (!this.props.userAnswer) {
       // TODO: if only one answer choice
-      // if (!this.state.selected || this.state.selected.value !== value) {
+      // if (this.state.selectedList.length < 1 || this.state.selected.value !== value) {
       //    this.setState({ selected: { id, value } })
       // } else if multiple answers
       if (!this.state.selectedList.map(s => s.value).includes(value)) {
         this.setState({
-          selected: { id, value },
           selectedList: this.state.selectedList.concat({ id, value })
         })
         // the following is probably the same regardless of multiple or one choice
       } else {
         this.setState({
-          selected: null,
           selectedList: this.state.selectedList.filter(s => s.value !== value)
         })
       }
@@ -132,23 +129,21 @@ export class Question extends Component {
   }
 
   handleAnswer = async () => {
-    console.log(this.state.selectedList)
     if (this.state.selectedList.length < 1) {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
     const time = Date.now() - this.state.startTime
     // TODO: if only one answer
-    await this.props.answerQuestion(this.state.selectedList[0].id, this.state.selectedList[0].value, time)
+    await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList[0].value, time)
     // else if multiple choices
     // send list
   }
 
   // Tätä kutsutaan painetaan skip ekan kerran
   skipQuestion = async () => {
-    //TODO: add skipped to selectedList?
     // ON tärkeää että setState on ekana, jotta saadaan välittömästi asetettua selected
-    this.setState({ selected: { id: this.props.question.item._id, value: 'Note: questionSkipped' } })
+    this.setState({ selectedList: this.state.selectedList.concat({ id: this.props.question.item._id, value: 'Note: questionSkipped' }) })
     // Lähetetään vastaus, jossa value = 'Note: questionSkipped'
     await this.props.answerQuestion(this.props.question.item._id, 'Note: questionSkipped', null)
   }
@@ -227,7 +222,6 @@ export class Question extends Component {
             handleQuestionReview={this.handleQuestionReview}
             handleSelect={this.handleSelect}
             handleSkip={this.getNewQuestion}
-            selected={this.state.selected}
             selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
@@ -240,7 +234,6 @@ export class Question extends Component {
             handleQuestionReview={this.handleQuestionReview}
             handleSelect={this.handleSelect}
             handleSkip={this.getNewQuestion}
-            selected={this.state.selected}
             selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
