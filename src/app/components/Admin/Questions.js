@@ -29,7 +29,7 @@ const rows = [
 ]
 
 class Questions extends Component {
-  constructor () {
+  constructor() {
     super()
     this.state = {
       showDeleteAlert: false,
@@ -43,7 +43,7 @@ class Questions extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     if (this.props.available) {
       await this.props.getAvailableQuestions()
     } else if (this.props.deleted) {
@@ -99,7 +99,7 @@ class Questions extends Component {
     let questionIDs = []
     this.state.selected.forEach(s => questionIDs.push(s._id))
     await this.props.unflagQuestions(questionIDs)
-    this.setState({ showUnflagAlert: false , showUnflagSuccessfulAlert: true })
+    this.setState({ showUnflagAlert: false, showUnflagSuccessfulAlert: true })
     // To update the flags
     await this.props.getAvailableQuestions()
   }
@@ -135,11 +135,11 @@ class Questions extends Component {
     const question = this.props.questions.find(q => q._id === id)
     return (
       <AlertWindow neutral>
-        <DumbQuestion question={question.question} correctAnswer={question.correctAnswer.value} />
+        <DumbQuestion question={question.question} correctAnswer={question.correctAnswers[0].value} />
       </AlertWindow>
     )
   }
-  render () {
+  render() {
     const { available, flagged, deleted } = this.props
     let toolbarButton1Text = 'Nollaa ilmiannot'
     let toolbarButton2Text = ''
