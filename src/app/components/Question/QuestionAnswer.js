@@ -33,7 +33,7 @@ export class QuestionAnswer extends Component {
 
   determineStyle = (selected) => {
     //TODO: handling multiple correct answers
-    const { userAnswer, value, correctAnswer } = this.props
+    const { userAnswer, value } = this.props
     const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' }
     const correctStyle = { backgroundColor: 'rgb(113, 218, 113)' }
     const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)', cursor: 'default' }
@@ -45,7 +45,7 @@ export class QuestionAnswer extends Component {
       backgroundStyle: { backgroundColor: '' },
       answerIcon: ''
     }
-    if ((userAnswer && userAnswer.isCorrect && selected) || correctAnswer === value) {
+    if (userAnswer && userAnswer.isCorrect && selected) {
       style = {
         backgroundStyle: correctStyle,
         answerIcon: checkFilled

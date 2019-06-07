@@ -4,7 +4,7 @@ import FeedbackBar from '../common/FeedbackBar'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
 
-export const PrintQuestion = ({ question, handleSelect, dumb, topLeftContent, topRightContent, answered, correctAnswer, kind, selectedList }) => {
+export const PrintQuestion = ({ question, handleSelect, dumb, topLeftContent, topRightContent, answered, kind, selectedList }) => {
 
   return (
     <div className='printQuestion'>
@@ -20,7 +20,7 @@ export const PrintQuestion = ({ question, handleSelect, dumb, topLeftContent, to
           <p>Valitse kaikki oikeat</p>
         </div>
       </div>
-      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} selectedList={selectedList} dumb={dumb} correctAnswer={correctAnswer} />)}
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} selectedList={selectedList} dumb={dumb} />)}
     </div>
   )
 }

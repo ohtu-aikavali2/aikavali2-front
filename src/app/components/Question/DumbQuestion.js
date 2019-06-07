@@ -4,7 +4,7 @@ import CompileQuestion from './CompileQuestion'
 
 class DumbQuestion extends Component {
 
-  render () {
+  render() {
     const { question, correctAnswer } = this.props
     return (
       <div className='dumbQuestionContainer' style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
