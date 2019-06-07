@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
 // import Button from '@material-ui/core/Button'
 
-export const PrintQuestion = ({ question, handleSelect, handleSkip, dumb, topLeftContent, topRightContent, answered, correctAnswer, kind, selectedList }) => {
+export const PrintQuestion = ({ question, handleSelect, dumb, topLeftContent, topRightContent, answered, correctAnswer, kind, selectedList }) => {
 
   return (
     <div className='printQuestion'>
