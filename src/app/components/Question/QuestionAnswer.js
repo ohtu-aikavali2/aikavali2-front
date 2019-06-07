@@ -76,7 +76,7 @@ export class QuestionAnswer extends Component {
 
   render() {
     const { classes, value, userAnswer, answering, dumb, selectedList } = this.props
-    const selected = (selectedList.map(s => s.value).includes(value))
+    const selected = selectedList ? (selectedList.map(s => s.value).includes(value)) : false
     const style = this.determineStyle(selected)
     const textStyle = {}
     if (answering || (!selected && userAnswer && userAnswer.correctAnswer !== value)) {

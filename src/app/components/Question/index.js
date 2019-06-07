@@ -143,7 +143,7 @@ export class Question extends Component {
   // Tätä kutsutaan painetaan skip ekan kerran
   skipQuestion = async () => {
     // ON tärkeää että setState on ekana, jotta saadaan välittömästi asetettua selected
-    this.setState({ selectedList: this.state.selectedList.concat({ id: this.props.question.item._id, value: 'Note: questionSkipped' }) })
+    this.setState({ selectedList: [{ id: this.props.question.item._id, value: 'Note: questionSkipped' }] })
     // Lähetetään vastaus, jossa value = 'Note: questionSkipped'
     await this.props.answerQuestion(this.props.question.item._id, 'Note: questionSkipped', null)
   }

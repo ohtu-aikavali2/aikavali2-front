@@ -21,7 +21,7 @@ export const PrintQuestion = ({ question, handleSelect, handleSkip, dumb, topLef
           <p>Valitse kaikki oikeat</p>
         </div>
       </div>
-      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} handleSkip={handleSkip} selectedList={selectedList} dumb={dumb} correctAnswer={correctAnswer} />)}
+      {question.options.map((option, i) => <QuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} selectedList={selectedList} dumb={dumb} correctAnswer={correctAnswer} />)}
     </div>
   )
 }
