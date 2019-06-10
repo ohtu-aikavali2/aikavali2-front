@@ -24,6 +24,7 @@ export const getRandomQuestion = (course = null) => {
     let random = await questionService.getRandomQuestion(course)
     if (random.item) {
       // shuffle the options and hold all the fields
+      console.log('random selectcount ', random.item.selectCount)
       random = {
         ...random,
         item: {
@@ -31,6 +32,7 @@ export const getRandomQuestion = (course = null) => {
           options: shuffle(random.item.options)
         }
       }
+      console.log('random selectcount ', random.item.selectCount)
       dispatch({
         type: questionConstants.GET_RANDOM_QUESTION,
         data: random

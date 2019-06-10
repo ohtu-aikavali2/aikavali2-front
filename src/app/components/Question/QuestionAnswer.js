@@ -32,7 +32,6 @@ export class QuestionAnswer extends Component {
   }
 
   determineStyle = (selected) => {
-    //TODO: handling multiple correct answers
     const { userAnswer, value } = this.props
     const selectedStyle = { backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' }
     const correctStyle = { backgroundColor: 'rgb(113, 218, 113)' }

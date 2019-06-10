@@ -112,14 +112,14 @@ export class Question extends Component {
   handleSelect = async (id, value) => {
     if (!this.props.userAnswer) {
       // TODO: if only one answer choice
-      // if (this.state.selectedList.length < 1 || this.state.selected.value !== value) {
-      //    this.setState({ selected: { id, value } })
-      // } else if multiple answers
-      if (!this.state.selectedList.map(s => s.value).includes(value)) {
+      console.log(this.props.question.item.selectCount)
+      if (this.props.selectCount === 'selectOne' && (this.state.selectedList.length < 1 || this.state.selectedList[0].value !== value)) {
+        this.setState({ selected: [{ id, value }] })
+        // else if multiple answers
+      } else if (!this.state.selectedList.map(s => s.value).includes(value)) {
         this.setState({
           selectedList: this.state.selectedList.concat({ id, value })
         })
-        // the following is probably the same regardless of multiple or one choice
       } else {
         this.setState({
           selectedList: this.state.selectedList.filter(s => s.value !== value)

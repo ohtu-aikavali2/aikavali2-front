@@ -40,6 +40,7 @@ const getRandomQuestion = async (course) => {
     params = `?course=${course}`
   }
   const response = await axios.get(`${baseUrl}${apiUrl}/random${params}`, getConfig())
+  console.log('servicessa bäkistä palautuu tällanen kysymys', response.data)
   return response.data
 }
 
@@ -56,6 +57,7 @@ const answerQuestion = async (id, answer, time) => {
 const postQuestion = async (question) => {
   //console.log('service-vaiheessa konsepti on: ', question.concept)
   const response = await axios.post(`${baseUrl}${apiUrl}`, question, getConfig())
+  console.log('post: ', response.data)
   return response.data
 }
 
