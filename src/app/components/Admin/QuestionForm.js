@@ -492,7 +492,7 @@ export class QuestionForm extends Component {
                     selectedValue={this.state.selectedValue}
                     open={this.state.modalOpen}
                     onClose={this.handleClose}
-                    questions={this.state.questions}
+                    questions={this.state.questions.filter(item => item.group._id === this.state.groupId)}
                   />
                 </div>
                 {questionTypeSelected ? (
