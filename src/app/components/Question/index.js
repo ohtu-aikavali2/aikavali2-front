@@ -113,8 +113,8 @@ export class Question extends Component {
     if (!this.props.userAnswer) {
       // TODO: if only one answer choice
       console.log(this.props.question.item.selectCount)
-      if (this.props.selectCount === 'selectOne' && (this.state.selectedList.length < 1 || this.state.selectedList[0].value !== value)) {
-        this.setState({ selected: [{ id, value }] })
+      if (this.props.question.item.selectCount === 'selectOne' && !this.state.selectedList.map(s => s.value).includes(value)) {
+        this.setState({ selectedList: [{ id, value }] })
         // else if multiple answers
       } else if (!this.state.selectedList.map(s => s.value).includes(value)) {
         this.setState({
@@ -226,6 +226,7 @@ export class Question extends Component {
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
+            selectCount={this.props.question.item.selectCount}
           />
         )}
         {question && question.kind === 'CompileQuestion' && (

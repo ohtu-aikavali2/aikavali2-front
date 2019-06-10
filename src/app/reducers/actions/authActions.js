@@ -16,6 +16,7 @@ export const loggedUserInitialization = () => {
       await questionService.setToken(loggedUser.token)
       await authService.setToken(loggedUser.token)
       await courseService.setToken(loggedUser.token)
+      await groupService.setToken(loggedUser.token)
       await conceptService.setToken(loggedUser.token)
     }
     dispatch({
