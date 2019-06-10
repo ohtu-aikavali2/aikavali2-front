@@ -2,7 +2,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { QuestionForm } from '../../../app/components/Admin/QuestionForm'
-/** import Select from '@material-ui/core/Select' */
+import Select from '@material-ui/core/Select'
 
 describe('<QuestionForm />', () => {
   /*  const initialState = {
@@ -17,8 +17,7 @@ describe('<QuestionForm />', () => {
   let props, wrapper
   beforeAll(() => {
     props = {
-      postCompileQuestion: jest.fn(),
-      postPrintQuestion: jest.fn(),
+      postGeneralQuestion: jest.fn(),
       fetchCourses: jest.fn(),
       history: {
         push: jest.fn()
@@ -30,10 +29,10 @@ describe('<QuestionForm />', () => {
   it('renders self', () => {
     expect(wrapper.find('.questionFormContainer').length).toBe(1)
   })
-  /*
   it('renders select question type field', () => {
     expect(wrapper.find(Select).length).toBe(1)
   })
+  /*
   it('at start, question field is not rendered', () => {
     expect(wrapper.find('.questionField').length).toBe(0)
   })

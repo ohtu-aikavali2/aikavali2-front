@@ -52,7 +52,6 @@ export class QuestionForm extends Component {
       newConcept: '',
       questionType: '',
       question: '',
-      correctAnswers: [],
       answerOptions: [],
       step: 0,
       courses: [],
@@ -80,11 +79,15 @@ export class QuestionForm extends Component {
     }
   }
 
-  //handles change of questionType, question and correctAnswer in state
+  //handles change of questionType, question and selected value of radiobutton in state
   handleChange = name => e => {
     this.setState({
       [name]: e.target.value
     })
+    const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
+    if (checkedElements.length > 1 && e.target.value === ('selectOne')) {
+      notify.show('Muutettu valintojen määrää, poista ylimääräiset oikeat vastaukset', 'error', 3000)
+    }
   }
 
   //handles modal's open status
@@ -105,7 +108,8 @@ export class QuestionForm extends Component {
   addAnswerOption = () => {
     if (this.state.answerOptions.length < 6) {
       this.setState({
-        answerOptions: [...this.state.answerOptions, '']
+        answerOptions: [...this.state.answerOptions,
+          { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false } ]
       })
     }
   }
@@ -113,52 +117,69 @@ export class QuestionForm extends Component {
   //handles changes of answerOptions in state
   handleArrayChange = (option, i) => event => {
     let newArray = this.state.answerOptions.slice(0, i)
-    newArray.push(event.target.value)
+    newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
     newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
-    if (this.state.answerOptions.includes(event.target.value)) {
-      notify.show('Vastausvaihto on jo luotu', 'error', 2000)
-    }
+    console.log(newArray)
     this.setState({
       answerOptions: newArray
     })
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
-  removeIncorrectAnswer = (option, i) => event => {
+  removeAnswerOption = (option, i) => event => {
     event.preventDefault()
-    if (this.state.answerOptions.length > 1 && !this.state.correctAnswers.map(e => e.value).includes(option)) {
+    if (this.state.answerOptions.length > 1) {
       let newOptions = this.state.answerOptions
       newOptions.splice(i, 1)
-      let reOrderCorrectAnswers = this.state.correctAnswers.map(item => {
+      console.log('state', this.state.answerOptions)
+      let reOrderAnswerOptions = newOptions.map(item => {
         let temp = Object.assign({}, item)
         if (temp.cardId > i) {
           temp.cardId = temp.cardId - 1
         }
         return temp
       })
-
+      console.log('newOptions',newOptions)
+      console.log('reorder',reOrderAnswerOptions)
       this.setState({
-        answerOptions: newOptions,
-        correctAnswers: reOrderCorrectAnswers
+        answerOptions: reOrderAnswerOptions
       })
     }
   }
 
   //handles checkboxes for correct answers
   handleCheckForCorrectAnswers(e, option, i) {
-    const ids = this.state.correctAnswers.map(item => item.cardId)
-
-    if (ids.includes(i)) {
-      const newArray = this.state.correctAnswers.filter(item => item.cardId !== i)
-      this.setState({
-        correctAnswers: newArray
-      })
+    // First if-else checks that only one correct answer can be checked if radiobutton is selected to be select one
+    // Other ifs are to make sure that the selection can be changed and the change is made to correct card
+    const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
+    if (checkedElements.length > 0 && this.state.selectedValueForRadioButton === 'selectOne') {
+      if (checkedElements.length > 2) {
+        notify.show('Oikeita vastauksia liikaa, vähennä oikeiden vastausten määrää tai muuta käyttäjän tekemien valintojen määrää', 'error', 3000)
+      }
+      if (checkedElements.includes(option)) {
+        let changedCheckedStatus = this.state.answerOptions.map(item => {
+          let temp = Object.assign({}, item)
+          if (temp.cardId === i) {
+            temp.checked = !temp.checked
+          }
+          return temp
+        })
+        console.log('changedwhilelocked', changedCheckedStatus)
+        this.setState({
+          answerOptions: changedCheckedStatus
+        })
+      }
     } else {
-      let newArray = this.state.correctAnswers.slice(0, i)
-      newArray.push({ cardId: i, value: option })
-      newArray = newArray.concat(this.state.correctAnswers.slice(i))
+      let changedCheckedStatus = this.state.answerOptions.map(item => {
+        let temp = Object.assign({}, item)
+        if (temp.cardId === i) {
+          temp.checked = !temp.checked
+        }
+        return temp
+      })
+      console.log('changed', changedCheckedStatus)
       this.setState({
-        correctAnswers: newArray
+        answerOptions: changedCheckedStatus
       })
     }
   }
@@ -223,10 +244,10 @@ export class QuestionForm extends Component {
     conceptName = conceptName.trim()
     const selectedCourse = this.determineSelectedCourse()
     if (conceptName.length < 2) {
-      notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 2000)
+      notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 3000)
       return
     } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
-      notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 2000)
+      notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 3000)
       return
     } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
       const newConcept = {
@@ -250,12 +271,10 @@ export class QuestionForm extends Component {
       this.state.questionType !== 'CompileQuestion'
     ) {
       console.log('Question is empty!')
-    } else if (this.state.correctAnswers.length === 0) {
+    } else if (this.state.answerOptions.map(item => item.checked === true).length === 0) {
       console.log('No correct answers')
-    } else if (this.state.correctAnswers.map(item => item.value).includes('')) {
-      console.log('At least one of correct answers is empty')
-    } else if (this.state.answerOptions.includes('')) {
-      console.log('At least one of incorrect answers is empty')
+    } else if (this.state.answerOptions.map(item => item.value).includes('')) {
+      console.log('At least one of answer options is empty')
     } else if (this.state.concepts.length < 1) {
       console.log('Concept is not set!')
     } else {
@@ -280,13 +299,14 @@ export class QuestionForm extends Component {
         )
         //this.addConceptsToCourses()
       } else {
-        let correctAnswersAsStrings = this.state.correctAnswers.map(item => item.value)
+        let correctAnswersAsStrings = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
         this.props.postGeneralQuestion(
           this.state.groupId,
           this.state.question,
           correctAnswersAsStrings,
-          this.state.answerOptions,
-          concepts
+          this.state.answerOptions.map(item => item.value),
+          concepts,
+          this.state.selectedValueForRadioButton
         )
         //this.addConceptsToCourses()
       }
@@ -295,7 +315,6 @@ export class QuestionForm extends Component {
         groupId: '',
         questionType: '',
         question: '',
-        correctAnswers: [],
         answerOptions: [],
         concepts: [],
         newConcept: '',
@@ -310,71 +329,78 @@ export class QuestionForm extends Component {
 
   stepForward = () => {
     const hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
+    const correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
     if (this.state.step === 0 && this.state.course === '') {
-      notify.show('Valitse kurssi', 'error', 2000)
+      notify.show('Valitse kurssi', 'error', 3000)
       return
     } else if (this.state.step === 0 && this.state.groupId === '') {
-      notify.show('Valitse ryhmä', 'error', 2000)
+      notify.show('Valitse ryhmä', 'error', 3000)
       return
     } else if (this.state.step === 1 && this.state.questionType === '') {
-      notify.show('Valitse kysymystyyppi', 'error', 2000)
+      notify.show('Valitse kysymystyyppi', 'error', 3000)
       return
     } else if (
       this.state.step === 2 &&
       this.state.questionType === 'GeneralQuestion' &&
       this.state.question.length < 3
     ) {
-      notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 2000)
+      notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 3000)
       return
     } else if (
       this.state.step === 2 &&
-      (this.state.correctAnswers.includes('') ||
-        this.state.answerOptions.includes(''))
+      this.state.answerOptions.map(item => item.value).includes('')
     ) {
-      notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 2000)
+      notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 3000)
       return
     } else if (
       this.state.step === 2 &&
       this.state.answerOptions.length < 2
     ) {
-      notify.show('Kysymyksellä tulee olla ainakin kaksi vaihtoehtoa', 'error', 2000)
+      notify.show('Kysymyksellä tulee olla ainakin kaksi vaihtoehtoa', 'error', 3000)
       return
     } else if (
       this.state.step === 2 &&
-      this.state.correctAnswers.length < 1
+      correctAnswers.length < 1
     ) {
       notify.show('Valitse ainakin yksi oikea vastaus', 'error', 2000)
       return
     } else if (
       this.state.step === 2 &&
-      (this.state.answerOptions.length - this.state.correctAnswers.length) < 1
+      (this.state.answerOptions.length - correctAnswers.length) < 1
     ) {
-      notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 2000)
+      notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 3000)
       return
     } else if (
       this.state.step === 2 &&
       hasDuplicates
     ) {
-      notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 2000)
+      notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 3000)
       return
     } else if (
       this.state.step === 2 &&
       this.state.selectedValueForRadioButton === ''
     ) {
-      notify.show('Valitse tuleeko vastaajan valita yksi vai useampi vaihtoehto', 'error', 2000)
+      notify.show('Valitse tuleeko vastaajan valita yksi vai useampi vaihtoehto', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 &&
+      this.state.selectedValueForRadioButton === 'selectOne' &&
+      correctAnswers.length > 1
+    ) {
+      notify.show('Poista ylimääräiset oikeat vastaukset tai muuta valintaa oikeiden vastausten määrästä', 'error', 3000)
       return
     } else if (
       this.state.step === 3 &&
       this.state.concepts.length < 1
     ) {
-      notify.show('Valitse ainakin yksi käsite', 'error', 2000)
+      notify.show('Valitse ainakin yksi käsite', 'error', 3000)
       return
     }
     this.setState({ step: this.state.step + 1 })
     question.kind = this.state.questionType
     question.item.value = this.state.question
     if (this.state.step > 1) {
-      question.item.options = this.state.answerOptions
+      question.item.options = this.state.answerOptions.map(item => item.value)
     }
   }
 
@@ -466,7 +492,7 @@ export class QuestionForm extends Component {
                     selectedValue={this.state.selectedValue}
                     open={this.state.modalOpen}
                     onClose={this.handleClose}
-                    questions={this.state.questions}
+                    questions={this.state.questions.filter(item => item.group._id === this.state.groupId)}
                   />
                 </div>
                 {questionTypeSelected ? (
@@ -484,7 +510,7 @@ export class QuestionForm extends Component {
                 ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
                 <div className="RadioButtonForm">
                   <FormControl component="fieldset" className="RadioButtonFormControl">
-                    <FormLabel component="legend">Montako vastausta voi valita?</FormLabel>
+                    <FormLabel component="legend">Montako vastausta käyttäjä voi valita?</FormLabel>
                     <RadioGroup
                       aria-label="howManyAnswers"
                       name="howManyAnswers"
@@ -503,7 +529,7 @@ export class QuestionForm extends Component {
                     <Card>
                       <CardContent>
                         <CardActions style={{ float: 'right' }}>
-                          <IconButton aria-label="remove" onClick={this.removeIncorrectAnswer(option, i)} >
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)} >
                             <CloseIcon />
                           </IconButton>
                         </CardActions>
@@ -513,12 +539,11 @@ export class QuestionForm extends Component {
                           multiline
                           fullWidth
                           rowsMax="6"
-                          value={option}
+                          value={option.value}
                           onChange={this.handleArrayChange(option, i)}
                           className="answerField"
                           helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää vastausvaihtoehto'"
                           margin="normal"
-                          disabled={this.state.correctAnswers.map(item => item.cardId).includes(i)}
                         />
                         <FormGroup>
                           <FormControlLabel
@@ -526,7 +551,7 @@ export class QuestionForm extends Component {
                               <Checkbox
                                 label="Oikea vastaus"
                                 onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
-                                checked={this.state.correctAnswers.map(item => item.value).includes(option)}
+                                checked={option.checked}
                                 color='primary'
                               />
                             }
