@@ -110,21 +110,20 @@ export class Question extends Component {
 
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleSelect = async (id, value) => {
-    if (!this.props.userAnswer) {
-      // TODO: if only one answer choice
-      console.log(this.props.question.item.selectCount)
-      if (this.props.question.item.selectCount === 'selectOne' && !this.state.selectedList.map(s => s.value).includes(value)) {
+    if (this.props.userAnswer) return
+    //console.log(this.props.question.item.selectCount)
+    if (!this.state.selectedList.map(s => s.value).includes(value)) {
+      if (this.props.question.item.selectCount === 'selectOne') {
         this.setState({ selectedList: [{ id, value }] })
-        // else if multiple answers
-      } else if (!this.state.selectedList.map(s => s.value).includes(value)) {
-        this.setState({
-          selectedList: this.state.selectedList.concat({ id, value })
-        })
+      } else if (this.props.question.item.selectCount === 'selectMany') {
+        this.setState({ selectedList: this.state.selectedList.concat({ id, value }) })
       } else {
-        this.setState({
-          selectedList: this.state.selectedList.filter(s => s.value !== value)
-        })
+        console.log('Error: This question has no selectCount. Please press skip.')
       }
+    } else {
+      this.setState({
+        selectedList: this.state.selectedList.filter(s => s.value !== value)
+      })
     }
   }
 

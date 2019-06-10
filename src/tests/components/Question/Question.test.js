@@ -43,7 +43,8 @@ describe('<Question />', () => {
           'option3'
         ],
         value: 'Yleinen kysymys',
-        _id: '12345'
+        _id: '12345',
+        selectCount: 'selectOne'
       },
       _id: '9876'
     }
@@ -148,6 +149,7 @@ describe('<Question />', () => {
     })
     it('sets a new startTime if game is unpaused', () => {
       let previousStartTime = question.state().startTime
+      console.log('previous start', previousStartTime)
       question.setProps({
         ...props,
         game: {
@@ -156,6 +158,7 @@ describe('<Question />', () => {
         }
       })
       expect(question.state().pauseStart).toEqual(0)
+      console.log('start time now', question.state().startTime)
       expect(question.state().startTime > previousStartTime).toBe(true)
     })
     it('calls endGame if questions have ended', () => {
@@ -211,12 +214,6 @@ describe('<Question />', () => {
     })
     it('sets selected option to state', () => {
       expect(question.state().selectedList[0]).toEqual({ id: '1234', value: 'value' })
-    })
-  })
-  describe('handleSelect()', () => {
-    beforeAll(() => {
-      question.setState({ startTime: 0 })
-      question.instance().handleSelect('1234', 'value')
     })
     it('calls props.answerQuestion with the right parameters', () => {
       setTimeout(() => {
