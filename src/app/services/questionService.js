@@ -56,7 +56,6 @@ const answerQuestion = async (id, answer, time) => {
 
 const postQuestion = async (question) => {
   const response = await axios.post(`${baseUrl}${apiUrl}`, question, getConfig())
-  console.log('post: ', response.data)
   return response.data
 }
 

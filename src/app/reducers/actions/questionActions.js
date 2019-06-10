@@ -79,7 +79,6 @@ export const postPrintQuestion = (groupId, value, correctAnswer, options, concep
 
 export const postGeneralQuestion = (groupId, value, correctAnswers, options, concepts, selectCount) => {
   return async () => {
-    //console.log('konsepti actions-kohdassa: ', concept)
     await questionService.postQuestion({ type: 'general', value, correctAnswers, options, groupId, concepts, selectCount })
   }
 }
