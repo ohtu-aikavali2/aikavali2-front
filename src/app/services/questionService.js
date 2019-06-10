@@ -40,7 +40,6 @@ const getRandomQuestion = async (course) => {
     params = `?course=${course}`
   }
   const response = await axios.get(`${baseUrl}${apiUrl}/random${params}`, getConfig())
-  console.log('servicessa bäkistä palautuu tällanen kysymys', response.data)
   return response.data
 }
 
