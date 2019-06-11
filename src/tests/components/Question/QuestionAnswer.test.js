@@ -80,7 +80,8 @@ describe('<QuestionAnswer />', () => {
       props = {
         ...props,
         userAnswer: {
-          isCorrect: true
+          isCorrect: true,
+          correctAnswer: ['Option']
         },
         selectedList: [
           {
@@ -98,7 +99,7 @@ describe('<QuestionAnswer />', () => {
         ...props,
         userAnswer: {
           isCorrect: false,
-          correctAnswer: 'Option'
+          correctAnswer: ['Option']
         }
       }
       question = shallow(<QuestionAnswer {...props} />)
@@ -138,7 +139,7 @@ describe('<QuestionAnswer />', () => {
       const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' })
     })
-    it('is set to notSelectedWrongStyle when question has been answered, and option is not right or wrong. ALSO text color is turned grey', () => {
+    it('sets text color to grey when option is not selected', () => {
       props = {
         ...props,
         userAnswer: {
@@ -147,8 +148,6 @@ describe('<QuestionAnswer />', () => {
         }
       }
       question = shallow(<QuestionAnswer {...props} />)
-      const paperStyle = question.find(Card).props().style
-      expect(paperStyle).toEqual({ cursor: 'default' })
       const gridStyle = question.find(Grid).at(1).props().style
       expect(gridStyle).toEqual({ color: 'grey' })
     })
