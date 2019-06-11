@@ -78,7 +78,7 @@ export class Question extends Component {
     if (!prevProps.userAnswer && userAnswer && this.notificationRef.current) {
       if (userAnswer.isCorrect) {
         notify.show('Oikein, hyvä!', 'success', 2000)
-      } else if (this.state.selectedList[0].value !== 'Note: questionSkipped') {
+      } else if (this.state.selectedList.length > 0 && this.state.selectedList[0].value !== 'Note: questionSkipped') {
         notify.show('Väärin, voi ei!', 'error', 2000)
       }
     }
@@ -112,7 +112,7 @@ export class Question extends Component {
   handleSelect = async (id, value) => {
     if (this.props.userAnswer) return
     //console.log(this.props.question.item.selectCount)
-    if (!this.state.selectedList.map(s => s.value).includes(value)) {
+    if (this.state.selectedList.length < 1 || !this.state.selectedList.map(s => s.value).includes(value)) {
       if (this.props.question.item.selectCount === 'selectOne') {
         this.setState({ selectedList: [{ id, value }] })
       } else if (this.props.question.item.selectCount === 'selectMany') {

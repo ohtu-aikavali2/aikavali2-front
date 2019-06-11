@@ -77,7 +77,7 @@ export class App extends React.Component {
               <ProtectedRoute path='/' redirectTo='/login' pred={(loggedUser !== null || loadingUser)}>
                 <Route exact path='/' render={() => <Redirect to='/courses' />} />
                 <Route exact path='/courses' render={({ history }) => <CoursePage history={history} />} />
-                <Route exact path='/courses/:name' render={({ match }) => <FrontPage course={match.params.name} />} />
+                <Route exact path='/courses/:id' render={({ match }) => <FrontPage course={match.params.id} />} />
                 <Route
                   exact path='/newquestion'
                   render={({ history }) => <ConnectedQuestionForm history={history} />}
