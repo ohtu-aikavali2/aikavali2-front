@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { PrintQuestion } from '../../../app/components/Question/PrintQuestion'
 import QuestionAnswer from '../../../app/components/Question/QuestionAnswer'
-import Typography from '@material-ui/core/Typography'
 
 describe('<PrintQuestion />', () => {
   let printQuestion
@@ -22,19 +21,6 @@ describe('<PrintQuestion />', () => {
   })
   it('renders self and subcomponents', () => {
     expect(printQuestion.find('.printQuestion').length).toBe(1)
-    const typo = printQuestion.find(Typography)
-    expect(typo.length).toBe(1)
-    // this test is not valid currently
-    // expect(typo.first().props().children).toEqual('Mitä koodi tulostaa?')
-    const typographyProps = typo.first().props()
-    expect(typographyProps).toEqual({
-      className: 'typography',
-      variant: 'headline',
-      align: 'center',
-      color: 'default',
-      gutterBottom: true,
-      children: typographyProps.children
-    })
     expect(printQuestion.find('.titleContainer').length).toBe(1)
     expect(printQuestion.find('.rowContainer').length).toBe(1)
   })
