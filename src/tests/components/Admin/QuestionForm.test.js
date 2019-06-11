@@ -14,41 +14,75 @@ describe('<QuestionForm />', () => {
       groupId: '',
       courses:[]
   } */
+  const questionTypes = [
+    {
+      value: 'GeneralQuestion',
+      label: 'Yleinen kysymys'
+    }
+  ]
+  let c = {
+    groups: ['groupid123'],
+    concepts: ['for', 'while'],
+    _id: 123,
+    name: 'Programming',
+    imageSrc: 'noUrl',
+    description: 'learn programming'
+  }
   let props, wrapper
   beforeAll(() => {
     props = {
       postGeneralQuestion: jest.fn(),
       fetchCourses: jest.fn(),
+      fetchQuestions: jest.fn(),
+      course: c,
       history: {
         push: jest.fn()
       },
-      courses: []
+      courses: [],
+      questions: [],
+      questionTypes: questionTypes
     }
     wrapper = shallow(<QuestionForm {...props} />)
   })
   it('renders self', () => {
     expect(wrapper.find('.questionFormContainer').length).toBe(1)
+    expect(wrapper.find('.questionFormBody').length).toBe(1)
   })
   it('renders select question type field', () => {
     expect(wrapper.find(Select).length).toBe(1)
   })
-  /*
   it('at start, question field is not rendered', () => {
     expect(wrapper.find('.questionField').length).toBe(0)
   })
-  it('if user selects \'valitse mitä koodi tulostaa\', question field is rendered', () => {
+
+  it('user can select course and group and question field is not yet rendered', () => {
     const select = wrapper.find(Select)
     expect(wrapper.find('.questionField').length).toBe(0)
-    select.simulate('change', { target: { value: 'tulostaa' } })
-    expect(wrapper.state().questionType).toEqual('tulostaa')
-    expect(wrapper.find('.questionField').length).toBe(1)
+    select.simulate('change', { target: { value: c.name } })
+    expect(wrapper.state().course).toEqual('Programming')
+    const selectSecond = wrapper.find(Select).at(1)
+    selectSecond.simulate('change', { target: { value: c.groups[0] } })
+    expect(wrapper.state().groupId).toEqual('groupid123')
   })
-  it('if user selects \'valitse mikä koodeista kääntyy\', question field is not rendered', () => {
-    const select = wrapper.find(Select)
-    select.simulate('change', { target: { value: 'kääntyy' } })
-    expect(wrapper.state().questionType).toEqual('kääntyy')
-    expect(wrapper.find('.questionField').length).toBe(0)
+
+  it('user can select \'Yleinen kysymys\' and state will be updated', () => {
+    wrapper.setState({ step: 1 })
+    const field = wrapper.find('.clickbox-link')
+    expect(field.length).toBe(1)
+    field.simulate('click')
+    expect(wrapper.state().questionType).toEqual(questionTypes[0].value)
   })
+  it('user input to question field calls method handleChange and stores value to state', () => {
+    wrapper.setState({ step: 2 })
+    const spy = jest.spyOn(wrapper.instance(), 'handleChange')
+    let field = wrapper.find('.questionField')
+    field.simulate('change', { target: { value: 'question?' } })
+    expect(wrapper.state().question).toEqual('question?')
+    expect(spy).toHaveBeenCalled()
+    field = wrapper.find('.questionField')
+    expect(field.props().value).toEqual('question?')
+  })
+  /*
   it('correct answer field is always rendered', () => {
     expect(wrapper.find('.rightAnswerField').length).toBe(1)
   })

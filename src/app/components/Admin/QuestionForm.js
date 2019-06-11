@@ -22,10 +22,10 @@ import './admin.css'
 import {
   postCompileQuestion,
   postPrintQuestion,
-  postGeneralQuestion
+  postGeneralQuestion,
+  fetchQuestions
 } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
-import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
@@ -67,12 +67,8 @@ export class QuestionForm extends Component {
   async componentDidMount() {
     try {
       await this.props.fetchCourses()
+      await this.props.fetchQuestions()
 
-      questionService.getQuestions().then(res => {
-        this.setState({
-          questions: res
-        })
-      })
     } catch (e) {
       console.log(e)
       return
@@ -492,7 +488,7 @@ export class QuestionForm extends Component {
                     selectedValue={this.state.selectedValue}
                     open={this.state.modalOpen}
                     onClose={this.handleClose}
-                    questions={this.state.questions.filter(item => item.group._id === this.state.groupId)}
+                    questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
                   />
                 </div>
                 {questionTypeSelected ? (
@@ -708,12 +704,14 @@ const mapDispatchToProps = {
   postCompileQuestion,
   postPrintQuestion,
   postGeneralQuestion,
-  fetchCourses
+  fetchCourses,
+  fetchQuestions
 }
 
 const mapStateToProps = state => {
   return {
-    courses: state.course.courses
+    courses: state.course.courses,
+    questions: state.question.questions
   }
 }
 
