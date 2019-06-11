@@ -3,6 +3,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { QuestionForm } from '../../../app/components/Admin/QuestionForm'
 import Select from '@material-ui/core/Select'
+import { Button, FormControlLabel } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 
 describe('<QuestionForm />', () => {
   /*  const initialState = {
@@ -82,19 +84,37 @@ describe('<QuestionForm />', () => {
     field = wrapper.find('.questionField')
     expect(field.props().value).toEqual('question?')
   })
+  it('answer fields are not rendered until clicked \'+Lisää vastausvaihto\'', () => {
+    expect(wrapper.find('.answerField').length).toBe(0)
+    let addNewButton = wrapper.find('.addButtonContainer').find(Button)
+    addNewButton.simulate('click')
+    expect(wrapper.find('.answerField').length).toBe(1)
+  })
+  it('only six answer fields can be created', () => {
+    wrapper.setState({ answerOptions: [] })
+    expect(wrapper.find('.answerField').length).toBe(0)
+    let addNewButton = wrapper.find('.addButtonContainer').find(Button)
+    for (let i = 0; i < 10; i++) {
+      addNewButton.simulate('click')
+    }
+    expect(wrapper.find('.answerField').length).toBe(6)
+  })
+  it('user input to answer field calls method handleArrayChange and the value is updated to state', () => {
+    wrapper.setState({ answerOptions: [] })
+    let addNewButton = wrapper.find('.addButtonContainer').find(Button)
+    const spy = jest.spyOn(wrapper.instance(), 'handleArrayChange')
+    addNewButton.simulate('click')
+    let field = wrapper.find('.answerField')
+    field.simulate('change', { target: { value: 'option' } })
+    expect(spy).toHaveBeenCalled()
+    expect(wrapper.state().answerOptions).toEqual([ { cardId: 0, value: 'option', checked: false } ])
+  })
+  it('cards are formed properly and they contain close icon and correct checkbox label', () => {
+    expect(wrapper.find(FormControlLabel).at(2).props().label).toEqual('Oikea vastaus')
+    expect(wrapper.find(CloseIcon).length).toBe(1)
+  })
+  it()
   /*
-  it('correct answer field is always rendered', () => {
-    expect(wrapper.find('.rightAnswerField').length).toBe(1)
-  })
-  it('three wrong answer fields are rendered at start', () => {
-    expect(wrapper.find('.wrongAnswerField').length).toBe(3)
-  })
-  it('add new wrong answer button is rendered', () => {
-    expect(wrapper.find('.addButton').length).toBe(1)
-  })
-  it('delete wrong answer button is rendered', () => {
-    expect(wrapper.find('.deleteButton').length).toBe(1)
-  })
   it('save button is rendered', () => {
     expect(wrapper.find('.saveButton').length).toBe(1)
   })
