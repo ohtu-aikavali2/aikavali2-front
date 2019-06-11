@@ -135,7 +135,7 @@ export class Question extends Component {
     }
     const time = Date.now() - this.state.startTime
     // TODO: if only one answer
-    await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList[0].value, time)
+    await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList, time)
     // else if multiple choices
     // send list
   }
