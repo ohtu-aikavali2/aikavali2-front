@@ -44,17 +44,13 @@ export class QuestionAnswer extends Component {
       backgroundStyle: { backgroundColor: '' },
       answerIcon: ''
     }
-    if (userAnswer && userAnswer.isCorrect && selected) {
+    if (userAnswer) console.log(userAnswer.correctAnswer)
+    if (userAnswer && userAnswer.correctAnswer && userAnswer.correctAnswer.includes(value)) {
       style = {
         backgroundStyle: correctStyle,
         answerIcon: checkFilled
       }
-    } else if (userAnswer && userAnswer.correctAnswer === value) {
-      style = {
-        backgroundStyle: correctStyle,
-        answerIcon: checkFilled
-      }
-    } else if (selected && userAnswer && !userAnswer.isCorrect) {
+    } else if (userAnswer && userAnswer.correctAnswer && !userAnswer.correctAnswer.includes(value)) {
       style = {
         backgroundStyle: wrongStyle,
         answerIcon: cross
@@ -64,7 +60,7 @@ export class QuestionAnswer extends Component {
         backgroundStyle: selectedStyle,
         answerIcon: checkOutline
       }
-    } else if (userAnswer && userAnswer.correctAnswer !== value) {
+    } else if (userAnswer && userAnswer.correctAnswer && !userAnswer.correctAnswer.includes(value)) {
       style = {
         backgroundStyle: notSelectedWrongStyle,
         answerIcon: ''
