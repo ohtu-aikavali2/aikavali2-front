@@ -31,8 +31,8 @@ const getCourses = async () => {
   return response.data
 }
 
-const getCourse = async (name) => {
-  const response = await axios.get(`${baseUrl}${apiUrl}/${name}`, getConfig())
+const getCourse = async (id) => {
+  const response = await axios.get(`${baseUrl}${apiUrl}/${id}`, getConfig())
   return response.data
 }
 

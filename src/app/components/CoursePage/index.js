@@ -23,7 +23,7 @@ export class CoursePage extends Component {
           <Course
             key={course.name}
             title={course.name}
-            onClick={() => this.redirect(`/courses/${course.id}`)}
+            onClick={() => this.redirect(`/courses/${course._id}`)}
             imageSrc={course.imageSrc}
             description={course.description}
           />

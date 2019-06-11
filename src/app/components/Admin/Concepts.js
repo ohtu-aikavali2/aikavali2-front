@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchCourses} from '../../reducers/actions/courseActions'
+import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import courseService from '../../services/courseService'
 import ClickBox from '../common/ClickBox'
@@ -70,7 +70,7 @@ class Courses extends Component {
       .deleteConcept(id)
       .then(() => {
         courseService
-          .getCourse(this.state.selectedCourse.name)
+          .getCourse(this.state.selectedCourse._id)
           .then(res => {
             this.setState({
               selectedCourse: res
@@ -88,7 +88,7 @@ class Courses extends Component {
         {step === 0 && (
           <React.Fragment>
             <h2>Valitse kurssi</h2>
-            {courses.map(course => <ClickBox key={course._id} title={course.name} onClick={this.handleClick(course)}/>)}
+            {courses.map(course => <ClickBox key={course._id} title={course.name} onClick={this.handleClick(course)} />)}
           </React.Fragment>
         )}
         {step === 1 && (
