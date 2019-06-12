@@ -158,7 +158,6 @@ export class QuestionForm extends Component {
           }
           return temp
         })
-        console.log('changedwhilelocked', changedCheckedStatus)
         this.setState({
           answerOptions: changedCheckedStatus
         })
