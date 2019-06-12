@@ -47,6 +47,13 @@ export const ButtonAppBar = (props) => {
                   </Typography>
                 )}
             </div>
+            <div className='addNewCourseButton'>
+              {props.user && (
+                <Button style={{ color: 'white', paddingLeft: '20px' }} onClick={() => redirect('/newcourse')}>
+                  LISÄÄ UUSI KURSSI
+                </Button>
+              )}
+            </div>
             {props.user && (
               <div className='appBarLoginContainer'>
                 <Button onClick={() => props.logout()} color='inherit' className='appBar_login_button'>Kirjaudu ulos</Button>
