@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import './admin.css'
 
-class Courses extends Component {
+class Concepts extends Component {
   state = {
     step: 0,
     concept: '',
@@ -115,16 +115,16 @@ class Courses extends Component {
             </Grid>
             <form>
               <TextField
-                label='Lisää uusi konsepti kursille'
+                label='Lisää uusi käsite kursille'
                 fullWidth
                 value={this.state.concept}
                 onChange={this.handleChange('concept')}
                 className='conceptField'
-                helperText={'Kirjoita kurssiin liittyvä uusi konsepti tähän'}
+                helperText={'Kirjoita kurssiin liittyvä uusi käsite tähän'}
                 margin='normal'
               />
               <Button color='primary' onClick={() => this.addConcept()} variant="contained" className='saveButton'>
-                Lisää konsepti
+                Lisää käsite
               </Button>
             </form>
           </React.Fragment>
@@ -145,4 +145,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Courses)
+)(Concepts)
