@@ -9,7 +9,7 @@ export const fetchQuestions = () => {
     })
     const questions = await questionService.getQuestions()
     dispatch({
-      type: questionConstants.FETCH_QUESTIONS_SUCCESFUL,
+      type: questionConstants.FETCH_QUESTIONS,
       data: questions
     })
   }

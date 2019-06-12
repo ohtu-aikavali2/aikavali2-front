@@ -22,10 +22,10 @@ import './admin.css'
 import {
   postCompileQuestion,
   postPrintQuestion,
-  postGeneralQuestion
+  postGeneralQuestion,
+  fetchQuestions
 } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
-import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
 import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } from '@material-ui/core'
@@ -66,12 +66,8 @@ export class QuestionForm extends Component {
   async componentDidMount() {
     try {
       await this.props.fetchCourses()
+      await this.props.fetchQuestions()
 
-      questionService.getQuestions().then(res => {
-        this.setState({
-          questions: res
-        })
-      })
     } catch (e) {
       console.log(e)
       return
@@ -125,8 +121,7 @@ export class QuestionForm extends Component {
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
-  removeAnswerOption = (option, i) => event => {
-    event.preventDefault()
+  removeAnswerOption = (option, i) => () => {
     if (this.state.answerOptions.length > 1) {
       let newOptions = this.state.answerOptions
       newOptions.splice(i, 1)
@@ -485,7 +480,7 @@ export class QuestionForm extends Component {
                     selectedValue={this.state.selectedValue}
                     open={this.state.modalOpen}
                     onClose={this.handleClose}
-                    questions={this.state.questions.filter(item => item.group._id === this.state.groupId)}
+                    questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
                   />
                 </div>
                 {questionTypeSelected ? (
@@ -701,12 +696,14 @@ const mapDispatchToProps = {
   postCompileQuestion,
   postPrintQuestion,
   postGeneralQuestion,
-  fetchCourses
+  fetchCourses,
+  fetchQuestions
 }
 
 const mapStateToProps = state => {
   return {
-    courses: state.course.courses
+    courses: state.course.courses,
+    questions: state.question.questions
   }
 }
 
