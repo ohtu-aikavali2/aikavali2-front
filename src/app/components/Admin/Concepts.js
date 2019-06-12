@@ -50,18 +50,14 @@ class Courses extends Component {
       .postConcept(newConcept)
       .then(res => {
         const conceptList = this.state.selectedCourse.concepts.concat(res)
-        const newCourse = {
+        const updatedCourse = {
           ...this.state.selectedCourse,
           concepts: conceptList
         }
-        courseService
-          .updateCourse(newCourse, newCourse._id)
-          .then(() => {
-            this.setState({
-              concept: '',
-              selectedCourse: newCourse
-            })
-          })
+        this.setState({
+          concept: '',
+          selectedCourse: updatedCourse
+        })
       })
   }
 
