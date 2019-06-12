@@ -114,7 +114,6 @@ export class QuestionForm extends Component {
     let newArray = this.state.answerOptions.slice(0, i)
     newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
     newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
-    console.log(newArray)
     this.setState({
       answerOptions: newArray
     })
@@ -125,7 +124,6 @@ export class QuestionForm extends Component {
     if (this.state.answerOptions.length > 1) {
       let newOptions = this.state.answerOptions
       newOptions.splice(i, 1)
-      console.log('state', this.state.answerOptions)
       let reOrderAnswerOptions = newOptions.map(item => {
         let temp = Object.assign({}, item)
         if (temp.cardId > i) {
@@ -133,8 +131,6 @@ export class QuestionForm extends Component {
         }
         return temp
       })
-      console.log('newOptions',newOptions)
-      console.log('reorder',reOrderAnswerOptions)
       this.setState({
         answerOptions: reOrderAnswerOptions
       })
@@ -170,7 +166,6 @@ export class QuestionForm extends Component {
         }
         return temp
       })
-      console.log('changed', changedCheckedStatus)
       this.setState({
         answerOptions: changedCheckedStatus
       })
