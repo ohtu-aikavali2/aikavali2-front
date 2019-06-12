@@ -27,7 +27,6 @@ import {
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
-import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
 import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } from '@material-ui/core'
 //toistaiseksi tyypit kovakoodattu
@@ -222,7 +221,7 @@ export class QuestionForm extends Component {
     return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
   }
 
-  postNewConcept = (concept, selectedCourse) => {
+  postNewConcept = (concept) => {
     conceptService
       .postConcept(concept)
       .then(res => {
@@ -231,12 +230,6 @@ export class QuestionForm extends Component {
           newConcept: '',
           newConcepts: this.state.newConcepts.concat(res)
         })
-        const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
-        const newCourse = {
-          ...selectedCourse,
-          concepts: [...newConcepts]
-        }
-        courseService.updateCourse(newCourse, newCourse._id)
       })
   }
 
@@ -252,10 +245,10 @@ export class QuestionForm extends Component {
     } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
       const newConcept = {
         name: conceptName,
-        course: this.determineSelectedCourse()._id
+        course: selectedCourse._id
       }
       // immediately posts the new concept to concepts and courses
-      this.postNewConcept(newConcept, selectedCourse)
+      this.postNewConcept(newConcept)
     }
   }
 
