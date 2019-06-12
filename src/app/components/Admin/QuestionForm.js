@@ -122,8 +122,7 @@ export class QuestionForm extends Component {
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
-  removeAnswerOption = (option, i) => event => {
-    event.preventDefault()
+  removeAnswerOption = (option, i) => () => {
     if (this.state.answerOptions.length > 1) {
       let newOptions = this.state.answerOptions
       newOptions.splice(i, 1)
