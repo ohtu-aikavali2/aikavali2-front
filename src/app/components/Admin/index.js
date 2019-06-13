@@ -28,7 +28,7 @@ export class AdminPage extends Component {
       } else if (words[i] === 'courses') {
         paths.push('Lisää kurssi')
       } else if (words[i] === 'concepts') {
-        paths.push('Lisää konsepti')
+        paths.push('Käsitteet')
       } else {
         paths.push(words[i])
       }
@@ -50,7 +50,7 @@ export class AdminPage extends Component {
       this.redirect('/admin/questions')
     } else if (pathName === 'Lisää kurssi') {
       this.redirect('/admin/courses')
-    } else if (pathName === 'Lisää konsepti') {
+    } else if (pathName === 'Käsitteet') {
       this.redirect('/admin/concepts')
     } else {
       this.redirect('/')

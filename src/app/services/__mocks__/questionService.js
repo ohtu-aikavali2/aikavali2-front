@@ -1,4 +1,3 @@
-
 const question = {
   kind: 'CompileQuestion',
   item: {
@@ -39,5 +38,6 @@ export default {
   getDeletedQuestions: jest.fn(),
   restoreQuestions: jest.fn(),
   getAvailableQuestions: jest.fn(),
-  getAllFlaggedQuestions: jest.fn()
+  getAllFlaggedQuestions: jest.fn(),
+  getQuestions: jest.fn()
 }

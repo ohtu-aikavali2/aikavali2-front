@@ -29,7 +29,7 @@ class Courses extends Component {
   }
 
   render() {
-    const { courses } = this.props
+    const { courses, loggedUser } = this.props
     const { name, imageSrc, description } = this.state
     return (
       <div className='admin-courses'>
@@ -69,7 +69,7 @@ class Courses extends Component {
           </form>
         </div>
         <h1>Kaikki kurssit</h1>
-        {courses.map((c, i) => <Course key={i} course={c} />)}
+        {courses.map((c, i) => <Course key={i} course={c} loggedUser={loggedUser} />)}
       </div>
     )
   }

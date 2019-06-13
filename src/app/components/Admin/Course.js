@@ -17,7 +17,8 @@ class Course extends Component {
       name: '',
       courseName: props.course.name,
       imageSrc: props.course.imageSrc,
-      description: props.course.description
+      description: props.course.description,
+      allowedToEdit: false
     }
   }
 
@@ -43,9 +44,17 @@ class Course extends Component {
     this.setState({ edit: !edit })
   }
 
+  checkAllowedToEdit = (loggedUser, course) => {
+    if (loggedUser.administrator === true || course.user === loggedUser.id) {
+      return true
+    }
+    return false
+  }
+
   render() {
-    const { course } = this.props
+    const { course, loggedUser } = this.props
     const { edit, name, imageSrc, description, courseName } = this.state
+    const canEdit = this.checkAllowedToEdit(loggedUser, course)
     return (
       <div>
         <div className='course-title-container'>
@@ -60,7 +69,7 @@ class Course extends Component {
               onChange={this.handleChange}
             />
           )}
-          {!edit && <IconButton onClick={() => this.toggleEdit()} style={{ marginLeft: '10px' }} color='inherit'><EditIcon /></IconButton>}
+          {!edit && canEdit && <IconButton onClick={() => this.toggleEdit()} style={{ marginLeft: '10px' }} color='inherit'><EditIcon /></IconButton>}
           {edit && <IconButton onClick={() => this.toggleEdit()} style={{ marginLeft: '10px' }} color='inherit'><CheckIcon /></IconButton>}
         </div>
         <div className='course-info'>

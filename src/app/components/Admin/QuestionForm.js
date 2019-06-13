@@ -22,12 +22,11 @@ import './admin.css'
 import {
   postCompileQuestion,
   postPrintQuestion,
-  postGeneralQuestion
+  postGeneralQuestion,
+  fetchQuestions
 } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
-import questionService from '../../services/questionService'
 import conceptService from '../../services/conceptService'
-import courseService from '../../services/courseService'
 import SimpleDialog from '../common/Dialog'
 import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } from '@material-ui/core'
 //toistaiseksi tyypit kovakoodattu
@@ -67,12 +66,8 @@ export class QuestionForm extends Component {
   async componentDidMount() {
     try {
       await this.props.fetchCourses()
+      await this.props.fetchQuestions()
 
-      questionService.getQuestions().then(res => {
-        this.setState({
-          questions: res
-        })
-      })
     } catch (e) {
       console.log(e)
       return
@@ -118,19 +113,16 @@ export class QuestionForm extends Component {
     let newArray = this.state.answerOptions.slice(0, i)
     newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
     newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
-    console.log(newArray)
     this.setState({
       answerOptions: newArray
     })
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
-  removeAnswerOption = (option, i) => event => {
-    event.preventDefault()
+  removeAnswerOption = (option, i) => () => {
     if (this.state.answerOptions.length > 1) {
       let newOptions = this.state.answerOptions
       newOptions.splice(i, 1)
-      console.log('state', this.state.answerOptions)
       let reOrderAnswerOptions = newOptions.map(item => {
         let temp = Object.assign({}, item)
         if (temp.cardId > i) {
@@ -138,8 +130,6 @@ export class QuestionForm extends Component {
         }
         return temp
       })
-      console.log('newOptions', newOptions)
-      console.log('reorder', reOrderAnswerOptions)
       this.setState({
         answerOptions: reOrderAnswerOptions
       })
@@ -163,7 +153,6 @@ export class QuestionForm extends Component {
           }
           return temp
         })
-        console.log('changedwhilelocked', changedCheckedStatus)
         this.setState({
           answerOptions: changedCheckedStatus
         })
@@ -176,7 +165,6 @@ export class QuestionForm extends Component {
         }
         return temp
       })
-      console.log('changed', changedCheckedStatus)
       this.setState({
         answerOptions: changedCheckedStatus
       })
@@ -221,7 +209,7 @@ export class QuestionForm extends Component {
     return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
   }
 
-  postNewConcept = (concept, selectedCourse) => {
+  postNewConcept = (concept) => {
     conceptService
       .postConcept(concept)
       .then(res => {
@@ -230,12 +218,6 @@ export class QuestionForm extends Component {
           newConcept: '',
           newConcepts: this.state.newConcepts.concat(res)
         })
-        const newConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
-        const newCourse = {
-          ...selectedCourse,
-          concepts: [...newConcepts]
-        }
-        courseService.updateCourse(newCourse, newCourse._id)
       })
   }
 
@@ -251,10 +233,10 @@ export class QuestionForm extends Component {
     } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
       const newConcept = {
         name: conceptName,
-        course: this.determineSelectedCourse()._id
+        course: selectedCourse._id
       }
       // immediately posts the new concept to concepts and courses
-      this.postNewConcept(newConcept, selectedCourse)
+      this.postNewConcept(newConcept)
     }
   }
 
@@ -492,7 +474,7 @@ export class QuestionForm extends Component {
                     selectedValue={this.state.selectedValue}
                     open={this.state.modalOpen}
                     onClose={this.handleClose}
-                    questions={this.state.questions.filter(item => item.group._id === this.state.groupId)}
+                    questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
                   />
                 </div>
                 {questionTypeSelected ? (
@@ -708,12 +690,14 @@ const mapDispatchToProps = {
   postCompileQuestion,
   postPrintQuestion,
   postGeneralQuestion,
-  fetchCourses
+  fetchCourses,
+  fetchQuestions
 }
 
 const mapStateToProps = state => {
   return {
-    courses: state.course.courses
+    courses: state.course.courses,
+    questions: state.question.questions
   }
 }
 

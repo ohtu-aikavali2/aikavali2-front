@@ -65,7 +65,7 @@ export class App extends React.Component {
                   />
                   <Route
                     exact path='/admin/courses'
-                    render={() => <Courses />}
+                    render={() => <Courses loggedUser={loggedUser}/>}
                   />
                   <Route
                     exact path='/admin/concepts'
@@ -81,6 +81,10 @@ export class App extends React.Component {
                 <Route
                   exact path='/newquestion'
                   render={({ history }) => <ConnectedQuestionForm history={history} />}
+                />
+                <Route
+                  exact path='/newcourse'
+                  render={() => <Courses loggedUser={loggedUser}/>}
                 />
               </ProtectedRoute>
             </Switch>

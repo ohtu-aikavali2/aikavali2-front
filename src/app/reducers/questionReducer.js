@@ -105,6 +105,13 @@ const questionReducer = (state = initialState, action) => {
       }
     }
 
+    case questionConstants.FETCH_QUESTIONS: {
+      return {
+        ...state,
+        questions: action.data
+      }
+    }
+
     default: {
       return state
     }
