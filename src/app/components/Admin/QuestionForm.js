@@ -18,7 +18,6 @@ import ArrowBackward from '@material-ui/icons/ArrowBack'
 import DumbQuestion from '../Question/DumbQuestion'
 import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
-import ConfirmPopup from './Popups/ConfirmPopup'
 import './admin.css'
 import {
   postCompileQuestion,
@@ -109,8 +108,7 @@ export class QuestionForm extends Component {
   addAnswerOption = () => {
     if (this.state.answerOptions.length < 6) {
       this.setState({
-        answerOptions: [...this.state.answerOptions,
-        { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
+        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
       })
     }
   }
