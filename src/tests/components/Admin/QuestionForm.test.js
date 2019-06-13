@@ -72,8 +72,8 @@ describe('<QuestionForm />', () => {
   })
   it('user can select \'Yleinen kysymys\' and state will be updated', () => {
     wrapper.setState({ step: 1 })
-    const field = wrapper.find('.clickbox-link')
-    expect(field.length).toBe(1)
+    expect(wrapper.find('.clickbox-link').length).toBe(2)
+    const field = wrapper.find('.clickbox-link').first()
     field.simulate('click')
     expect(wrapper.state().questionType).toEqual(questionTypes[0].value)
   })
