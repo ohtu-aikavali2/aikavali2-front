@@ -17,8 +17,7 @@ class Course extends Component {
       name: '',
       courseName: props.course.name,
       imageSrc: props.course.imageSrc,
-      description: props.course.description,
-      allowedToEdit: false
+      description: props.course.description
     }
   }
 
