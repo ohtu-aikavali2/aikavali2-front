@@ -29,14 +29,17 @@ import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
 import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } from '@material-ui/core'
-//toistaiseksi tyypit kovakoodattu
+// so far the question types are fixed
 const questionTypes = [
   {
     value: 'GeneralQuestion',
     label: 'Yleinen kysymys'
+  },
+  {
+    value: 'FillInTheBlank',
+    label: 'Täytä tyhjät kohdat'
   }
 ]
-
 let question = {
   kind: '',
   item: { value: '', options: [] }
@@ -74,7 +77,7 @@ export class QuestionForm extends Component {
     }
   }
 
-  //handles change of questionType, question and selected value of radiobutton in state
+  // handles change of questionType, question and selected value of radiobutton in state
   handleChange = name => e => {
     this.setState({
       [name]: e.target.value
@@ -85,13 +88,13 @@ export class QuestionForm extends Component {
     }
   }
 
-  //handles modal's open status
+  // handles modal's open status
   handleClickOpen = () => {
     this.setState({
       modalOpen: true
     })
   }
-  //gets the value from modal
+  // gets the value from the modal
   handleClose = value => {
     this.setState({
       selectedValue: value,
@@ -108,7 +111,7 @@ export class QuestionForm extends Component {
     }
   }
 
-  //handles changes of answerOptions in state
+  // handles changes of answerOptions in state
   handleArrayChange = (option, i) => event => {
     let newArray = this.state.answerOptions.slice(0, i)
     newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
@@ -136,7 +139,7 @@ export class QuestionForm extends Component {
     }
   }
 
-  //handles checkboxes for correct answers
+  // handles checkboxes for correct answers
   handleCheckForCorrectAnswers(e, option, i) {
     // First if-else checks that only one correct answer can be checked if radiobutton is selected to be select one
     // Other ifs are to make sure that the selection can be changed and the change is made to correct card
@@ -263,23 +266,14 @@ export class QuestionForm extends Component {
       this.setState({ step: this.state.step + 1 })
       const concepts = this.mapConceptIDsToObjects().concat(
         this.state.newConcepts.filter(c => this.state.concepts.includes(c._id)))
-      if (this.state.questionType === 'PrintQuestion') {
-        this.props.postPrintQuestion(
-          this.state.groupId,
-          this.state.question,
-          this.state.correctAnswer,
-          this.state.answerOptions,
-          concepts
-        )
-        //this.addConceptsToCourses()
-      } else if (this.state.questionType === 'CompileQuestion') {
-        this.props.postCompileQuestion(
-          this.state.groupId,
-          this.state.correctAnswer,
-          this.state.answerOptions,
-          concepts
-        )
-        //this.addConceptsToCourses()
+      if (this.state.questionType === 'FillInTheBlank') {
+        // not functional yet
+        // this.props.postFillInTheBlankQuestion(
+        //   this.state.groupId,
+        //   this.state.question,
+        //   this.state.answerOptions,
+        //   concepts
+        // )
       } else {
         let correctAnswersAsStrings = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
         this.props.postGeneralQuestion(
@@ -388,13 +382,6 @@ export class QuestionForm extends Component {
 
   render() {
     const { step, questionType } = this.state
-    let questionTypeSelected = false
-    if (
-      questionType === 'PrintQuestion' ||
-      questionType === 'GeneralQuestion'
-    ) {
-      questionTypeSelected = true
-    }
     const selectedCourse = this.determineSelectedCourse()
 
     return (
@@ -460,7 +447,7 @@ export class QuestionForm extends Component {
               </React.Fragment>
             )}
 
-            {step === 2 && (
+            {step === 2 && (questionType === 'GeneralQuestion') && (
               <React.Fragment>
                 <Button
                   variant="contained"
@@ -477,7 +464,7 @@ export class QuestionForm extends Component {
                     questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
                   />
                 </div>
-                {questionTypeSelected ? (
+                <div>
                   <TextField
                     label="Kysymyksesi"
                     multiline
@@ -489,7 +476,7 @@ export class QuestionForm extends Component {
                     helperText="Kirjoita tähän kysymyksesi"
                     margin="normal"
                   />
-                ) : (<h2>Valitse mikä koodeista kääntyy</h2>)}
+                </div>
                 <div className="RadioButtonForm">
                   <FormControl component="fieldset" className="RadioButtonFormControl">
                     <FormLabel component="legend">Montako vastausta käyttäjä voi valita?</FormLabel>
@@ -550,6 +537,14 @@ export class QuestionForm extends Component {
                   </Button>
                 </div>
 
+              </React.Fragment>
+            )}
+
+            {step === 2 && (questionType === 'FillInTheBlank') && (
+              <React.Fragment>
+                <div>
+                  New fields here
+                </div>
               </React.Fragment>
             )}
 
