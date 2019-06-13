@@ -18,6 +18,7 @@ import ArrowBackward from '@material-ui/icons/ArrowBack'
 import DumbQuestion from '../Question/DumbQuestion'
 import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
+import ConfirmPopup from './Popups/ConfirmPopup'
 import './admin.css'
 import {
   postCompileQuestion,
@@ -109,7 +110,7 @@ export class QuestionForm extends Component {
     if (this.state.answerOptions.length < 6) {
       this.setState({
         answerOptions: [...this.state.answerOptions,
-          { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false } ]
+        { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
       })
     }
   }
@@ -139,8 +140,8 @@ export class QuestionForm extends Component {
         }
         return temp
       })
-      console.log('newOptions',newOptions)
-      console.log('reorder',reOrderAnswerOptions)
+      console.log('newOptions', newOptions)
+      console.log('reorder', reOrderAnswerOptions)
       this.setState({
         answerOptions: reOrderAnswerOptions
       })
@@ -227,7 +228,7 @@ export class QuestionForm extends Component {
       .postConcept(concept)
       .then(res => {
         this.setState({
-          concepts: this.state.concepts.concat(concept.name),
+          concepts: this.state.concepts.concat(res._id),
           newConcept: '',
           newConcepts: this.state.newConcepts.concat(res)
         })
@@ -280,7 +281,8 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const concepts = this.mapConceptIDsToObjects()
+      const concepts = this.mapConceptIDsToObjects().concat(
+        this.state.newConcepts.filter(c => this.state.concepts.includes(c._id)))
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
           this.state.groupId,
@@ -594,8 +596,8 @@ export class QuestionForm extends Component {
                       control={
                         <Checkbox
                           label={concept.name} key={concept.name}
-                          onChange={e => this.handleCheck(e, concept.name)}
-                          checked={this.state.concepts.includes(concept.name)}
+                          onChange={e => this.handleCheck(e, concept._id)}
+                          checked={this.state.concepts.includes(concept._id)}
                           color='primary'
                         />
                       }
