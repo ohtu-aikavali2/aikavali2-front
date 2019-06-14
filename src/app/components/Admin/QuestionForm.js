@@ -28,7 +28,7 @@ import {
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } from '@material-ui/core'
+import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid } from '@material-ui/core'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -82,9 +82,11 @@ export class QuestionForm extends Component {
     this.setState({
       [name]: e.target.value
     })
-    const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
-    if (checkedElements.length > 1 && e.target.value === ('selectOne')) {
-      notify.show('Muutettu valintojen määrää, poista ylimääräiset oikeat vastaukset', 'error', 3000)
+    if (this.state.questionType === 'GeneralQuestion') {
+      const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
+      if (checkedElements.length > 1 && e.target.value === ('selectOne')) {
+        notify.show('Muutettu valintojen määrää, poista ylimääräiset oikeat vastaukset', 'error', 3000)
+      }
     }
   }
 
@@ -103,22 +105,83 @@ export class QuestionForm extends Component {
     })
   }
 
-  addAnswerOption = () => {
-    if (this.state.answerOptions.length < 6) {
+  addAnswerOption = () => () => {
+    if (this.state.questionType === 'GeneralQuestion') {
+      if (this.state.answerOptions.length < 6) {
+        this.setState({
+          answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
+        })
+      }
+    }
+  }
+
+  updateAllAnswerOptions = () => {
+    if (this.state.questionType === 'FillInTheBlank') {
+      let count = (this.state.question.match(/TYHJÄ/g) || []).length
+      let copyAnswerOptions = []
+      for (let i = 0; i < count; i++) {
+        copyAnswerOptions.push({ location: i, correctValues: [] })
+        // if (i > this.state.answerOptions.length || this.state.answerOptions === undefined) {
+        //   console.log('täällä')
+        //   copyAnswerOptions.push({ location: i, correctValues: [] })
+        // } else {
+        //   console.log('nyt täällä')
+        //   copyAnswerOptions.push({ location: i, correctValues: this.state.answerOptions[i].correctValues })
+        // }
+      }
+      console.log(copyAnswerOptions)
       this.setState({
-        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
+        answerOptions: copyAnswerOptions
       })
     }
   }
 
+  addWord = (i, option) => event => {
+    let values = option.correctValues.concat('')
+    console.log('values after concat', values)
+    // values.concat(value)
+    this.setState({
+      answerOptions: [...this.state.answerOptions, { location: i, correctValues: values }]
+    })
+    event.preventDefault()
+  }
+
   // handles changes of answerOptions in state
   handleArrayChange = (option, i) => event => {
-    let newArray = this.state.answerOptions.slice(0, i)
-    newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
-    newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
-    this.setState({
-      answerOptions: newArray
-    })
+    if (this.state.questionType === 'GeneralQuestion') {
+      let newArray = this.state.answerOptions.slice(0, i)
+      newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
+      newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+      this.setState({
+        answerOptions: newArray
+      })
+    } else if (this.state.questionType === 'FillInTheBlank') {
+      // let newArray = this.state.answerOptions.slice(0, i)
+      console.log(this.state.answerOptions.slice(0, i))
+      console.log('state', this.state.answerOptions)
+      console.log('event', event.target.value)
+      console.log('option', option.correctValues)
+      let copy = option.correctValues
+      let newValues = copy.push(event.target.value)
+      let newArray = this.state.answerOptions
+      console.log('values',newValues)
+      newArray.push({ location: i, correctValues: newValues })
+      console.log('tänne asti?', newArray)
+      // newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+      this.setState({
+        answerOptions: newArray
+      })
+    //   let newArray = this.state.answerOptions
+    //   let re = newArray.map(option => {
+    //     let temp = Object.assign({}, option)
+    //     temp.correctValues = temp.correctValues.push(event.target.value)
+    //     return temp
+    //   })
+    //   this.setState({
+    //     answerOptions: re
+    //   })
+    // }
+    }
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
@@ -532,7 +595,7 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <div className="addButtonContainer">
-                  <Button onClick={this.addAnswerOption} fullWidth variant="contained" color="primary" aria-label="Add">
+                  <Button onClick={this.addAnswerOption()} fullWidth variant="contained" color="primary" aria-label="Add">
                     + Lisää vastausvaihtoehto
                   </Button>
                 </div>
@@ -543,7 +606,59 @@ export class QuestionForm extends Component {
             {step === 2 && (questionType === 'FillInTheBlank') && (
               <React.Fragment>
                 <div>
-                  New fields here
+                  <TextField
+                    label="Kysymyksesi"
+                    multiline
+                    fullWidth
+                    rowsMax="3"
+                    value={this.state.question}
+                    onChange={this.handleChange('question')}
+                    className="questionField"
+                    helperText="Kirjoita tähän kysymyksesi ja 'TYHJÄ' niiden sanojen kohdalle, jotka käyttäjän tulee vastauksessaan täyttää"
+                    margin="normal"
+                  />
+                </div>
+                <div>
+                  {this.state.answerOptions.map((option, i) => (
+
+                    <div key={i}>
+                      <Grid container spacing={40} >
+                        <Grid item>
+                          <TextField
+                            label="Vastaus"
+                            value={option.correctValues[option.correctValues.length - 1]}
+                            onChange={this.handleArrayChange(option, i)}
+                            className="answerField"
+                            // helperText='Kirjoita oikeat vastausvaihtoehdot sanalle'
+                            margin="normal"
+                          />
+                        </Grid>
+                        <Grid item>
+                          <Button onClick={this.addWord(i)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                            <AddIcon className='addIcon' />
+                          </Button>
+                        </Grid>
+                      </Grid>
+                      <div>
+                        {console.log('täällä',option.correctValues)}
+                        {option.correctValues.map((item, j) => (
+                          <div key={j}>
+                            <p>{item}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {/* <div>
+                        {this.state.answerOptions.map(item => item.correctValues).map(item => (
+                          <div key={i}>{item}, {option}</div>
+                        ))}
+                      </div> */}
+                    </div>
+                  ))}
+                </div>
+                <div className="addButtonContainer">
+                  <Button onClick={this.updateAllAnswerOptions} fullWidth variant="contained" color="primary" aria-label="Add">
+                    + Lisää vastausvaihtoehto
+                  </Button>
                 </div>
               </React.Fragment>
             )}
