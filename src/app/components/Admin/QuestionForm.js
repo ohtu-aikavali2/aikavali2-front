@@ -120,7 +120,7 @@ export class QuestionForm extends Component {
       let count = (this.state.question.match(/TYHJÄ/g) || []).length
       let copyAnswerOptions = []
       for (let i = 0; i < count; i++) {
-        copyAnswerOptions.push({ location: i, correctValues: [] })
+        copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         // if (i > this.state.answerOptions.length || this.state.answerOptions === undefined) {
         //   console.log('täällä')
         //   copyAnswerOptions.push({ location: i, correctValues: [] })
@@ -136,12 +136,10 @@ export class QuestionForm extends Component {
     }
   }
 
-  addWord = (i, option) => event => {
-    let values = option.correctValues.concat('')
-    console.log('values after concat', values)
-    // values.concat(value)
+  addWord = (option, i) => event => {
+    option.correctValues.push(option.newValue)
     this.setState({
-      answerOptions: [...this.state.answerOptions, { location: i, correctValues: values }]
+      answerOptions: [...this.state.answerOptions, { location: i, correctValues: option.correctValues, newValue: '' }]
     })
     event.preventDefault()
   }
@@ -156,18 +154,14 @@ export class QuestionForm extends Component {
         answerOptions: newArray
       })
     } else if (this.state.questionType === 'FillInTheBlank') {
-      // let newArray = this.state.answerOptions.slice(0, i)
-      console.log(this.state.answerOptions.slice(0, i))
-      console.log('state', this.state.answerOptions)
-      console.log('event', event.target.value)
+      let newArray = this.state.answerOptions.slice(0, i)
       console.log('option', option.correctValues)
-      let copy = option.correctValues
-      let newValues = copy.push(event.target.value)
-      let newArray = this.state.answerOptions
-      console.log('values',newValues)
-      newArray.push({ location: i, correctValues: newValues })
+      // let copy = option.correctValues
+      // copy.push(event.target.value)
+      // console.log('values',copy)
+      newArray.push({ location: i, correctValues: option.correctValues, newValue: event.target.value })
       console.log('tänne asti?', newArray)
-      // newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+      newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
       this.setState({
         answerOptions: newArray
       })
@@ -620,13 +614,12 @@ export class QuestionForm extends Component {
                 </div>
                 <div>
                   {this.state.answerOptions.map((option, i) => (
-
                     <div key={i}>
                       <Grid container spacing={40} >
                         <Grid item>
                           <TextField
                             label="Vastaus"
-                            value={option.correctValues[option.correctValues.length - 1]}
+                            value={option.newValue}
                             onChange={this.handleArrayChange(option, i)}
                             className="answerField"
                             // helperText='Kirjoita oikeat vastausvaihtoehdot sanalle'
@@ -634,7 +627,7 @@ export class QuestionForm extends Component {
                           />
                         </Grid>
                         <Grid item>
-                          <Button onClick={this.addWord(i)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                          <Button onClick={this.addWord(option, i)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                             <AddIcon className='addIcon' />
                           </Button>
                         </Grid>
