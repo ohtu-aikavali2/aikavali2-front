@@ -27,7 +27,7 @@ class Courses extends Component {
       notify.show('Lisää kurssille kuvaus', 'error', 3000)
     } else {
       this.props.createCourse(this.state)
-      notify.show(`Uusi kurssi '${this.state.name}' luotu`)
+      notify.show(`Uusi kurssi '${this.state.name}' luotu`, 'success', 2000)
       this.setState({
         name:'',
         imageSrc:'',
