@@ -56,7 +56,7 @@ export class QuestionForm extends Component {
       step: 0,
       courses: [],
       questions: [],
-      concepts: [], // checked concepts: holds the id's of existing concepts of selected course and the names of new concepts
+      checkedConceptIds: [],
       newConcepts: [],
       modalOpen: false,
       selectedValue: '',
@@ -173,17 +173,17 @@ export class QuestionForm extends Component {
     }
   }
 
-  handleCheck(e, x) {
+  handleCheckConcept(conceptId) {
     this.setState(state => ({
-      concepts: state.concepts.includes(x)
-        ? state.concepts.filter(c => c !== x)
-        : [...state.concepts, x]
+      checkedConceptIds: state.checkedConceptIds.includes(conceptId)
+        ? state.checkedConceptIds.filter(c => c !== conceptId)
+        : [...state.checkedConceptIds, conceptId]
     }))
   }
 
-  handleSelectType(e, x) {
+  handleSelectType(type) {
     this.setState(state => ({
-      questionType: state.questionType === x ? '' : x
+      questionType: state.questionType === type ? '' : type
     }))
   }
 
@@ -206,9 +206,10 @@ export class QuestionForm extends Component {
     return possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] }
   }
 
-  mapConceptIDsToObjects = () => {
+  checkedConceptIdsToObjects = () => {
     const selectedCourse = this.determineSelectedCourse()
-    return selectedCourse.concepts.filter(c => this.state.concepts.includes(c._id))
+    const allConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
+    return allConcepts.filter(c => this.state.checkedConceptIds.includes(c._id))
   }
 
   postNewConcept = (concept) => {
@@ -216,7 +217,7 @@ export class QuestionForm extends Component {
       .postConcept(concept)
       .then(res => {
         this.setState({
-          concepts: this.state.concepts.concat(res._id),
+          checkedConceptIds: this.state.checkedConceptIds.concat(res._id),
           newConcept: '',
           newConcepts: this.state.newConcepts.concat(res)
         })
@@ -262,13 +263,12 @@ export class QuestionForm extends Component {
       console.log('No correct answers')
     } else if (this.state.answerOptions.map(item => item.value).includes('')) {
       console.log('At least one of answer options is empty')
-    } else if (this.state.concepts.length < 1) {
+    } else if (this.state.checkedConceptIds.length < 1) {
       console.log('Concept is not set!')
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const concepts = this.mapConceptIDsToObjects().concat(
-        this.state.newConcepts.filter(c => this.state.concepts.includes(c._id)))
+      const concepts = this.checkedConceptIdsToObjects()
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
           this.state.groupId,
@@ -304,7 +304,7 @@ export class QuestionForm extends Component {
         questionType: '',
         question: '',
         answerOptions: [],
-        concepts: [],
+        checkedConceptIds: [],
         newConcept: '',
         newConcepts: [],
         selectedValue: '',
@@ -379,7 +379,7 @@ export class QuestionForm extends Component {
       return
     } else if (
       this.state.step === 3 &&
-      this.state.concepts.length < 1
+      this.state.checkedConceptIds.length < 1
     ) {
       notify.show('Valitse ainakin yksi käsite', 'error', 3000)
       return
@@ -402,6 +402,7 @@ export class QuestionForm extends Component {
       questionTypeSelected = true
     }
     const selectedCourse = this.determineSelectedCourse()
+    const concepts = selectedCourse.concepts ? selectedCourse.concepts.concat(this.state.newConcepts) : null
 
     return (
       <div className="questionFormContainer">
@@ -453,7 +454,7 @@ export class QuestionForm extends Component {
                   const style = this.determineTypeCardStyle(option.value)
                   return (
                     <div className='clickbox' key={option.value}>
-                      <div className='clickbox-link' onClick={e => this.handleSelectType(e, option.value)}>
+                      <div className='clickbox-link' onClick={() => this.handleSelectType(option.value)}>
                         <Card style={{ background: style.background }} className='clickbox-container'>
                           <CardContent style={{ color: style.textColor }}>
                             {option.label}
@@ -563,32 +564,18 @@ export class QuestionForm extends Component {
               <React.Fragment>
                 <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
                 <FormGroup>
-                  {selectedCourse.concepts.map(concept => (
+                  {concepts && concepts.map(concept => (
                     <FormControlLabel
                       control={
                         <Checkbox
                           label={concept.name} key={concept._id}
-                          onChange={e => this.handleCheck(e, concept._id)}
-                          checked={this.state.concepts.includes(concept._id)}
+                          onChange={() => this.handleCheckConcept(concept._id)}
+                          checked={this.state.checkedConceptIds.includes(concept._id)}
                           color='primary'
                         />
                       }
                       label={concept.name}
                       key={concept._id}
-                    />
-                  ))}
-                  {this.state.newConcepts.map(concept => (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          label={concept.name} key={concept.name}
-                          onChange={e => this.handleCheck(e, concept._id)}
-                          checked={this.state.concepts.includes(concept._id)}
-                          color='primary'
-                        />
-                      }
-                      label={concept.name}
-                      key={concept.name}
                     />
                   ))}
                 </FormGroup>
