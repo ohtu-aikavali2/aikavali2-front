@@ -10,7 +10,8 @@ class Courses extends Component {
   state = {
     name: '',
     imageSrc: '',
-    description: ''
+    description: '',
+    step: 'add'
   }
 
   componentDidMount() {
@@ -43,49 +44,67 @@ class Courses extends Component {
     this.setState((prevState) => ({ ...prevState, ...newState }))
   }
 
+  toggleView = () => {
+    this.setState({
+      step: this.state.step === 'add' ? 'edit':'add'
+    })
+  }
+
   render() {
     const { courses, loggedUser } = this.props
     const { name, imageSrc, description } = this.state
     return (
       <div className='admin-courses'>
         <Notifications ref={this.notificationRef} />
-        <div>
-          <h1>Lisää kurssi</h1>
-          <form onSubmit={this.handleSubmit}>
-            <TextField
-              name='name'
-              id='name'
-              label='Nimi'
-              type='text'
-              fullWidth
-              value={name}
-              onChange={this.handleChange}
-            />
-            <TextField
-              name='imageSrc'
-              id='imageSrc'
-              label='Kuva'
-              type='text'
-              fullWidth
-              value={imageSrc}
-              onChange={this.handleChange}
-            />
-            <TextField
-              name='description'
-              id='description'
-              label='Kuvaus'
-              type='text'
-              fullWidth
-              multiline
-              rows={3}
-              value={description}
-              onChange={this.handleChange}
-            />
-            <Button style={{ marginTop: '10px' }} color='primary' type='submit' variant='contained'>Tallenna</Button>
-          </form>
-        </div>
-        <h1>Kaikki kurssit</h1>
-        {courses.map((c, i) => <Course key={i} course={c} loggedUser={loggedUser} />)}
+        {this.state.step === 'add' && (
+          <div>
+            <Button color='primary' variant='contained' onClick={() => this.toggleView()}>
+              Kaikki kurssit
+            </Button>
+            <h1>Lisää kurssi</h1>
+            <form onSubmit={this.handleSubmit}>
+              <TextField
+                name='name'
+                id='name'
+                label='Nimi'
+                type='text'
+                fullWidth
+                value={name}
+                onChange={this.handleChange}
+              />
+              <TextField
+                name='imageSrc'
+                id='imageSrc'
+                label='Kuva'
+                type='text'
+                fullWidth
+                value={imageSrc}
+                onChange={this.handleChange}
+              />
+              <TextField
+                name='description'
+                id='description'
+                label='Kuvaus'
+                type='text'
+                fullWidth
+                multiline
+                rows={3}
+                value={description}
+                onChange={this.handleChange}
+              />
+              <Button style={{ marginTop: '10px' }} color='primary' type='submit' variant='contained'>Tallenna</Button>
+            </form>
+          </div>
+        )}
+        {this.state.step === 'edit' && (
+          <div>
+            <Button color='primary' variant='contained' onClick={() => this.toggleView()}>
+              Lisää kurssi
+            </Button>
+            <h1>Kaikki kurssit</h1>
+            {courses.map((c, i) => <Course key={i} course={c} loggedUser={loggedUser} />)}
+          </div>
+        )}
       </div>
     )
   }
