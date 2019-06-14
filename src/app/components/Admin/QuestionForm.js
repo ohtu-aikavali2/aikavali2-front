@@ -120,7 +120,7 @@ export class QuestionForm extends Component {
       let count = (this.state.question.match(/TYHJÄ/g) || []).length
       let copyAnswerOptions = []
       for (let i = 0; i < count; i++) {
-        copyAnswerOptions.push({ location: i, correctValues: [] })
+        copyAnswerOptions.push({ location: i, correctValues: [],  newValue: ''})
         // if (i > this.state.answerOptions.length || this.state.answerOptions === undefined) {
         //   console.log('täällä')
         //   copyAnswerOptions.push({ location: i, correctValues: [] })
@@ -129,19 +129,20 @@ export class QuestionForm extends Component {
         //   copyAnswerOptions.push({ location: i, correctValues: this.state.answerOptions[i].correctValues })
         // }
       }
-      console.log(copyAnswerOptions)
       this.setState({
         answerOptions: copyAnswerOptions
       })
     }
   }
 
-  addWord = (i, option) => event => {
-    let values = option.correctValues.concat('')
-    console.log('values after concat', values)
-    // values.concat(value)
+  addWord = (i) => event => {
+    let copy = [...this.state.answerOptions]
+    //PITÄIS OLLA SALLITTU COPY KUN EI OO SAMA KUN STATE TOLLA ... SYNTAKSILLA
+    console.log(copy === this.state.answerOptions)
+    copy[i].correctValues.push(copy[i].newValue)
+    copy[i].newValue = ''
     this.setState({
-      answerOptions: [...this.state.answerOptions, { location: i, correctValues: values }]
+      answerOptions: copy
     })
     event.preventDefault()
   }
@@ -156,31 +157,14 @@ export class QuestionForm extends Component {
         answerOptions: newArray
       })
     } else if (this.state.questionType === 'FillInTheBlank') {
-      // let newArray = this.state.answerOptions.slice(0, i)
-      console.log(this.state.answerOptions.slice(0, i))
-      console.log('state', this.state.answerOptions)
-      console.log('event', event.target.value)
-      console.log('option', option.correctValues)
-      let copy = option.correctValues
-      let newValues = copy.push(event.target.value)
-      let newArray = this.state.answerOptions
-      console.log('values',newValues)
-      newArray.push({ location: i, correctValues: newValues })
-      console.log('tänne asti?', newArray)
-      // newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+      console.log(option)
+      let copy = [...this.state.answerOptions]
+      //PITÄIS OLLA SALLITTU COPY KUN EI OO SAMA KUN STATE TOLLA ... SYNTAKSILLA
+      console.log(copy === this.state.answerOptions)
+      copy[i].newValue = event.target.value
       this.setState({
-        answerOptions: newArray
+        answerOptions: copy
       })
-    //   let newArray = this.state.answerOptions
-    //   let re = newArray.map(option => {
-    //     let temp = Object.assign({}, option)
-    //     temp.correctValues = temp.correctValues.push(event.target.value)
-    //     return temp
-    //   })
-    //   this.setState({
-    //     answerOptions: re
-    //   })
-    // }
     }
   }
 
@@ -626,7 +610,7 @@ export class QuestionForm extends Component {
                         <Grid item>
                           <TextField
                             label="Vastaus"
-                            value={option.correctValues[option.correctValues.length - 1]}
+                            value={option.newValue}
                             onChange={this.handleArrayChange(option, i)}
                             className="answerField"
                             // helperText='Kirjoita oikeat vastausvaihtoehdot sanalle'
@@ -640,7 +624,6 @@ export class QuestionForm extends Component {
                         </Grid>
                       </Grid>
                       <div>
-                        {console.log('täällä',option.correctValues)}
                         {option.correctValues.map((item, j) => (
                           <div key={j}>
                             <p>{item}</p>
