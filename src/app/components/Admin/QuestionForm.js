@@ -120,7 +120,7 @@ export class QuestionForm extends Component {
       let count = (this.state.question.match(/TYHJÄ/g) || []).length
       let copyAnswerOptions = []
       for (let i = 0; i < count; i++) {
-        copyAnswerOptions.push({ location: i, correctValues: [],  newValue: ''})
+        copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         // if (i > this.state.answerOptions.length || this.state.answerOptions === undefined) {
         //   console.log('täällä')
         //   copyAnswerOptions.push({ location: i, correctValues: [] })
@@ -604,7 +604,6 @@ export class QuestionForm extends Component {
                 </div>
                 <div>
                   {this.state.answerOptions.map((option, i) => (
-
                     <div key={i}>
                       <Grid container spacing={40} >
                         <Grid item>
