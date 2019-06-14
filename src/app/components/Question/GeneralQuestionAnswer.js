@@ -43,7 +43,6 @@ export class GeneralQuestionAnswer extends Component {
       backgroundStyle: { backgroundColor: '' },
       answerIcon: ''
     }
-    if (userAnswer) console.log(userAnswer.correctAnswer)
     if (userAnswer && userAnswer.correctAnswer && userAnswer.correctAnswer.includes(value)) {
       style = {
         backgroundStyle: correctStyle,
