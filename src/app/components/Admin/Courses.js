@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { fetchCourses, createCourse } from '../../reducers/actions/courseActions'
+import Notifications, { notify } from 'react-notify-toast'
 import Course from './Course'
 
 class Courses extends Component {
@@ -18,7 +19,21 @@ class Courses extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    this.props.createCourse(this.state)
+    //do validation here
+    if ( !this.state.name.trim() ) {
+      notify.show('Lisää kurssille nimi', 'error', 3000)
+    } else if ( !this.state.description.trim() ) {
+      notify.show('Lisää kurssille kuvaus', 'error', 3000)
+    } else {
+      this.props.createCourse(this.state)
+      notify.show(`Uusi kurssi '${this.state.name}' luotu`)
+      this.setState({
+        name:'',
+        imageSrc:'',
+        description:''
+      })
+    }
+
   }
 
   handleChange = (e) => {
@@ -33,6 +48,7 @@ class Courses extends Component {
     const { name, imageSrc, description } = this.state
     return (
       <div className='admin-courses'>
+        <Notifications ref={this.notificationRef} />
         <div>
           <h1>Lisää kurssi</h1>
           <form onSubmit={this.handleSubmit}>

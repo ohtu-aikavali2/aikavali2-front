@@ -45,8 +45,7 @@ class Course extends Component {
   }
 
   checkAllowedToEdit = (loggedUser, course) => {
-    console.log(course)
-    console.log(loggedUser.id)
+    console.log(`${course.user === loggedUser.id} kurssin luoja ja käyttäjän id samat`)
     if (loggedUser.administrator === true || course.user === loggedUser.id) {
       return true
     }
