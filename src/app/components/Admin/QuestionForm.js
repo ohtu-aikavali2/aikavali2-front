@@ -655,7 +655,7 @@ export class QuestionForm extends Component {
                     </div>
                   ))}
                 </div>
-                <div className="addButtonContainer">
+                <div className="addButtonContain">
                   <Button onClick={this.updateAllAnswerOptions} fullWidth variant="contained" color="primary" aria-label="Add">
                     + Lisää vastausvaihtoehto
                   </Button>
