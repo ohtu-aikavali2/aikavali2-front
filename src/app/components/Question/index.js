@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PrintQuestion from './PrintQuestion'
-import CompileQuestion from './CompileQuestion'
 import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
 import Typography from '@material-ui/core/Typography'
@@ -20,6 +19,7 @@ import Button from '@material-ui/core/Button'
 import FlagIcon from '@material-ui/icons/Flag'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import Zoom from '@material-ui/core/Zoom'
+import FillQuestion from './FillQuestion'
 
 export class Question extends Component {
   constructor() {
@@ -217,10 +217,7 @@ export class Question extends Component {
         {question && (question.kind === 'PrintQuestion' || question.kind === 'GeneralQuestion') && (
           <PrintQuestion
             question={question.item}
-            kind={question.kind}
-            handleQuestionReview={this.handleQuestionReview}
             handleSelect={this.handleSelect}
-            handleSkip={this.getNewQuestion}
             selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
@@ -228,13 +225,9 @@ export class Question extends Component {
             selectCount={this.props.question.item.selectCount}
           />
         )}
-        {question && question.kind === 'CompileQuestion' && (
-          <CompileQuestion
+        {question && question.kind === 'FillInTheBlankQuestion' && (
+          <FillQuestion
             question={question.item}
-            handleQuestionReview={this.handleQuestionReview}
-            handleSelect={this.handleSelect}
-            handleSkip={this.getNewQuestion}
-            selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}

@@ -25,7 +25,7 @@ const styles = theme => ({
   }
 })
 
-export class QuestionAnswer extends Component {
+export class GeneralQuestionAnswer extends Component {
   handleClick = () => {
     const { id, value, userAnswer } = this.props
     if (!userAnswer) this.props.handleSelect(id, value)
@@ -64,13 +64,16 @@ export class QuestionAnswer extends Component {
   }
 
   render() {
-    const { classes, value, userAnswer, answering, dumb, selectedList } = this.props
-    const selected = selectedList ? (selectedList.map(s => s.value).includes(value)) : false
-    const style = this.determineStyle(selected)
-    const textStyle = {}
-    if (answering || (!selected && userAnswer)) {
-      textStyle['color'] = 'grey'
+    const { classes, value, answering, dumb } = this.props
+    // const selected = selectedList ? (selectedList.map(s => s.value).includes(value)) : false
+    // const style = this.determineStyle(selected)
+    let style = {
+      backgroundStyle: { backgroundColor: '' }
     }
+    const textStyle = {}
+    // if (answering || (!selected && this.props.userAnswer)) {
+    //   textStyle['color'] = 'grey'
+    // }
     const answer_lines = '```\n' + value + ''
 
     return (
@@ -86,7 +89,7 @@ export class QuestionAnswer extends Component {
                   <ReactMarkdown source={answer_lines} />
                 </Grid>
               </Grid>
-              {answering && selected && <Loading className='answerLoading' bar />}
+              {answering && <Loading className='answerLoading' bar />}
             </CardContent>
           </CardActionArea>
         </Card>
@@ -102,4 +105,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(QuestionAnswer))
+export default connect(mapStateToProps)(withStyles(styles)(GeneralQuestionAnswer))
