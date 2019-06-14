@@ -18,6 +18,7 @@ import ArrowBackward from '@material-ui/icons/ArrowBack'
 import DumbQuestion from '../Question/DumbQuestion'
 import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
+import ConfirmPopup from './Popups/ConfirmPopup'
 import './admin.css'
 import {
   postCompileQuestion,
@@ -59,7 +60,8 @@ export class QuestionForm extends Component {
       newConcepts: [],
       modalOpen: false,
       selectedValue: '',
-      selectedValueForRadioButton: ''
+      selectedValueForRadioButton: '',
+      toggleConfirmPopup: false
     }
   }
 
@@ -221,7 +223,7 @@ export class QuestionForm extends Component {
       })
   }
 
-  addNewConcept = (e, conceptName) => {
+  addNewConcept = (conceptName) => {
     conceptName = conceptName.trim()
     const selectedCourse = this.determineSelectedCourse()
     if (conceptName.length < 2) {
@@ -230,7 +232,7 @@ export class QuestionForm extends Component {
     } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
       notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 3000)
       return
-    } else if (window.confirm(`Valitsemalla OK käsite "${conceptName}" lisätään heti tämän kurssin käsitteisiin.`)) {
+    } else {
       const newConcept = {
         name: conceptName,
         course: selectedCourse._id
@@ -238,6 +240,10 @@ export class QuestionForm extends Component {
       // immediately posts the new concept to concepts and courses
       this.postNewConcept(newConcept)
     }
+  }
+
+  toggleConfirmPopup = () => {
+    this.setState({ showConfirmPopup: !this.state.showConfirmPopup })
   }
 
   handleSave = () => {
@@ -600,10 +606,12 @@ export class QuestionForm extends Component {
                 />
 
                 <div className='addButtonContainer'>
-                  <Button onClick={e => this.addNewConcept(e, this.state.newConcept)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
+                  <Button onClick={this.toggleConfirmPopup} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
                     <AddIcon className='addIcon' />
                   </Button>
                 </div>
+
+                <ConfirmPopup title={`Oletko varma, että haluat lisätä uuden käsitteen "${this.state.newConcept}" ?`} description1={'Valitsemalla OK käsite lisätään heti kurssin käsitteisiin.'} okText={'OK'} toggle={this.toggleConfirmPopup} okClick={() => this.addNewConcept(this.state.newConcept)} checked={this.state.showConfirmPopup} timeout={200} />
               </React.Fragment>
             )}
           </form>
