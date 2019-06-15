@@ -57,7 +57,7 @@ export class QuestionForm extends Component {
       courses: [],
       questions: [],
       checkedConceptIds: [],
-      newConcepts: [],
+      concepts: [],
       modalOpen: false,
       selectedValue: '',
       selectedValueForRadioButton: '',
@@ -206,12 +206,6 @@ export class QuestionForm extends Component {
     return possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] }
   }
 
-  checkedConceptIdsToObjects = () => {
-    const selectedCourse = this.determineSelectedCourse()
-    const allConcepts = selectedCourse.concepts.concat(this.state.newConcepts)
-    return allConcepts.filter(c => this.state.checkedConceptIds.includes(c._id))
-  }
-
   postNewConcept = (concept) => {
     conceptService
       .postConcept(concept)
@@ -219,7 +213,7 @@ export class QuestionForm extends Component {
         this.setState({
           checkedConceptIds: this.state.checkedConceptIds.concat(res._id),
           newConcept: '',
-          newConcepts: this.state.newConcepts.concat(res)
+          concepts: this.state.concepts.concat(res)
         })
       })
   }
@@ -230,7 +224,7 @@ export class QuestionForm extends Component {
     if (conceptName.length < 2) {
       notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 3000)
       return
-    } else if (this.state.newConcepts.concat(selectedCourse.concepts).filter(c => c.name === conceptName).length > 0) {
+    } else if (this.state.concepts.filter(c => c.name === conceptName).length > 0) {
       notify.show('Kurssiin liittyy jo samanniminen käsite', 'error', 3000)
       return
     } else {
@@ -268,7 +262,7 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const concepts = this.checkedConceptIdsToObjects()
+      const concepts = this.state.concepts.filter(c => this.state.checkedConceptIds.includes(c._id))
       if (this.state.questionType === 'PrintQuestion') {
         this.props.postPrintQuestion(
           this.state.groupId,
@@ -306,7 +300,7 @@ export class QuestionForm extends Component {
         answerOptions: [],
         checkedConceptIds: [],
         newConcept: '',
-        newConcepts: [],
+        concepts: [],
         selectedValue: '',
         selectedValueForRadioButton: ''
       })
@@ -390,6 +384,10 @@ export class QuestionForm extends Component {
     if (this.state.step > 1) {
       question.item.options = this.state.answerOptions.map(item => item.value)
     }
+    const selectedCourse = this.determineSelectedCourse()
+    if (this.state.concepts.length < 1 && selectedCourse.concepts) this.setState({
+      concepts: selectedCourse.concepts
+    })
   }
 
   render() {
@@ -402,8 +400,6 @@ export class QuestionForm extends Component {
       questionTypeSelected = true
     }
     const selectedCourse = this.determineSelectedCourse()
-    const concepts = selectedCourse.concepts ? selectedCourse.concepts.concat(this.state.newConcepts) : null
-
     return (
       <div className="questionFormContainer">
         <Notifications ref={this.notificationRef} />
@@ -564,7 +560,7 @@ export class QuestionForm extends Component {
               <React.Fragment>
                 <h2>Valitse mihin käsitteisiin kysymys liittyy</h2>
                 <FormGroup>
-                  {concepts && concepts.map(concept => (
+                  {this.state.concepts.map(concept => (
                     <FormControlLabel
                       control={
                         <Checkbox
