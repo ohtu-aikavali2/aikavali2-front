@@ -271,7 +271,6 @@ export class QuestionForm extends Component {
           this.state.answerOptions,
           concepts
         )
-        //this.addConceptsToCourses()
       } else if (this.state.questionType === 'CompileQuestion') {
         this.props.postCompileQuestion(
           this.state.groupId,
@@ -279,7 +278,6 @@ export class QuestionForm extends Component {
           this.state.answerOptions,
           concepts
         )
-        //this.addConceptsToCourses()
       } else {
         let correctAnswersAsStrings = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
         this.props.postGeneralQuestion(
@@ -290,7 +288,6 @@ export class QuestionForm extends Component {
           concepts,
           this.state.selectedValueForRadioButton
         )
-        //this.addConceptsToCourses()
       }
       this.setState({
         course: '',
@@ -384,6 +381,7 @@ export class QuestionForm extends Component {
     if (this.state.step > 1) {
       question.item.options = this.state.answerOptions.map(item => item.value)
     }
+    // setting concepts to hold existing ones, once, after the course has been chosen
     const selectedCourse = this.determineSelectedCourse()
     if (this.state.concepts.length < 1 && selectedCourse.concepts) this.setState({
       concepts: selectedCourse.concepts
