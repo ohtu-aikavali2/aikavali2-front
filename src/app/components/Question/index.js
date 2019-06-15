@@ -204,6 +204,12 @@ export class Question extends Component {
       fontSize: 16
     }
     const { question, userAnswer, questionMessage, loading } = this.props
+    // TESTING, remove from production
+    if (question) {
+      question.kind = 'FillInTheBlankQuestion'
+      question.value = 'Jotain1 jotain2 TYHJÄ jotain3 jotain4 jotain5 TYHJÄ jotain6.'
+    }
+    // END OF TESTING
     return (
       <div className='questionContainer'>
         <Notifications ref={this.notificationRef} />
