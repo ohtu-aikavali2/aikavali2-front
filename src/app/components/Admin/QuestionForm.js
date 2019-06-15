@@ -307,7 +307,8 @@ export class QuestionForm extends Component {
   }
 
   stepForward = () => {
-    const hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
+    const answerOptionValues = this.state.answerOptions.map(option => option.value)
+    const hasDuplicates = new Set(answerOptionValues).size !== answerOptionValues.length
     const correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
     if (this.state.step === 0 && this.state.course === '') {
       notify.show('Valitse kurssi', 'error', 3000)
