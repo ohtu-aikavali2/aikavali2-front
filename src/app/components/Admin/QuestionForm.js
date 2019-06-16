@@ -248,7 +248,7 @@ export class QuestionForm extends Component {
 
   setInitialConcepts = () => {
     const selectedCourse = this.determineSelectedCourse()
-    if (this.state.concepts.length < 1 && selectedCourse.concepts) this.setState({
+    if (selectedCourse.concepts) this.setState({
       concepts: selectedCourse.concepts
     })
   }
@@ -393,7 +393,7 @@ export class QuestionForm extends Component {
       question.item.options = this.state.answerOptions.map(item => item.value)
     }
     // setting concepts to hold existing ones, once, after the course has been chosen
-    this.setInitialConcepts()
+    if (this.state.concepts.length < 1) this.setInitialConcepts()
   }
 
   render() {
