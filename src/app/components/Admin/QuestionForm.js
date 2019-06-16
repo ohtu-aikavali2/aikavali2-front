@@ -28,7 +28,7 @@ import {
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid } from '@material-ui/core'
+import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography } from '@material-ui/core'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -160,8 +160,9 @@ export class QuestionForm extends Component {
   }
 
   handleWordDelete = (chipToDelete, i) => () => {
-    let copy = [...this.state.answerOptions]
-    copy[i].correctValues.filter(item => item !== chipToDelete)
+    let copy = this.state.answerOptions
+    copy[i].correctValues = copy[i].correctValues.filter(item => item !== chipToDelete)
+    console.log(copy)
     this.setState({
       answerOptions: copy
     })
@@ -618,21 +619,22 @@ export class QuestionForm extends Component {
                     value={this.state.question}
                     onChange={this.handleChange('question')}
                     className="questionField"
-                    helperText="Kirjoita tähän kysymyksesi ja 'TYHJÄ' niiden sanojen kohdalle, jotka käyttäjän tulee vastauksessaan täyttää"
+                    helperText="Kirjoita tähän kysymyksesi ja TYHJÄ niiden sanojen kohdalle, jotka käyttäjän tulee vastauksessaan täyttää"
+                    placeholder="Esimerkiksi: Hauki on TYHJÄ"
                     margin="normal"
                   />
                 </div>
                 <div>
                   {this.state.answerOptions.map((option, i) => (
                     <div key={i}>
-                      <Grid container spacing={40} >
+                      <Grid container spacing={40} direction="row" alignItems="center" >
                         <Grid item>
                           <TextField
-                            label="Vastaus"
+                            label="Vastausvaihtoehto"
                             value={option.newValue}
                             onChange={this.handleArrayChange(option, i)}
                             className="answerField"
-                            // helperText='Kirjoita oikeat vastausvaihtoehdot sanalle'
+                            helperText='Kirjoita oikea vastausvaihtoehto sanalle ja tallenna sana painamalla +'
                             margin="normal"
                           />
                         </Grid>
@@ -642,24 +644,23 @@ export class QuestionForm extends Component {
                           </Button>
                         </Grid>
                       </Grid>
-                      <div>
+                      {this.state.answerOptions[i].correctValues.length === 0 ? '' : (
+                        <Typography variant="body1" gutterBottom>
+                          {i+1}:n tyhjän kentän oikeat vastaukset:
+                        </Typography>
+                      )}
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                         {option.correctValues.map((item, j) => (
-                          <div key={j}>
-                            <p>{item}</p>
-                          </div>
+                          <Chip key={j} label={item} onDelete={this.handleWordDelete(item, i)} style={{ marginRight: '5px', marginBottom: '10px' }} />
                         ))}
                       </div>
-                      {/* <div>
-                        {this.state.answerOptions.map(item => item.correctValues).map(item => (
-                          <div key={i}>{item}, {option}</div>
-                        ))}
-                      </div> */}
+
                     </div>
                   ))}
                 </div>
                 <div className="addButtonContain">
                   <Button onClick={this.updateAllAnswerOptions} fullWidth variant="contained" color="primary" aria-label="Add">
-                    + Lisää vastausvaihtoehto
+                    {this.state.answerOptions.length === 0 ? 'Luo vastausvaihtoehdoille kentät' : 'Päivitä vastausvaihtoehtojen kentät'}
                   </Button>
                 </div>
               </React.Fragment>
