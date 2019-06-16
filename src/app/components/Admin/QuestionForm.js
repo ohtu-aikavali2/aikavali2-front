@@ -241,6 +241,18 @@ export class QuestionForm extends Component {
     this.setState({ showConfirmPopup: !this.state.showConfirmPopup })
   }
 
+  answerOptionsContainDuplicates = () => {
+    const answerOptionValues = this.state.answerOptions.map(option => option.value)
+    return new Set(answerOptionValues).size !== answerOptionValues.length
+  }
+
+  setInitialConcepts = () => {
+    const selectedCourse = this.determineSelectedCourse()
+    if (this.state.concepts.length < 1 && selectedCourse.concepts) this.setState({
+      concepts: selectedCourse.concepts
+    })
+  }
+
   handleSave = () => {
     if (this.state.course === '') {
       console.log('Course is not set!')
@@ -307,8 +319,6 @@ export class QuestionForm extends Component {
   }
 
   stepForward = () => {
-    const answerOptionValues = this.state.answerOptions.map(option => option.value)
-    const hasDuplicates = new Set(answerOptionValues).size !== answerOptionValues.length
     const correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
     if (this.state.step === 0 && this.state.course === '') {
       notify.show('Valitse kurssi', 'error', 3000)
@@ -352,7 +362,7 @@ export class QuestionForm extends Component {
       return
     } else if (
       this.state.step === 2 &&
-      hasDuplicates
+      this.answerOptionsContainDuplicates()
     ) {
       notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 3000)
       return
@@ -383,10 +393,7 @@ export class QuestionForm extends Component {
       question.item.options = this.state.answerOptions.map(item => item.value)
     }
     // setting concepts to hold existing ones, once, after the course has been chosen
-    const selectedCourse = this.determineSelectedCourse()
-    if (this.state.concepts.length < 1 && selectedCourse.concepts) this.setState({
-      concepts: selectedCourse.concepts
-    })
+    this.setInitialConcepts()
   }
 
   render() {
