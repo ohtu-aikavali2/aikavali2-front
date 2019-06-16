@@ -119,15 +119,27 @@ export class QuestionForm extends Component {
     if (this.state.questionType === 'FillInTheBlank') {
       let count = (this.state.question.match(/TYHJÄ/g) || []).length
       let copyAnswerOptions = []
-      for (let i = 0; i < count; i++) {
-        copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
-        // if (i > this.state.answerOptions.length || this.state.answerOptions === undefined) {
-        //   console.log('täällä')
-        //   copyAnswerOptions.push({ location: i, correctValues: [] })
-        // } else {
-        //   console.log('nyt täällä')
-        //   copyAnswerOptions.push({ location: i, correctValues: this.state.answerOptions[i].correctValues })
-        // }
+
+      if (this.state.answerOptions.length === 0) {
+        console.log('tämä kun tyhjä')
+        for (let i = 0; i < count; i++) {
+          copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
+        }
+      } else if (this.state.answerOptions.length < count ) {
+        console.log('nyt tämä kun lisätään olemassa olevaan')
+        copyAnswerOptions = [...this.state.answerOptions]
+        console.log(copyAnswerOptions, 'length', copyAnswerOptions.length, 'count', count)
+        for (let i = copyAnswerOptions.length; i < count; i++) {
+          console.log('tänne pitäisi päästä', i)
+          copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
+        }
+      } else if (this.state.answerOptions.length > count) {
+        console.log('tämä kun vähennetään', count)
+        copyAnswerOptions = this.state.answerOptions.filter(item => item.location < count)
+        console.log(copyAnswerOptions)
+      } else {
+        console.log('ei mitään')
+        copyAnswerOptions = [...this.state.answerOptions]
       }
       this.setState({
         answerOptions: copyAnswerOptions
@@ -145,6 +157,14 @@ export class QuestionForm extends Component {
       answerOptions: copy
     })
     event.preventDefault()
+  }
+
+  handleWordDelete = (chipToDelete, i) => () => {
+    let copy = [...this.state.answerOptions]
+    copy[i].correctValues.filter(item => item !== chipToDelete)
+    this.setState({
+      answerOptions: copy
+    })
   }
 
   // handles changes of answerOptions in state
