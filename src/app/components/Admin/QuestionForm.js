@@ -373,9 +373,15 @@ export class QuestionForm extends Component {
   stepForward = () => {
     let hasDuplicates = false
     let correctAnswers = false
+    let containsAtLeastOneEmpty = false
     if (this.state.questionType === 'GeneralQuestion') {
       hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
       correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
+    } else if (this.state.questionType === 'FillInTheBlank') {
+      console.log('täällä', containsAtLeastOneEmpty)
+      containsAtLeastOneEmpty = this.state.question.includes('TYHJÄ')
+      console.log(containsAtLeastOneEmpty)
+      console.log(this.state.answerOptions)
     }
 
     if (this.state.step === 0 && this.state.course === '') {
@@ -435,6 +441,12 @@ export class QuestionForm extends Component {
       correctAnswers.length > 1
     ) {
       notify.show('Poista ylimääräiset oikeat vastaukset tai muuta valintaa oikeiden vastausten määrästä', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 && this.state.questionType === 'FillInTheBlank' &&
+      !containsAtLeastOneEmpty
+    ) {
+      notify.show('Kysymyksellä ei ole yhtään vastauskenttää määritelty', 'error', 3000)
       return
     } else if (
       this.state.step === 3 &&
