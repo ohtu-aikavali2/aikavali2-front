@@ -132,6 +132,7 @@ export class Question extends Component {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
+    console.log(this.state.selectedList)
     const time = Date.now() - this.state.startTime
     // TODO: if only one answer
     await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList, time)
@@ -199,16 +200,18 @@ export class Question extends Component {
     )
   }
 
+  test = () => {
+    console.log('testi skulaa')
+  }
+
   render() {
     const text = {
       fontSize: 16
     }
     const { question, userAnswer, questionMessage, loading } = this.props
-    // TESTING, remove from production
-    if (question) {
-      question.kind = 'FillInTheBlankQuestion'
-      question.value = 'Jotain1 jotain2 TYHJÄ jotain3 jotain4 jotain5 TYHJÄ jotain6.'
-    }
+    // TESTING fill in the blank
+    // question.kind = ''
+    console.log(question)
     // END OF TESTING
     return (
       <div className='questionContainer'>
@@ -237,6 +240,7 @@ export class Question extends Component {
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
+            test={this.test}
           />
         )}
         {!userAnswer && !loading && (

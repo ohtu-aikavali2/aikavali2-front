@@ -28,7 +28,7 @@ export const getRandomQuestion = (course = null) => {
         ...random,
         item: {
           ...random.item,
-          options: shuffle(random.item.options)
+          options: (random.item.options ? shuffle(random.item.options) : null)
         }
       }
       dispatch({
