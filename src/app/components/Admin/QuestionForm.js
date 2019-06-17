@@ -373,15 +373,15 @@ export class QuestionForm extends Component {
   stepForward = () => {
     let hasDuplicates = false
     let correctAnswers = false
-    let containsAtLeastOneEmpty = false
+    let containsAtLeastOneBlank = false
+    let containsEmptyWord = false
     if (this.state.questionType === 'GeneralQuestion') {
       hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
       correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
     } else if (this.state.questionType === 'FillInTheBlank') {
-      console.log('täällä', containsAtLeastOneEmpty)
-      containsAtLeastOneEmpty = this.state.question.includes('TYHJÄ')
-      console.log(containsAtLeastOneEmpty)
-      console.log(this.state.answerOptions)
+      containsAtLeastOneBlank = this.state.question.includes('TYHJÄ')
+      let helper = this.state.answerOptions.map(option => option.correctValues.some(item => item === '') || option.correctValues.length === 0)
+      containsEmptyWord = helper.includes(true)
     }
 
     if (this.state.step === 0 && this.state.course === '') {
@@ -444,9 +444,21 @@ export class QuestionForm extends Component {
       return
     } else if (
       this.state.step === 2 && this.state.questionType === 'FillInTheBlank' &&
-      !containsAtLeastOneEmpty
+      !containsAtLeastOneBlank
     ) {
       notify.show('Kysymyksellä ei ole yhtään vastauskenttää määritelty', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 && this.state.questionType === 'FillInTheBlank' &&
+      this.state.answerOptions.length === 0
+    ) {
+      notify.show('Ei tallennettuja vastausvaihtoehtoja', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 && this.state.questionType === 'FillInTheBlank' &&
+      containsEmptyWord
+    ) {
+      notify.show('Jokin vastausvaihtoehtokenttä sisältää tyhjän vastauksen', 'error', 3000)
       return
     } else if (
       this.state.step === 3 &&
