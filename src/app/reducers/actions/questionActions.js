@@ -77,6 +77,12 @@ export const postPrintQuestion = (groupId, value, correctAnswer, options, concep
   }
 }
 
+export const postFillInTheBlankQuestion = (groupId, value, correctAnswers, concepts) => {
+  return async () => {
+    await questionService.postQuestion({ type: 'fillInTheBlank', value, correctAnswers, groupId, concepts })
+  }
+}
+
 export const postGeneralQuestion = (groupId, value, correctAnswers, options, concepts, selectCount) => {
   return async () => {
     await questionService.postQuestion({ type: 'general', value, correctAnswers, options, groupId, concepts, selectCount })

@@ -20,8 +20,7 @@ import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
 import './admin.css'
 import {
-  postCompileQuestion,
-  postPrintQuestion,
+  postFillInTheBlankQuestion,
   postGeneralQuestion,
   fetchQuestions
 } from '../../reducers/actions/questionActions'
@@ -335,13 +334,13 @@ export class QuestionForm extends Component {
       const concepts = this.mapConceptIDsToObjects().concat(
         this.state.newConcepts.filter(c => this.state.concepts.includes(c._id)))
       if (this.state.questionType === 'FillInTheBlank') {
-        // not functional yet
-        // this.props.postFillInTheBlankQuestion(
-        //   this.state.groupId,
-        //   this.state.question,
-        //   this.state.answerOptions,
-        //   concepts
-        // )
+        console.log(this.state.answerOptions.map(item => item.correctValues))
+        this.props.postFillInTheBlankQuestion(
+          this.state.groupId,
+          this.state.question,
+          this.state.answerOptions.map(item => item.correctValues),
+          concepts
+        )
       } else {
         let correctAnswersAsStrings = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
         this.props.postGeneralQuestion(
@@ -372,8 +371,13 @@ export class QuestionForm extends Component {
   }
 
   stepForward = () => {
-    const hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
-    const correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
+    let hasDuplicates = false
+    let correctAnswers = false
+    if (this.state.questionType === 'GeneralQuestion') {
+      hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
+      correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
+    }
+
     if (this.state.step === 0 && this.state.course === '') {
       notify.show('Valitse kurssi', 'error', 3000)
       return
@@ -385,49 +389,48 @@ export class QuestionForm extends Component {
       return
     } else if (
       this.state.step === 2 &&
-      this.state.questionType === 'GeneralQuestion' &&
       this.state.question.length < 3
     ) {
       notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
       this.state.answerOptions.map(item => item.value).includes('')
     ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
       this.state.answerOptions.length < 2
     ) {
       notify.show('Kysymyksellä tulee olla ainakin kaksi vaihtoehtoa', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
       correctAnswers.length < 1
     ) {
       notify.show('Valitse ainakin yksi oikea vastaus', 'error', 2000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
       (this.state.answerOptions.length - correctAnswers.length) < 1
     ) {
       notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
       hasDuplicates
     ) {
       notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
       this.state.selectedValueForRadioButton === ''
     ) {
       notify.show('Valitse tuleeko vastaajan valita yksi vai useampi vaihtoehto', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
       this.state.selectedValueForRadioButton === 'selectOne' &&
       correctAnswers.length > 1
     ) {
@@ -800,8 +803,7 @@ export class QuestionForm extends Component {
 }
 
 const mapDispatchToProps = {
-  postCompileQuestion,
-  postPrintQuestion,
+  postFillInTheBlankQuestion,
   postGeneralQuestion,
   fetchCourses,
   fetchQuestions
