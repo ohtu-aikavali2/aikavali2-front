@@ -102,19 +102,6 @@ export class Question extends Component {
     }
   }
 
-  // initializeFillAnswerList = () => {
-  //   // console.log('this.props.question.item.value', this.props.question.item.value)
-  //   let count = (this.props.question.item.value.match(/TYHJÄ/g) || []).length
-  //   // console.log('count', count)
-  //   console.log('this.state.selectedList.length', this.state.selectedList.length)
-  //   if (this.state.selectedList.length < count) {
-  //     for (let i = 0; i < count; i++) {
-  //       this.handleSelectedList(i, null)
-  //     }
-  //     console.log('selectedList after init: ', this.state.selectedList)
-  //   }
-  // }
-
   handleQuestionReview = async (question, review) => {
     this.setState({ reviewed: true, showReview: false })
     // NOTE: this uses the question._id INSTEAD of question.item._id
@@ -124,7 +111,6 @@ export class Question extends Component {
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleSelect = async (id, value) => {
     if (this.props.userAnswer) return
-    //console.log(this.props.question.item.selectCount)
     if (this.state.selectedList.length < 1 || !this.state.selectedList.map(s => s.value).includes(value)) {
       if (this.props.question.item.selectCount === 'selectOne') {
         this.setState({ selectedList: [{ id, value }] })
@@ -145,12 +131,8 @@ export class Question extends Component {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
-    // console.log('selectedList at answer: ', this.state.selectedList)
     const time = Date.now() - this.state.startTime
-    // TODO: if only one answer
     await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList, time)
-    // else if multiple choices
-    // send list
   }
 
   test = () => {
@@ -238,11 +220,6 @@ export class Question extends Component {
       fontSize: 16
     }
     const { question, userAnswer, questionMessage, loading } = this.props
-    // TESTING fill in the blank
-    // question.kind = ''
-    //console.log(question)
-    // END OF TESTING
-    // if (question && question.kind === 'FillInTheBlankQuestion') this.initializeFillAnswerList()
     return (
       <div className='questionContainer'>
         <Notifications ref={this.notificationRef} />
@@ -270,7 +247,6 @@ export class Question extends Component {
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
-            test={this.test}
             getSelectedList={this.getSelectedList}
             handleSelectedList={this.handleSelectedList}
           />

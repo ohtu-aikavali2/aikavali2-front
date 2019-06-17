@@ -3,7 +3,7 @@ import FillInQuestionAnswer from './FillQuestionAnswer'
 import FeedbackBar from '../common/FeedbackBar'
 import Collapse from '@material-ui/core/Collapse'
 
-export const FillInQuestion = ({ question, topLeftContent, topRightContent, answered, test, handleSelectedList }) => {
+export const FillInQuestion = ({ question, topLeftContent, topRightContent, answered, handleSelectedList }) => {
 
   return (
     <div className='fillInQuestion'>
@@ -15,7 +15,7 @@ export const FillInQuestion = ({ question, topLeftContent, topRightContent, answ
           <p>Täydennä teksti</p>
         </div>
       </div>
-      <FillInQuestionAnswer question={question} test={test} handleSelectedList={handleSelectedList} />
+      <FillInQuestionAnswer question={question} handleSelectedList={handleSelectedList} />
     </div>
   )
 }

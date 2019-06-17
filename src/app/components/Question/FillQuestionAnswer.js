@@ -22,11 +22,6 @@ const styles = theme => ({
 })
 
 export class FillQuestionAnswer extends Component {
-  handleClick = () => {
-    const { id, value, userAnswer } = this.props
-    if (!userAnswer) this.props.handleSelect(id, value)
-  }
-
   render() {
     const { classes, answering, dumb, handleSelectedList } = this.props
     const words = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ')
