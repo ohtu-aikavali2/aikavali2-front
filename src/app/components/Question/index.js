@@ -102,6 +102,19 @@ export class Question extends Component {
     }
   }
 
+  // initializeFillAnswerList = () => {
+  //   // console.log('this.props.question.item.value', this.props.question.item.value)
+  //   let count = (this.props.question.item.value.match(/TYHJÄ/g) || []).length
+  //   // console.log('count', count)
+  //   console.log('this.state.selectedList.length', this.state.selectedList.length)
+  //   if (this.state.selectedList.length < count) {
+  //     for (let i = 0; i < count; i++) {
+  //       this.handleSelectedList(i, null)
+  //     }
+  //     console.log('selectedList after init: ', this.state.selectedList)
+  //   }
+  // }
+
   handleQuestionReview = async (question, review) => {
     this.setState({ reviewed: true, showReview: false })
     // NOTE: this uses the question._id INSTEAD of question.item._id
@@ -132,12 +145,32 @@ export class Question extends Component {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
-    console.log(this.state.selectedList)
+    // console.log('selectedList at answer: ', this.state.selectedList)
     const time = Date.now() - this.state.startTime
     // TODO: if only one answer
     await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList, time)
     // else if multiple choices
     // send list
+  }
+
+  test = () => {
+    console.log('testi skulaa')
+  }
+
+  handleSelectedList = (i, value) => {
+    let newList = [
+      ...this.state.selectedList.slice(0, i),
+      value,
+      ...this.state.selectedList.slice(i + 1)
+    ]
+    this.setState({
+      selectedList: newList
+    })
+    console.log(this.state.selectedList[0])
+  }
+
+  getSelectedList = () => {
+    return this.state.selectedList
   }
 
   // Tätä kutsutaan painetaan skip ekan kerran
@@ -200,10 +233,6 @@ export class Question extends Component {
     )
   }
 
-  test = () => {
-    console.log('testi skulaa')
-  }
-
   render() {
     const text = {
       fontSize: 16
@@ -211,8 +240,9 @@ export class Question extends Component {
     const { question, userAnswer, questionMessage, loading } = this.props
     // TESTING fill in the blank
     // question.kind = ''
-    console.log(question)
+    //console.log(question)
     // END OF TESTING
+    // if (question && question.kind === 'FillInTheBlankQuestion') this.initializeFillAnswerList()
     return (
       <div className='questionContainer'>
         <Notifications ref={this.notificationRef} />
@@ -241,6 +271,8 @@ export class Question extends Component {
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
             test={this.test}
+            getSelectedList={this.getSelectedList}
+            handleSelectedList={this.handleSelectedList}
           />
         )}
         {!userAnswer && !loading && (
