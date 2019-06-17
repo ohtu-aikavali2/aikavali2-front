@@ -21,7 +21,7 @@ const styles = theme => ({
   }
 })
 
-export class GeneralQuestionAnswer extends Component {
+export class FillQuestionAnswer extends Component {
   handleClick = () => {
     const { id, value, userAnswer } = this.props
     if (!userAnswer) this.props.handleSelect(id, value)
@@ -62,23 +62,24 @@ export class GeneralQuestionAnswer extends Component {
   render() {
     const { classes, answering, dumb } = this.props
     // const selected = selectedList ? (selectedList.map(s => s.value).includes(value)) : false
-    const textStyle = {}
-    // if (answering || (!selected && this.props.userAnswer)) {
-    //   textStyle['color'] = 'grey'
-    // }
     const spaced = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ')
     const words = spaced.split(' ')
 
     return (
-      <div className={classes.wrapper} id='container' >
-        <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
-          <Grid style={textStyle} item className='itemGrid'>
-            {/* <ReactMarkdown source={answer_lines} /> */}
-            {words.map(word => word === 'TYHJÄ' ?
-              <TextField key={word} label={'Täytä puuttuva sana'} disabled={dumb} /> :
-              ` ${word} `
-            )}
-          </Grid>
+      <div className={classes.wrapper} id='container' style={{ cursor: 'default' }} >
+        <Grid container spacing={8} direction="row" alignItems="center">
+          {words.map(word => word === 'TYHJÄ' ? (
+            <Grid item>
+              <TextField
+                key={Math.floor((Math.random() * 100) + 1)}
+                label={'Täytä puuttuva sana'}
+                disabled={dumb}
+                style={{ width: 175, paddingBottom: 20 }}
+                onChange={() => this.props.handleSelectedList(['jejejeje'])}
+              />
+            </Grid>
+          ) : <Grid item> {word} </Grid>
+          )}
         </Grid>
         {answering && <Loading className='answerLoading' bar />}
       </div >
@@ -93,4 +94,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(GeneralQuestionAnswer))
+export default connect(mapStateToProps)(withStyles(styles)(FillQuestionAnswer))

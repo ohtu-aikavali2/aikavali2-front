@@ -12,12 +12,10 @@ export const FillInQuestion = ({ question, topLeftContent, topRightContent, answ
       </Collapse>
       <div className='titleContainer'>
         <div className='rowContainer'>
-          {/* <h4>{question.value}</h4> */}
           <p>Täydennä teksti</p>
         </div>
       </div>
       <FillInQuestionAnswer question={question} />
-      {/* {question.options.map((option, i) => <FillInQuestionAnswer key={i} value={option} id={question._id} />)} */}
     </div>
   )
 }

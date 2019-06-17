@@ -132,6 +132,7 @@ export class Question extends Component {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
+    console.log(this.state.selectedList)
     const time = Date.now() - this.state.startTime
     // TODO: if only one answer
     await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList, time)
