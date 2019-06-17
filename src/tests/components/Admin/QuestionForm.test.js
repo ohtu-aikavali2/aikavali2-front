@@ -72,8 +72,8 @@ describe('<QuestionForm />', () => {
   })
   it('user can select \'Yleinen kysymys\' and state will be updated', () => {
     wrapper.setState({ step: 1 })
-    const field = wrapper.find('.clickbox-link')
-    expect(field.length).toBe(1)
+    expect(wrapper.find('.clickbox-link').length).toBe(2)
+    const field = wrapper.find('.clickbox-link').first()
     field.simulate('click')
     expect(wrapper.state().questionType).toEqual(questionTypes[0].value)
   })
@@ -94,12 +94,13 @@ describe('<QuestionForm />', () => {
     expect(radioSecond).toEqual('Voi valita monta vastausta')
   })
   it('answer fields are not rendered until clicked \'+Lisää vastausvaihto\' and click calls addAnswerOption method', () => {
+    wrapper.setState({ questionType: 'GeneralQuestion' })
     expect(wrapper.find('.answerField').length).toBe(0)
     const spy = jest.spyOn(wrapper.instance(), 'addAnswerOption')
     wrapper.instance().forceUpdate()
     let addNewButton = wrapper.find('.addButtonContainer').find(Button)
     addNewButton.simulate('click')
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalled()
     expect(wrapper.find('.answerField').length).toBe(1)
   })
   it('adding new answer option updates the state', () => {
