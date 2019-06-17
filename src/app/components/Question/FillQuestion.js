@@ -16,7 +16,8 @@ export const FillInQuestion = ({ question, topLeftContent, topRightContent, answ
           <p>Täydennä teksti</p>
         </div>
       </div>
-      {question.options.map((option, i) => <FillInQuestionAnswer key={i} value={option} id={question._id} />)}
+      <FillInQuestionAnswer question={question} />
+      {/* {question.options.map((option, i) => <FillInQuestionAnswer key={i} value={option} id={question._id} />)} */}
     </div>
   )
 }

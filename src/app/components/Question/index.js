@@ -204,6 +204,10 @@ export class Question extends Component {
       fontSize: 16
     }
     const { question, userAnswer, questionMessage, loading } = this.props
+    // TESTING fill in the blank
+    // question.kind = ''
+    console.log(question)
+    // END OF TESTING
     return (
       <div className='questionContainer'>
         <Notifications ref={this.notificationRef} />

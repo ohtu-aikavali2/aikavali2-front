@@ -2,12 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
-import ReactMarkdown from 'react-markdown'
 import Loading from '../common/Loading'
-
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardContent from '@material-ui/core/CardContent'
+import { TextField } from '@material-ui/core'
 
 const styles = theme => ({
   wrapper: {
@@ -64,35 +60,27 @@ export class GeneralQuestionAnswer extends Component {
   }
 
   render() {
-    const { classes, value, answering, dumb } = this.props
+    const { classes, answering, dumb } = this.props
     // const selected = selectedList ? (selectedList.map(s => s.value).includes(value)) : false
-    // const style = this.determineStyle(selected)
-    let style = {
-      backgroundStyle: { backgroundColor: '' }
-    }
     const textStyle = {}
     // if (answering || (!selected && this.props.userAnswer)) {
     //   textStyle['color'] = 'grey'
     // }
-    const answer_lines = '```\n' + value + ''
+    const spaced = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ')
+    const words = spaced.split(' ')
 
     return (
-      <div className={classes.wrapper} style={{ cursor: dumb ? 'default' : 'pointer' }} id='container' onClick={dumb ? null : this.handleClick}>
-        <Card className={classes.paper} id='paper' style={style.backgroundStyle}>
-          <CardActionArea style={{ width: '100%' }}>
-            <CardContent>
-              <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
-                <Grid style={textStyle} item className='itemGrid'>
-                  <svg style={{ width: '24px', height: '24px', viewBox: '0 0 24 24', float: 'left', padding: '10px' }}>
-                    <path fill="#000000" d={style.answerIcon} />
-                  </svg>
-                  <ReactMarkdown source={answer_lines} />
-                </Grid>
-              </Grid>
-              {answering && <Loading className='answerLoading' bar />}
-            </CardContent>
-          </CardActionArea>
-        </Card>
+      <div className={classes.wrapper} id='container' >
+        <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
+          <Grid style={textStyle} item className='itemGrid'>
+            {/* <ReactMarkdown source={answer_lines} /> */}
+            {words.map(word => word === 'TYHJÄ' ?
+              <TextField key={word} label={'Täytä puuttuva sana'} disabled={dumb} /> :
+              ` ${word} `
+            )}
+          </Grid>
+        </Grid>
+        {answering && <Loading className='answerLoading' bar />}
       </div >
     )
   }

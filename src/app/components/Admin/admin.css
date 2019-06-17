@@ -117,7 +117,7 @@
 
 .course-title-container {
   display: flex;
-  align-items: center;
+  align-items: bottom;
 }
 
 .course-info {
