@@ -105,18 +105,6 @@ describe('<Question />', () => {
     expect(question.find(CompileQuestion).length).toBe(0)
     expect(question.find(PrintQuestion).length).toBe(1)
   })
-  it('renders only CompileQuestion when question.kind is CompileQuestion', () => {
-    question.setProps({
-      ...props,
-      question: questions[1],
-      game: {
-        started: true,
-        ended: false
-      }
-    })
-    expect(question.find(CompileQuestion).length).toBe(1)
-    expect(question.find(PrintQuestion).length).toBe(0)
-  })
   it('renders ButtonBar with correct props', () => {
     expect(question.find(ButtonBar).length).toBe(1)
     const buttonBarProps = question.find(ButtonBar).props()
