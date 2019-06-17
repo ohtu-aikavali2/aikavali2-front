@@ -62,27 +62,26 @@ export class FillQuestionAnswer extends Component {
   render() {
     const { classes, answering, dumb } = this.props
     // const selected = selectedList ? (selectedList.map(s => s.value).includes(value)) : false
-    const spaced = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ')
-    const words = spaced.split(' ')
+    const words = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ')
 
     return (
       <div className={classes.wrapper} id='container' style={{ cursor: 'default' }} >
         <Grid container spacing={8} direction="row" alignItems="center">
-          {words.map(word => word === 'TYHJÄ' ? (
-            <Grid item>
-              <TextField
-                key={Math.floor((Math.random() * 100) + 1)}
-                label={'Täytä puuttuva sana'}
-                disabled={dumb}
-                style={{ width: 175, paddingBottom: 20 }}
-                onChange={() => this.props.handleSelectedList(['jejejeje'])}
-              />
-            </Grid>
-          ) : <Grid item> {word} </Grid>
+          {words.map(word =>
+            word === 'TYHJÄ' ? (
+              <Grid item>
+                <TextField
+                  label={'Täytä puuttuva sana'}
+                  disabled={dumb}
+                  style={{ width: 175, paddingBottom: 20 }}
+                  onChange={() => this.props.test()}
+                />
+              </Grid>
+            ) : <Grid item> {word} </Grid>
           )}
         </Grid>
         {answering && <Loading className='answerLoading' bar />}
-      </div >
+      </div>
     )
   }
 }

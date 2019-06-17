@@ -200,6 +200,10 @@ export class Question extends Component {
     )
   }
 
+  test = () => {
+    console.log('testi skulaa')
+  }
+
   render() {
     const text = {
       fontSize: 16
@@ -236,6 +240,7 @@ export class Question extends Component {
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
+            test={this.test}
           />
         )}
         {!userAnswer && !loading && (
