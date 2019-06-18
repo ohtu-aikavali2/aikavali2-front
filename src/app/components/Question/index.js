@@ -212,6 +212,17 @@ export class Question extends Component {
     )
   }
 
+  renderCorrectFillQuestionAnswers = (correctAnswer) => {
+    return (
+      <React.Fragment>
+        <h4>Oikeat vastaukset</h4>
+        {correctAnswer.map((a, i) =>
+          <Grid container spacing={24} direction="row" alignItems="center" style={{ paddingBottom: 10 }} key={i}>{i + 1} . {a.map((a, j) => <Grid item key={j}>{a}</Grid>)}</Grid>
+        )}
+      </React.Fragment>
+    )
+  }
+
   render() {
     const text = {
       fontSize: 16
@@ -253,17 +264,7 @@ export class Question extends Component {
         )}
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
-        {question && question.kind === 'FillInTheBlankQuestion' && userAnswer && (
-          <React.Fragment>
-            <h4>Oikeat vastaukset</h4>
-            {userAnswer.correctAnswer.map((a, i) =>
-              <Grid container spacing={24} direction="row" alignItems="center" style={{ paddingBottom: 10 }} key={i}>{i + 1} . {a.map((a, j) => <Grid item key={j}>{a}</Grid>)}</Grid>
-            )}
-            {/* {userAnswer.correctAnswer.map((a, i) =>
-              <Typography key={i} style={text} component="p">{i + 1} . {a.map(a => a.concat(' / '))}</Typography>
-            )} */}
-          </React.Fragment>
-        )}
+        {question && question.kind === 'FillInTheBlankQuestion' && userAnswer && this.renderCorrectFillQuestionAnswers(userAnswer.correctAnswer)}
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div >
     )
