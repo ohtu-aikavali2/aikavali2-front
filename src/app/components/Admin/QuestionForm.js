@@ -593,7 +593,7 @@ export class QuestionForm extends Component {
                     <Card>
                       <CardContent style={{ marginBottom: '-25px' }}>
                         <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)} style={{ marginLeft: '300px' }} >
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)}>
                             <CloseIcon />
                           </IconButton>
                         </CardActions>
