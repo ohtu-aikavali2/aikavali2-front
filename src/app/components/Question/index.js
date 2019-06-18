@@ -20,7 +20,7 @@ import FlagIcon from '@material-ui/icons/Flag'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import Zoom from '@material-ui/core/Zoom'
 import FillQuestion from './FillQuestion'
-
+import Grid from '@material-ui/core/Grid'
 export class Question extends Component {
   constructor() {
     super()
@@ -257,11 +257,13 @@ export class Question extends Component {
           <React.Fragment>
             <h4>Oikeat vastaukset</h4>
             {userAnswer.correctAnswer.map((a, i) =>
-              <Typography key={i} style={text} component="p">{i + 1} . {a}</Typography>
+              <Grid container spacing={24} direction="row" alignItems="center" style={{ paddingBottom: 10 }} key={i}>{i + 1} . {a.map((a, j) => <Grid item key={j}>{a}</Grid>)}</Grid>
             )}
+            {/* {userAnswer.correctAnswer.map((a, i) =>
+              <Typography key={i} style={text} component="p">{i + 1} . {a.map(a => a.concat(' / '))}</Typography>
+            )} */}
           </React.Fragment>
         )}
-
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div >
     )

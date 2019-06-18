@@ -30,8 +30,7 @@ export class FillQuestionAnswer extends Component {
 
   render() {
     const { classes, answering, dumb, userAnswer } = this.props
-    const words = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ')
-
+    let words = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ').filter(c => !!c)
     return (
       <div className={classes.wrapper} id='container' style={{ cursor: 'default' }} >
         <Grid container spacing={8} direction="row" alignItems="center">
