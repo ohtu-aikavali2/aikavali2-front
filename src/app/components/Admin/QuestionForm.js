@@ -110,13 +110,22 @@ export class QuestionForm extends Component {
     })
   }
 
-  addAnswerOption = () => () => {
-    if (this.state.questionType === 'GeneralQuestion') {
-      if (this.state.answerOptions.length < 6) {
-        this.setState({
-          answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
-        })
-      }
+  addAnswerOption = (dragAndDropChecked) => () => {
+    if (this.state.answerOptions.length < 6 && this.state.questionType === 'GeneralQuestion') {
+      this.setState({
+        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
+      })
+    }
+    if (this.state.questionType === 'DragAndDrop' && !dragAndDropChecked) {
+      console.log('tänne')
+      this.setState({
+        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
+      })
+    } else if(this.state.questionType === 'DragAndDrop' && dragAndDropChecked) {
+      console.log('oikea vastaus')
+      this.setState({
+        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: true }]
+      })
     }
   }
 
@@ -175,10 +184,11 @@ export class QuestionForm extends Component {
 
   // handles changes of answerOptions in state
   handleArrayChange = (option, i) => event => {
-    if (this.state.questionType === 'GeneralQuestion') {
+    if (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'DragAndDrop') {
       let newArray = this.state.answerOptions.slice(0, i)
       newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
       newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+      console.log(newArray)
       this.setState({
         answerOptions: newArray
       })
@@ -192,6 +202,15 @@ export class QuestionForm extends Component {
         answerOptions: copy
       })
     }
+    // else if (this.state.questionType === 'DragAndDrop') {
+    //   let newArray = this.state.answerOptions.slice(0, i)
+    //   newArray.push({ cardId: i, value: event.target.value })
+    //   newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+    //   console.log(newArray)
+    //   this.setState({
+    //     answerOptions: newArray
+    //   })
+    // }
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
@@ -411,7 +430,7 @@ export class QuestionForm extends Component {
       notify.show('Valitse kysymystyyppi', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
+      this.state.step === 2 && (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'FillInTheBlank') &&
       this.state.question.length < 3
     ) {
       notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 3000)
@@ -484,6 +503,10 @@ export class QuestionForm extends Component {
       notify.show('Valitse ainakin yksi käsite', 'error', 3000)
       return
     }
+    if (this.state.questionType === 'DragAndDrop' && this.state.answerOptions.length === 0) {
+      this.setState({ answerOptions: [{ cardId: 0, value: '', checked: true }] })
+    }
+
     this.setState({ step: this.state.step + 1 })
     question.kind = this.state.questionType
     question.item.value = this.state.question
@@ -645,7 +668,7 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <div className="addButtonContainer">
-                  <Button onClick={this.addAnswerOption()} fullWidth variant="contained" color="primary" aria-label="Add">
+                  <Button onClick={this.addAnswerOption(false)} fullWidth variant="contained" color="primary" aria-label="Add">
                     + Lisää vastausvaihtoehto
                   </Button>
                 </div>
@@ -672,7 +695,7 @@ export class QuestionForm extends Component {
                 <div>
                   {this.state.answerOptions.map((option, i) => (
                     <div key={i}>
-                      <Grid container spacing={40} direction="row" alignItems="center" >
+                      <Grid container spacing={40} direction="row" alignItems="center">
                         <Grid item>
                           <TextField
                             label="Vastausvaihtoehto"
@@ -713,17 +736,70 @@ export class QuestionForm extends Component {
 
             {step === 2 && (questionType === 'DragAndDrop') && (
               <React.Fragment>
-                <div>
-                  <Typography variant="title" gutterBottom>
-                    Luo haluamasi järjestys
-                  </Typography>
-                </div>
-                <Divider variant="middle" />
-                <div>
-                  <Typography variant="title" gutterBottom>
-                    Voit luoda myös vastaukseen kuulumattomia paloja
-                  </Typography>
-                </div>
+                <Typography variant="title" gutterBottom>
+                  Luo haluamasi oikea järjestys
+                </Typography>
+                {this.state.answerOptions.filter(item => item.checked === true).map((option, i) => (
+                  // <div>
+                  //   {option.checked === true ? ('') : ('')}
+                  // </div>
+
+                  <div className='cardContainer' key={i}>
+                    <Card>
+                      <CardContent style={{ marginBottom: '-25px' }}>
+                        <CardActions className='cardActionArea'>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)}>
+                            <CloseIcon />
+                          </IconButton>
+                        </CardActions>
+                        <TextField
+                          label="Teksti riville"
+                          fullWidth
+                          value={option.value}
+                          onChange={this.handleArrayChange(option, i)}
+                          className="answerField"
+                          helperText="Kirjoita teksti kortille, voit lisätä kortteja painamalla '+ Lisää kenttä'"
+                          margin="normal"
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+
+                <Button onClick={this.addAnswerOption(true)} fullWidth variant="contained" color="primary" aria-label="Add">
+                    + Lisää kenttä
+                </Button>
+                <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
+                <Typography variant='title' gutterBottom>
+                  Voit luoda myös vastaukseen kuulumattomia paloja
+                </Typography>
+
+                {this.state.answerOptions.filter(item => item.checked === false).map((option, i) => (
+                  <div className='cardContainer' key={i}>
+                    <Card>
+                      <CardContent style={{ marginBottom: '-25px' }}>
+                        <CardActions className='cardActionArea'>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)}>
+                            <CloseIcon />
+                          </IconButton>
+                        </CardActions>
+                        <TextField
+                          label="Teksti riville"
+                          fullWidth
+                          value={option.value}
+                          onChange={this.handleArrayChange(option, i)}
+                          className="answerField"
+                          helperText="Kirjoita teksti kortille, voit lisätä kortteja painamalla '+ Lisää kenttä'"
+                          margin="normal"
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+                <Button onClick={this.addAnswerOption(false)} fullWidth variant="contained" color="primary" aria-label="Add">
+                    + Lisää kenttä
+                </Button>
+
               </React.Fragment>
             )}
 
