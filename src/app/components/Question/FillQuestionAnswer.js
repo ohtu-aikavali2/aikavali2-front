@@ -24,7 +24,6 @@ const styles = theme => ({
 export class FillQuestionAnswer extends Component {
 
   handleTextField = (i) => event => {
-    console.log(event.target.value)
     let t = event.target.value
     this.props.handleSelectedList(i, t)
   }
@@ -41,7 +40,7 @@ export class FillQuestionAnswer extends Component {
               <Grid item key={i}>
                 <TextField
                   disabled={dumb}
-                  style={{ width: 110, paddingBottom: 20 }}
+                  style={{ width: 110, paddingBottom: 2 }}
                   onChange={this.handleTextField(i)}
                 />
               </Grid>

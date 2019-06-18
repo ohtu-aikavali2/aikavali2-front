@@ -127,15 +127,13 @@ export class Question extends Component {
   }
 
   handleAnswer = async () => {
-    const question = this.props.question
-    let answers = [...this.state.selectedList]
     if (this.state.selectedList.length < 1) {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
-    if (question.kind === 'FillInTheBlankQuestion') {
+    let answers = [...this.state.selectedList]
+    if (this.props.question.kind === 'FillInTheBlankQuestion') {
       answers = this.state.selectedList.filter(item => item !== undefined)
-      console.log(answers)
       this.setState({ selectedList: answers })
     }
     const time = Date.now() - this.state.startTime
@@ -144,11 +142,10 @@ export class Question extends Component {
 
   handleSelectedList = (i, value) => {
     let copy = [...this.state.selectedList]
-    copy[i-1] = value
+    copy[i - 1] = value
     this.setState({
       selectedList: copy
     })
-    console.log(this.state.selectedList)
   }
 
   getSelectedList = () => {
