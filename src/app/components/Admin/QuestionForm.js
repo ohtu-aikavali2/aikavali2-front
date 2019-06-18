@@ -28,7 +28,7 @@ import {
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography } from '@material-ui/core'
+import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography, Divider } from '@material-ui/core'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -38,6 +38,10 @@ const questionTypes = [
   {
     value: 'FillInTheBlank',
     label: 'Täytä tyhjät kohdat'
+  },
+  {
+    value: 'DragAndDrop',
+    label: 'Sijoita osat kohdilleen'
   }
 ]
 let question = {
@@ -388,7 +392,8 @@ export class QuestionForm extends Component {
     let containsAtLeastOneBlank = false
     let containsEmptyWord = false
     if (this.state.questionType === 'GeneralQuestion') {
-      hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
+      let answerOptionValues = this.state.answerOptions.map(option => option.value)
+      hasDuplicates = new Set(answerOptionValues).size !== answerOptionValues.length
       correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
     } else if (this.state.questionType === 'FillInTheBlank') {
       containsAtLeastOneBlank = this.state.question.includes('TYHJÄ')
@@ -702,6 +707,22 @@ export class QuestionForm extends Component {
                   <Button onClick={this.updateAllAnswerOptions} fullWidth variant="contained" color="primary" aria-label="Add">
                     {this.state.answerOptions.length === 0 ? 'Luo vastausvaihtoehdoille kentät' : 'Päivitä vastausvaihtoehtojen kentät'}
                   </Button>
+                </div>
+              </React.Fragment>
+            )}
+
+            {step === 2 && (questionType === 'DragAndDrop') && (
+              <React.Fragment>
+                <div>
+                  <Typography variant="title" gutterBottom>
+                    Luo haluamasi järjestys
+                  </Typography>
+                </div>
+                <Divider variant="middle" />
+                <div>
+                  <Typography variant="title" gutterBottom>
+                    Voit luoda myös vastaukseen kuulumattomia paloja
+                  </Typography>
                 </div>
               </React.Fragment>
             )}
