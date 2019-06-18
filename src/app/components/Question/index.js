@@ -253,6 +253,15 @@ export class Question extends Component {
         )}
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
+        {question && question.kind === 'FillInTheBlankQuestion' && userAnswer && (
+          <React.Fragment>
+            <h4>Oikeat vastaukset</h4>
+            {userAnswer.correctAnswer.map((a, i) =>
+              <Typography key={i} style={text} component="p">{i + 1} . {a}</Typography>
+            )}
+          </React.Fragment>
+        )}
+
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div >
     )

@@ -29,7 +29,7 @@ export class FillQuestionAnswer extends Component {
   }
 
   render() {
-    const { classes, answering, dumb } = this.props
+    const { classes, answering, dumb, userAnswer } = this.props
     const words = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ')
 
     return (
@@ -39,8 +39,8 @@ export class FillQuestionAnswer extends Component {
             word === 'TYHJÄ' ? (
               <Grid item key={i}>
                 <TextField
-                  disabled={dumb}
-                  style={{ width: 110, paddingBottom: 2 }}
+                  disabled={!!(dumb || userAnswer)}
+                  style={{ width: 100, paddingBottom: 2 }}
                   onChange={this.handleTextField(i)}
                 />
               </Grid>
