@@ -572,7 +572,7 @@ export class QuestionForm extends Component {
                     margin="normal"
                   />
                 </div>
-                <div className="RadioButtonForm">
+                <div className="radioButtonForm">
                   <FormControl component="fieldset" className="RadioButtonFormControl">
                     <FormLabel component="legend">Montako vastausta käyttäjä voi valita?</FormLabel>
                     <RadioGroup
@@ -591,9 +591,9 @@ export class QuestionForm extends Component {
                 {this.state.answerOptions.map((option, i) => (
                   <div key={i} className='cardContainer'>
                     <Card>
-                      <CardContent>
-                        <CardActions style={{ float: 'right' }}>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)} >
+                      <CardContent style={{ marginBottom: '-25px' }}>
+                        <CardActions className='cardActionArea'>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)} style={{ marginLeft: '300px' }} >
                             <CloseIcon />
                           </IconButton>
                         </CardActions>

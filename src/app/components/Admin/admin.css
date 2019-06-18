@@ -13,7 +13,12 @@
     padding-block-end: 10px;
 }
 
-.RadioButtonForm {
+.cardActionArea {
+    float: right;
+    height: 15px;
+}
+
+.radioButtonForm {
     padding-top: 10px;
     padding-bottom: 10px;
 }
