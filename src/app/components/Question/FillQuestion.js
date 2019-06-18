@@ -2,6 +2,7 @@ import React from 'react'
 import FillInQuestionAnswer from './FillQuestionAnswer'
 import FeedbackBar from '../common/FeedbackBar'
 import Collapse from '@material-ui/core/Collapse'
+import { Typography } from '@material-ui/core'
 
 export const FillInQuestion = ({ question, topLeftContent, topRightContent, answered, handleSelectedList }) => {
 
@@ -12,7 +13,9 @@ export const FillInQuestion = ({ question, topLeftContent, topRightContent, answ
       </Collapse>
       <div className='titleContainer'>
         <div className='rowContainer'>
-          <p>Täydennä teksti</p>
+          <Typography variant="title" gutterBottom>
+            Täydennä teksti
+          </Typography>
         </div>
       </div>
       <FillInQuestionAnswer question={question} handleSelectedList={handleSelectedList} />

@@ -40,9 +40,8 @@ export class FillQuestionAnswer extends Component {
             word === 'TYHJÄ' ? (
               <Grid item key={i}>
                 <TextField
-                  label={'Täytä puuttuva sana'}
                   disabled={dumb}
-                  style={{ width: 175, paddingBottom: 20 }}
+                  style={{ width: 110, paddingBottom: 20 }}
                   onChange={this.handleTextField(i)}
                 />
               </Grid>
