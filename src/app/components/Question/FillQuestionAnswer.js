@@ -22,8 +22,15 @@ const styles = theme => ({
 })
 
 export class FillQuestionAnswer extends Component {
+
+  handleTextField = (i) => event => {
+    console.log(event.target.value)
+    let t = event.target.value
+    this.props.handleSelectedList(i, t)
+  }
+
   render() {
-    const { classes, answering, dumb, handleSelectedList } = this.props
+    const { classes, answering, dumb } = this.props
     const words = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ')
 
     return (
@@ -36,7 +43,7 @@ export class FillQuestionAnswer extends Component {
                   label={'Täytä puuttuva sana'}
                   disabled={dumb}
                   style={{ width: 175, paddingBottom: 20 }}
-                  onChange={() => handleSelectedList(0, 'moi')}
+                  onChange={this.handleTextField(i)}
                 />
               </Grid>
             ) : <Grid item key={i}> {word} </Grid>
