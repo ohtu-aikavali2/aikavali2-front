@@ -21,20 +21,20 @@ class Courses extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     //do validation here
-    if ( !this.state.name.trim() ) {
+    if (!this.state.name.trim()) {
       notify.show('Lisää kurssille nimi', 'error', 3000)
-    } else if ( !this.state.description.trim() ) {
+    } else if (!this.state.description.trim()) {
       notify.show('Lisää kurssille kuvaus', 'error', 3000)
     } else {
       this.props.createCourse(this.state)
       notify.show(`Uusi kurssi '${this.state.name}' luotu`, 'success', 2000)
       this.setState({
-        name:'',
-        imageSrc:'',
-        description:''
+        name: '',
+        imageSrc: '',
+        description: '',
+        step: 'edit'
       })
     }
-
   }
 
   handleChange = (e) => {
@@ -46,7 +46,7 @@ class Courses extends Component {
 
   toggleView = () => {
     this.setState({
-      step: this.state.step === 'add' ? 'edit':'add'
+      step: this.state.step === 'add' ? 'edit' : 'add'
     })
   }
 
