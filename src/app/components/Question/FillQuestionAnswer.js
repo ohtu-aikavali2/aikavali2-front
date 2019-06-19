@@ -24,8 +24,33 @@ const styles = theme => ({
 export class FillQuestionAnswer extends Component {
 
   handleTextField = (i) => event => {
-    let t = event.target.value
-    this.props.handleSelectedList(i, t)
+    let value = event.target.value
+    this.props.handleSelectedList(i, value)
+  }
+
+  determineTextFieldStyle = (i) => {
+    const { userAnswer, selectedList } = this.props
+
+    const correctStyle = { backgroundColor: 'LightGreen', width: 100, paddingBottom: 2 }
+    const wrongStyle = { width: 100, paddingBottom: 2, backgroundColor: 'Red' }
+    let style = {}
+    let w = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ').filter(c => !!c)
+    if (userAnswer) {
+      let k = 0
+      for (let j = 0; j < w.length; j++) {
+        if(w[j] === 'TYHJÄ') {
+          w[j] = userAnswer.correctAnswer[k]
+          k++
+        }
+      }
+    }
+
+    if (userAnswer && w[i].includes(selectedList[i])) {
+      style = correctStyle
+    } else if (userAnswer) {
+      style = wrongStyle
+    }
+    return style
   }
 
   render() {
@@ -39,7 +64,7 @@ export class FillQuestionAnswer extends Component {
               <Grid item key={i}>
                 <TextField
                   disabled={!!(dumb || userAnswer)}
-                  style={{ width: 100, paddingBottom: 2 }}
+                  style={this.determineTextFieldStyle(i)}
                   onChange={this.handleTextField(i)}
                 />
               </Grid>
