@@ -215,10 +215,12 @@ export class Question extends Component {
   renderCorrectFillQuestionAnswers = (correctAnswer) => {
     return (
       <React.Fragment>
-        <h4>Oikeat vastaukset</h4>
-        {correctAnswer.map((a, i) =>
-          <Grid container spacing={24} direction="row" alignItems="center" style={{ paddingBottom: 10 }} key={i}>{i + 1} . {a.map((a, j) => <Grid item key={j}>{a}</Grid>)}</Grid>
-        )}
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <h4>Oikeat vastaukset</h4>
+          {correctAnswer.map((a, i) =>
+            <Grid container spacing={24} direction="row" alignItems="center" style={{ paddingBottom: 10 }} key={i}>{i + 1} . {a.map((a, j) => <Grid item key={j}>{a}</Grid>)}</Grid>
+          )}
+        </div>
       </React.Fragment>
     )
   }
