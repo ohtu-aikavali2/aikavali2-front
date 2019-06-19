@@ -28,29 +28,42 @@ export class FillQuestionAnswer extends Component {
     this.props.handleSelectedList(i, value)
   }
 
-  determineTextFieldStyle = (i) => {
+  determineTextFieldCorrectness = (i) => {
     const { userAnswer, selectedList } = this.props
-
-    const correctStyle = { backgroundColor: 'LightGreen', width: 100, paddingBottom: 2 }
-    const wrongStyle = { width: 100, paddingBottom: 2, backgroundColor: 'Red' }
-    let style = {}
     let w = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ').filter(c => !!c)
     if (userAnswer) {
       let k = 0
       for (let j = 0; j < w.length; j++) {
-        if(w[j] === 'TYHJÄ') {
+        if (w[j] === 'TYHJÄ') {
           w[j] = userAnswer.correctAnswer[k]
           k++
         }
       }
     }
-
     if (userAnswer && w[i].includes(selectedList[i])) {
-      style = correctStyle
+      return 'right'
     } else if (userAnswer) {
-      style = wrongStyle
+      return 'wrong'
     }
+  }
+
+  determineTextFieldStyle = (i) => {
+    const style = { width: 100, paddingBottom: 2 }
+    const correctStyle = { backgroundColor: 'LightGreen', width: 100, paddingBottom: 2 }
+    const wrongStyle = { width: 100, paddingBottom: 2, backgroundColor: 'Tomato' }
+    const correctness = this.determineTextFieldCorrectness(i)
+    if (correctness === 'right') return correctStyle
+    if (correctness === 'wrong') return wrongStyle
     return style
+  }
+
+  determineAnswerIconStyle = (i) => {
+    const checkFilled = 'M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z'
+    const cross = 'M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z'
+    const correctness = this.determineTextFieldCorrectness(i)
+    if (correctness === 'right') return checkFilled
+    if (correctness === 'wrong') return cross
+    return ''
   }
 
   render() {
@@ -62,6 +75,11 @@ export class FillQuestionAnswer extends Component {
           {words.map((word, i) =>
             word === 'TYHJÄ' ? (
               <Grid item key={i}>
+                {userAnswer && (
+                  <svg style={{ width: '24px', height: '24px', viewBox: '0 0 24 24', float: 'left', padding: '10px' }}>
+                    <path fill="#000000" d={this.determineAnswerIconStyle(i)} />
+                  </svg>
+                )}
                 <TextField
                   disabled={!!(dumb || userAnswer)}
                   style={this.determineTextFieldStyle(i)}
