@@ -25,7 +25,7 @@ const styles = theme => ({
   }
 })
 
-export class QuestionAnswer extends Component {
+export class GeneralQuestionAnswer extends Component {
   handleClick = () => {
     const { id, value, userAnswer } = this.props
     if (!userAnswer) this.props.handleSelect(id, value)
@@ -43,7 +43,6 @@ export class QuestionAnswer extends Component {
       backgroundStyle: { backgroundColor: '' },
       answerIcon: ''
     }
-    if (userAnswer) console.log(userAnswer.correctAnswer)
     if (userAnswer && userAnswer.correctAnswer && userAnswer.correctAnswer.includes(value)) {
       style = {
         backgroundStyle: correctStyle,
@@ -102,4 +101,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(QuestionAnswer))
+export default connect(mapStateToProps)(withStyles(styles)(GeneralQuestionAnswer))

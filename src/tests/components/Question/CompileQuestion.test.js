@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { CompileQuestion } from '../../../app/components/Question/CompileQuestion'
-import QuestionAnswer from '../../../app/components/Question/QuestionAnswer'
+import GeneralQuestionAnswer from '../../../app/components/Question/GeneralQuestionAnswer'
 import Typography from '@material-ui/core/Typography'
 
 describe('<CompileQuestion />', () => {
@@ -36,8 +36,8 @@ describe('<CompileQuestion />', () => {
       children: typographyProps.children
     })
   })
-  it('renders as many QuestionAnswers as there are question options', () => {
-    expect(compileQuestion.find(QuestionAnswer).length).toBe(3)
+  it('renders as many GeneralQuestionAnswers as there are question options', () => {
+    expect(compileQuestion.find(GeneralQuestionAnswer).length).toBe(3)
     let newProps = {
       ...props,
       question: {
@@ -49,6 +49,6 @@ describe('<CompileQuestion />', () => {
       }
     }
     let testComponent = shallow(<CompileQuestion {...newProps} />)
-    expect(testComponent.find(QuestionAnswer).length).toBe(4)
+    expect(testComponent.find(GeneralQuestionAnswer).length).toBe(4)
   })
 })

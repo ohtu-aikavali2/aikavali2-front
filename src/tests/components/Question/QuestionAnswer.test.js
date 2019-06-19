@@ -1,11 +1,11 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { QuestionAnswer } from '../../../app/components/Question/QuestionAnswer'
+import { GeneralQuestionAnswer } from '../../../app/components/Question/GeneralQuestionAnswer'
 import Card from '@material-ui/core/Card'
 import Grid from '@material-ui/core/Grid'
 import ReactMarkdown from 'react-markdown'
 
-describe('<QuestionAnswer />', () => {
+describe('<GeneralQuestionAnswer />', () => {
   let question, props
   beforeEach(() => {
     // Component requires propTypes classes
@@ -21,7 +21,7 @@ describe('<QuestionAnswer />', () => {
         paper: {}
       }
     }
-    question = shallow(<QuestionAnswer {...props} />)
+    question = shallow(<GeneralQuestionAnswer {...props} />)
   })
   afterEach(() => {
     props.handleSelect.mockClear()
@@ -53,7 +53,7 @@ describe('<QuestionAnswer />', () => {
       ...props,
       value: 'Eka rivi\nToka rivi\nKolmas rivi'
     }
-    question = shallow(<QuestionAnswer {...props} />)
+    question = shallow(<GeneralQuestionAnswer {...props} />)
     expect(question.find(ReactMarkdown).props().source).toEqual('```\nEka rivi\nToka rivi\nKolmas rivi')
   })
   it('container <div> click calls the method handleClick()', () => {
@@ -90,7 +90,7 @@ describe('<QuestionAnswer />', () => {
           }
         ]
       }
-      question = shallow(<QuestionAnswer {...props} />)
+      question = shallow(<GeneralQuestionAnswer {...props} />)
       const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(113, 218, 113)' })
     })
@@ -102,7 +102,7 @@ describe('<QuestionAnswer />', () => {
           correctAnswer: ['Option']
         }
       }
-      question = shallow(<QuestionAnswer {...props} />)
+      question = shallow(<GeneralQuestionAnswer {...props} />)
       const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(113, 218, 113)' })
     })
@@ -120,7 +120,7 @@ describe('<QuestionAnswer />', () => {
           }
         ]
       }
-      question = shallow(<QuestionAnswer {...props} />)
+      question = shallow(<GeneralQuestionAnswer {...props} />)
       const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(255, 128, 128)', cursor: 'default' })
     })
@@ -135,7 +135,7 @@ describe('<QuestionAnswer />', () => {
           }
         ]
       }
-      question = shallow(<QuestionAnswer {...props} />)
+      question = shallow(<GeneralQuestionAnswer {...props} />)
       const paperStyle = question.find(Card).props().style
       expect(paperStyle).toEqual({ backgroundColor: 'rgb(230, 243, 255)', cursor: 'default' })
     })
@@ -147,7 +147,7 @@ describe('<QuestionAnswer />', () => {
           correctAnswer: 'something else'
         }
       }
-      question = shallow(<QuestionAnswer {...props} />)
+      question = shallow(<GeneralQuestionAnswer {...props} />)
       const gridStyle = question.find(Grid).at(1).props().style
       expect(gridStyle).toEqual({ color: 'grey' })
     })

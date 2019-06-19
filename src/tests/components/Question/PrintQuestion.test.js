@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { PrintQuestion } from '../../../app/components/Question/PrintQuestion'
-import QuestionAnswer from '../../../app/components/Question/QuestionAnswer'
+import GeneralQuestionAnswer from '../../../app/components/Question/GeneralQuestionAnswer'
 
 describe('<PrintQuestion />', () => {
   let printQuestion
@@ -39,8 +39,8 @@ describe('<PrintQuestion />', () => {
   //   const markDownValue = testComponent.find(ReactMarkdown).props().source
   //   expect(markDownValue).toEqual('```\neka rivi\ntoka rivi\nkolmas rivi\n```')
   // })
-  it('renders as many QuestionAnswers as there are question options', () => {
-    expect(printQuestion.find(QuestionAnswer).length).toBe(3)
+  it('renders as many GeneralQuestionAnswers as there are question options', () => {
+    expect(printQuestion.find(GeneralQuestionAnswer).length).toBe(3)
     let newProps = {
       ...props,
       question: {
@@ -52,6 +52,6 @@ describe('<PrintQuestion />', () => {
       }
     }
     let testComponent = shallow(<PrintQuestion {...newProps} />)
-    expect(testComponent.find(QuestionAnswer).length).toBe(4)
+    expect(testComponent.find(GeneralQuestionAnswer).length).toBe(4)
   })
 })

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PrintQuestion from './PrintQuestion'
-import CompileQuestion from './CompileQuestion'
 import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
 import Typography from '@material-ui/core/Typography'
@@ -20,7 +19,8 @@ import Button from '@material-ui/core/Button'
 import FlagIcon from '@material-ui/icons/Flag'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import Zoom from '@material-ui/core/Zoom'
-
+import FillQuestion from './FillQuestion'
+import Grid from '@material-ui/core/Grid'
 export class Question extends Component {
   constructor() {
     super()
@@ -111,7 +111,6 @@ export class Question extends Component {
   // Ensimmäinen painallus kysymysvaihtoehtoon
   handleSelect = async (id, value) => {
     if (this.props.userAnswer) return
-    //console.log(this.props.question.item.selectCount)
     if (this.state.selectedList.length < 1 || !this.state.selectedList.map(s => s.value).includes(value)) {
       if (this.props.question.item.selectCount === 'selectOne') {
         this.setState({ selectedList: [{ id, value }] })
@@ -132,11 +131,25 @@ export class Question extends Component {
       notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
       return
     }
+    let answers = [...this.state.selectedList]
+    if (this.props.question.kind === 'FillInTheBlankQuestion') {
+      answers = this.state.selectedList.filter(item => item !== undefined)
+      this.setState({ selectedList: answers })
+    }
     const time = Date.now() - this.state.startTime
-    // TODO: if only one answer
-    await this.props.answerQuestion(this.props.question.item._id, this.state.selectedList, time)
-    // else if multiple choices
-    // send list
+    await this.props.answerQuestion(this.props.question.item._id, answers, time)
+  }
+
+  handleSelectedList = (i, value) => {
+    let copy = [...this.state.selectedList]
+    copy[i - 1] = value
+    this.setState({
+      selectedList: copy
+    })
+  }
+
+  getSelectedList = () => {
+    return this.state.selectedList
   }
 
   // Tätä kutsutaan painetaan skip ekan kerran
@@ -199,6 +212,19 @@ export class Question extends Component {
     )
   }
 
+  renderCorrectFillQuestionAnswers = (correctAnswer) => {
+    return (
+      <React.Fragment>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <h4>Oikeat vastaukset</h4>
+          {correctAnswer.map((a, i) =>
+            <Grid container spacing={24} direction="row" alignItems="center" style={{ paddingBottom: 10 }} key={i}>{i + 1} . {a.map((a, j) => <Grid item key={j}>{a}</Grid>)}</Grid>
+          )}
+        </div>
+      </React.Fragment>
+    )
+  }
+
   render() {
     const text = {
       fontSize: 16
@@ -217,10 +243,7 @@ export class Question extends Component {
         {question && (question.kind === 'PrintQuestion' || question.kind === 'GeneralQuestion') && (
           <PrintQuestion
             question={question.item}
-            kind={question.kind}
-            handleQuestionReview={this.handleQuestionReview}
             handleSelect={this.handleSelect}
-            handleSkip={this.getNewQuestion}
             selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
@@ -228,16 +251,14 @@ export class Question extends Component {
             selectCount={this.props.question.item.selectCount}
           />
         )}
-        {question && question.kind === 'CompileQuestion' && (
-          <CompileQuestion
+        {question && question.kind === 'FillInTheBlankQuestion' && (
+          <FillQuestion
             question={question.item}
-            handleQuestionReview={this.handleQuestionReview}
-            handleSelect={this.handleSelect}
-            handleSkip={this.getNewQuestion}
-            selectedList={this.state.selectedList}
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
+            getSelectedList={this.getSelectedList}
+            handleSelectedList={this.handleSelectedList}
           />
         )}
         {!userAnswer && !loading && (
@@ -245,6 +266,7 @@ export class Question extends Component {
         )}
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
+        {question && question.kind === 'FillInTheBlankQuestion' && userAnswer && this.renderCorrectFillQuestionAnswers(userAnswer.correctAnswer)}
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div >
     )
