@@ -23,6 +23,7 @@ import './admin.css'
 import {
   postFillInTheBlankQuestion,
   postGeneralQuestion,
+  postDragAndDropQuestion,
   fetchQuestions
 } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
@@ -118,12 +119,10 @@ export class QuestionForm extends Component {
       })
     }
     if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
-      console.log('tänne väärät')
       this.setState({
         fakeAnswerOptions: [...this.state.fakeAnswerOptions, { cardId: this.state.fakeAnswerOptions.length > 0 ? this.state.fakeAnswerOptions.length : 0, value: '' }]
       })
     } else if (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers) {
-      console.log('oikea vastaus')
       this.setState({
         answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '' }]
       })
@@ -137,24 +136,17 @@ export class QuestionForm extends Component {
       let copyAnswerOptions = []
 
       if (this.state.answerOptions.length === 0) {
-        console.log('tämä kun tyhjä')
         for (let i = 0; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
       } else if (this.state.answerOptions.length < count ) {
-        console.log('nyt tämä kun lisätään olemassa olevaan')
         copyAnswerOptions = [...this.state.answerOptions]
-        console.log(copyAnswerOptions, 'length', copyAnswerOptions.length, 'count', count)
         for (let i = copyAnswerOptions.length; i < count; i++) {
-          console.log('tänne pitäisi päästä', i)
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
       } else if (this.state.answerOptions.length > count) {
-        console.log('tämä kun vähennetään', count)
         copyAnswerOptions = this.state.answerOptions.filter(item => item.location < count)
-        console.log(copyAnswerOptions)
       } else {
-        console.log('ei mitään')
         copyAnswerOptions = [...this.state.answerOptions]
       }
       this.setState({
@@ -166,8 +158,6 @@ export class QuestionForm extends Component {
   // adds word as a acceptable value to given blank
   addWord = (i) => event => {
     let copy = [...this.state.answerOptions]
-    //PITÄIS OLLA SALLITTU COPY KUN EI OO SAMA KUN STATE TOLLA ... SYNTAKSILLA
-    console.log(copy === this.state.answerOptions)
     copy[i].correctValues.push(copy[i].newValue)
     copy[i].newValue = ''
     this.setState({
@@ -179,7 +169,6 @@ export class QuestionForm extends Component {
   handleWordDelete = (chipToDelete, i) => () => {
     let copy = this.state.answerOptions
     copy[i].correctValues = copy[i].correctValues.filter(item => item !== chipToDelete)
-    console.log(copy)
     this.setState({
       answerOptions: copy
     })
@@ -191,15 +180,11 @@ export class QuestionForm extends Component {
       let newArray = this.state.answerOptions.slice(0, i)
       newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
       newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
-      console.log(newArray)
       this.setState({
         answerOptions: newArray
       })
     } else if (this.state.questionType === 'FillInTheBlank') {
-      console.log(option)
       let copy = [...this.state.answerOptions]
-      //PITÄIS OLLA SALLITTU COPY KUN EI OO SAMA KUN STATE TOLLA ... SYNTAKSILLA
-      console.log(copy === this.state.answerOptions)
       copy[i].newValue = event.target.value
       this.setState({
         answerOptions: copy
@@ -208,7 +193,6 @@ export class QuestionForm extends Component {
       let newArray = this.state.answerOptions.slice(0, i)
       newArray.push({ cardId: i, value: event.target.value })
       newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
-      console.log(newArray)
       this.setState({
         answerOptions: newArray
       })
@@ -216,7 +200,6 @@ export class QuestionForm extends Component {
       let newArray = this.state.fakeAnswerOptions.slice(0, i)
       newArray.push({ cardId: i, value: event.target.value })
       newArray = newArray.concat(this.state.fakeAnswerOptions.slice(i + 1))
-      console.log('tässä on muutettu fake', newArray, ' plus staten oikeat ', this.state.answerOptions)
       this.setState({
         fakeAnswerOptions: newArray
       })
@@ -227,7 +210,6 @@ export class QuestionForm extends Component {
   removeAnswerOption = (option, i, belongsToCorrectAnswers) => () => {
     if (this.state.questionType === 'GeneralQuestion' || (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers)) {
       if (this.state.answerOptions.length > 1) {
-        console.log('oikea poistetaan')
         let newOptions = this.state.answerOptions
         newOptions.splice(i, 1)
         let reOrderAnswerOptions = newOptions.map(item => {
@@ -242,7 +224,6 @@ export class QuestionForm extends Component {
         })
       }
     } else if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
-      console.log('fake poistetaan')
       let newOptions = this.state.fakeAnswerOptions
       newOptions.splice(i, 1)
       let reOrderAnswerOptions = newOptions.map(item => {
@@ -361,11 +342,6 @@ export class QuestionForm extends Component {
     this.setState({ showConfirmPopup: !this.state.showConfirmPopup })
   }
 
-  // answerOptionsContainDuplicates = () => {
-  //   const answerOptionValues = this.state.answerOptions.map(option => option.value)
-  //   return new Set(answerOptionValues).size !== answerOptionValues.length
-  // }
-
   setInitialConcepts = () => {
     const selectedCourse = this.determineSelectedCourse()
     if (selectedCourse.concepts) this.setState({
@@ -394,14 +370,23 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const concepts = this.mapConceptIDsToObjects().concat(
-        this.state.newConcepts.filter(c => this.state.concepts.includes(c._id)))
+      const concepts = this.state.concepts.filter(c => this.state.checkedConceptIds.includes(c._id))
       if (this.state.questionType === 'FillInTheBlank') {
         console.log(this.state.answerOptions.map(item => item.correctValues))
         this.props.postFillInTheBlankQuestion(
           this.state.groupId,
           this.state.question,
           this.state.answerOptions.map(item => item.correctValues),
+          concepts
+        )
+      } else if (this.state.questionType === 'DragAndDrop') {
+        let allAnswers = this.state.answerOptions.map(item => item.value).concat(this.state.fakeAnswerOptions.map(item => item.value))
+        console.log(allAnswers)
+        this.props.postDragAndDropQuestion(
+          this.state.groupId,
+          this.state.question,
+          this.state.answerOptions.map(item => item.value),
+          allAnswers,
           concepts
         )
       } else {
@@ -775,10 +760,6 @@ export class QuestionForm extends Component {
                   Luo haluamasi oikea järjestys
                 </Typography>
                 {this.state.answerOptions.map((option, i) => (
-                  // <div>
-                  //   {option.checked === true ? ('') : ('')}
-                  // </div>
-
                   <div className='cardContainer' key={i}>
                     <Card>
                       <CardContent style={{ marginBottom: '-25px' }}>
@@ -961,6 +942,7 @@ export class QuestionForm extends Component {
 
 const mapDispatchToProps = {
   postFillInTheBlankQuestion,
+  postDragAndDropQuestion,
   postGeneralQuestion,
   fetchCourses,
   fetchQuestions
