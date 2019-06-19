@@ -55,8 +55,8 @@ export class FillQuestionAnswer extends Component {
 
   determineTextFieldStyle = (i) => {
     const style = { width: 100, paddingBottom: 2 }
-    const correctStyle = { backgroundColor: 'LightGreen', width: 100, paddingBottom: 2 }
-    const wrongStyle = { width: 100, paddingBottom: 2, backgroundColor: 'Tomato' }
+    const correctStyle = { backgroundColor: 'LightGreen', width: 100, paddingTop: 5 }
+    const wrongStyle = { width: 100, paddingTop: 5, backgroundColor: 'Tomato' }
     const correctness = this.determineTextFieldCorrectness(i)
     if (correctness === 'right') return correctStyle
     if (correctness === 'wrong') return wrongStyle
