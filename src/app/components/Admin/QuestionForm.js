@@ -67,7 +67,8 @@ export class QuestionForm extends Component {
       modalOpen: false,
       selectedValue: '',
       selectedValueForRadioButton: '',
-      toggleConfirmPopup: false
+      toggleConfirmPopup: false,
+      fakeAnswerOptions: []
     }
   }
 
@@ -110,25 +111,26 @@ export class QuestionForm extends Component {
     })
   }
 
-  addAnswerOption = (dragAndDropChecked) => () => {
+  addAnswerOption = (belongsToCorrectAnswers) => () => {
     if (this.state.answerOptions.length < 6 && this.state.questionType === 'GeneralQuestion') {
       this.setState({
         answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
       })
     }
-    if (this.state.questionType === 'DragAndDrop' && !dragAndDropChecked) {
-      console.log('tänne')
+    if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
+      console.log('tänne väärät')
       this.setState({
-        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
+        fakeAnswerOptions: [...this.state.fakeAnswerOptions, { cardId: this.state.fakeAnswerOptions.length > 0 ? this.state.fakeAnswerOptions.length : 0, value: '' }]
       })
-    } else if(this.state.questionType === 'DragAndDrop' && dragAndDropChecked) {
+    } else if (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers) {
       console.log('oikea vastaus')
       this.setState({
-        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: true }]
+        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '' }]
       })
     }
   }
 
+  // updates the answer option fields for fill in the blank type question
   updateAllAnswerOptions = () => {
     if (this.state.questionType === 'FillInTheBlank') {
       let count = (this.state.question.match(/TYHJÄ/g) || []).length
@@ -161,6 +163,7 @@ export class QuestionForm extends Component {
     }
   }
 
+  // adds word as a acceptable value to given blank
   addWord = (i) => event => {
     let copy = [...this.state.answerOptions]
     //PITÄIS OLLA SALLITTU COPY KUN EI OO SAMA KUN STATE TOLLA ... SYNTAKSILLA
@@ -183,8 +186,8 @@ export class QuestionForm extends Component {
   }
 
   // handles changes of answerOptions in state
-  handleArrayChange = (option, i) => event => {
-    if (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'DragAndDrop') {
+  handleArrayChange = (option, i, belongsToCorrectAnswers) => event => {
+    if (this.state.questionType === 'GeneralQuestion') {
       let newArray = this.state.answerOptions.slice(0, i)
       newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
       newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
@@ -201,22 +204,46 @@ export class QuestionForm extends Component {
       this.setState({
         answerOptions: copy
       })
+    } else if (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers) {
+      let newArray = this.state.answerOptions.slice(0, i)
+      newArray.push({ cardId: i, value: event.target.value })
+      newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+      console.log(newArray)
+      this.setState({
+        answerOptions: newArray
+      })
+    } else if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
+      let newArray = this.state.fakeAnswerOptions.slice(0, i)
+      newArray.push({ cardId: i, value: event.target.value })
+      newArray = newArray.concat(this.state.fakeAnswerOptions.slice(i + 1))
+      console.log('tässä on muutettu fake', newArray, ' plus staten oikeat ', this.state.answerOptions)
+      this.setState({
+        fakeAnswerOptions: newArray
+      })
     }
-    // else if (this.state.questionType === 'DragAndDrop') {
-    //   let newArray = this.state.answerOptions.slice(0, i)
-    //   newArray.push({ cardId: i, value: event.target.value })
-    //   newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
-    //   console.log(newArray)
-    //   this.setState({
-    //     answerOptions: newArray
-    //   })
-    // }
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
-  removeAnswerOption = (option, i) => () => {
-    if (this.state.answerOptions.length > 1) {
-      let newOptions = this.state.answerOptions
+  removeAnswerOption = (option, i, belongsToCorrectAnswers) => () => {
+    if (this.state.questionType === 'GeneralQuestion' || (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers)) {
+      if (this.state.answerOptions.length > 1) {
+        console.log('oikea poistetaan')
+        let newOptions = this.state.answerOptions
+        newOptions.splice(i, 1)
+        let reOrderAnswerOptions = newOptions.map(item => {
+          let temp = Object.assign({}, item)
+          if (temp.cardId > i) {
+            temp.cardId = temp.cardId - 1
+          }
+          return temp
+        })
+        this.setState({
+          answerOptions: reOrderAnswerOptions
+        })
+      }
+    } else if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
+      console.log('fake poistetaan')
+      let newOptions = this.state.fakeAnswerOptions
       newOptions.splice(i, 1)
       let reOrderAnswerOptions = newOptions.map(item => {
         let temp = Object.assign({}, item)
@@ -226,7 +253,7 @@ export class QuestionForm extends Component {
         return temp
       })
       this.setState({
-        answerOptions: reOrderAnswerOptions
+        fakeAnswerOptions: reOrderAnswerOptions
       })
     }
   }
@@ -355,7 +382,7 @@ export class QuestionForm extends Component {
       console.log('Question Type not set!')
     } else if (
       this.state.question === '' &&
-      this.state.questionType !== 'CompileQuestion'
+      this.state.questionType !== 'DragAndDrop'
     ) {
       console.log('Question is empty!')
     } else if (this.state.answerOptions.map(item => item.checked === true).length === 0) {
@@ -517,6 +544,14 @@ export class QuestionForm extends Component {
     if (this.state.concepts.length < 1) this.setInitialConcepts()
   }
 
+  stepBack = () => {
+    if (this.state.step === 2) {
+      this.setState({ answerOptions: [], fakeAnswerOptions: [] })
+    }
+    console.log(this.state.answerOptions)
+    this.setState({ step: this.state.step - 1})
+  }
+
   render() {
     const { step, questionType } = this.state
     const selectedCourse = this.determineSelectedCourse()
@@ -634,7 +669,7 @@ export class QuestionForm extends Component {
                     <Card>
                       <CardContent style={{ marginBottom: '-25px' }}>
                         <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)}>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, null)}>
                             <CloseIcon />
                           </IconButton>
                         </CardActions>
@@ -645,7 +680,7 @@ export class QuestionForm extends Component {
                           fullWidth
                           rowsMax="6"
                           value={option.value}
-                          onChange={this.handleArrayChange(option, i)}
+                          onChange={this.handleArrayChange(option, i, null)}
                           className="answerField"
                           helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää vastausvaihtoehto'"
                           margin="normal"
@@ -668,7 +703,7 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <div className="addButtonContainer">
-                  <Button onClick={this.addAnswerOption(false)} fullWidth variant="contained" color="primary" aria-label="Add">
+                  <Button onClick={this.addAnswerOption(null)} fullWidth variant="contained" color="primary" aria-label="Add">
                     + Lisää vastausvaihtoehto
                   </Button>
                 </div>
@@ -700,7 +735,7 @@ export class QuestionForm extends Component {
                           <TextField
                             label="Vastausvaihtoehto"
                             value={option.newValue}
-                            onChange={this.handleArrayChange(option, i)}
+                            onChange={this.handleArrayChange(option, i, null)}
                             className="answerField"
                             helperText='Kirjoita oikea vastausvaihtoehto sanalle ja tallenna sana painamalla +'
                             margin="normal"
@@ -739,7 +774,7 @@ export class QuestionForm extends Component {
                 <Typography variant="title" gutterBottom>
                   Luo haluamasi oikea järjestys
                 </Typography>
-                {this.state.answerOptions.filter(item => item.checked === true).map((option, i) => (
+                {this.state.answerOptions.map((option, i) => (
                   // <div>
                   //   {option.checked === true ? ('') : ('')}
                   // </div>
@@ -748,7 +783,7 @@ export class QuestionForm extends Component {
                     <Card>
                       <CardContent style={{ marginBottom: '-25px' }}>
                         <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)}>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, true)}>
                             <CloseIcon />
                           </IconButton>
                         </CardActions>
@@ -756,7 +791,7 @@ export class QuestionForm extends Component {
                           label="Teksti riville"
                           fullWidth
                           value={option.value}
-                          onChange={this.handleArrayChange(option, i)}
+                          onChange={this.handleArrayChange(option, i, true)}
                           className="answerField"
                           helperText="Kirjoita teksti kortille, voit lisätä kortteja painamalla '+ Lisää kenttä'"
                           margin="normal"
@@ -774,22 +809,22 @@ export class QuestionForm extends Component {
                   Voit luoda myös vastaukseen kuulumattomia paloja
                 </Typography>
 
-                {this.state.answerOptions.filter(item => item.checked === false).map((option, i) => (
+                {this.state.fakeAnswerOptions.map((option, i) => (
                   <div className='cardContainer' key={i}>
                     <Card>
                       <CardContent style={{ marginBottom: '-25px' }}>
                         <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)}>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, false)}>
                             <CloseIcon />
                           </IconButton>
                         </CardActions>
                         <TextField
-                          label="Teksti riville"
+                          label="Teksti vastaukseen kuulumattomalle riville"
                           fullWidth
                           value={option.value}
-                          onChange={this.handleArrayChange(option, i)}
+                          onChange={this.handleArrayChange(option, i, false)}
                           className="answerField"
-                          helperText="Kirjoita teksti kortille, voit lisätä kortteja painamalla '+ Lisää kenttä'"
+                          helperText="Kirjoita teksti riville, joka ei kuulu vastaukseen, voit lisätä rivejä painamalla '+ Lisää kenttä'"
                           margin="normal"
                         />
                       </CardContent>
@@ -866,7 +901,7 @@ export class QuestionForm extends Component {
             <div>
               <Button
                 disabled={this.state.step < 1 || this.state.step > 4}
-                onClick={() => this.setState({ step: this.state.step - 1 })}
+                onClick={this.stepBack}
                 variant="contained"
                 className="backwardButton"
               >
