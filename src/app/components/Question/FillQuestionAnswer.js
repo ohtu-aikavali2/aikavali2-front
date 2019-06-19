@@ -22,6 +22,16 @@ const styles = theme => ({
 
   disabledTextColor: {
     color: 'black'
+  },
+
+  svgStyle: {
+    width: '24px',
+    height: '24px',
+    viewBox: '0 0 24 24',
+    float: 'left',
+    paddingRight: '5px',
+    paddingTop: '10px',
+    paddingBottom: '10px'
   }
 })
 
@@ -56,7 +66,7 @@ export class FillQuestionAnswer extends Component {
   determineTextFieldStyle = (i) => {
     const style = { width: 100, paddingBottom: 2 }
     const correctStyle = { backgroundColor: 'LightGreen', width: 100, paddingTop: 5 }
-    const wrongStyle = { width: 100, paddingTop: 5, backgroundColor: 'Tomato' }
+    const wrongStyle = { backgroundColor: 'Tomato', width: 100, paddingTop: 5 }
     const correctness = this.determineTextFieldCorrectness(i)
     if (correctness === 'right') return correctStyle
     if (correctness === 'wrong') return wrongStyle
@@ -82,7 +92,7 @@ export class FillQuestionAnswer extends Component {
             word === 'TYHJÄ' ? (
               <Grid item key={i}>
                 {userAnswer && (
-                  <svg style={{ width: '24px', height: '24px', viewBox: '0 0 24 24', float: 'left', padding: '10px' }}>
+                  <svg className={classes.svgStyle}>
                     <path fill="#000000" d={this.determineAnswerIconStyle(i)} />
                   </svg>
                 )}
