@@ -4,7 +4,7 @@ import FeedbackBar from '../common/FeedbackBar'
 import Collapse from '@material-ui/core/Collapse'
 import { Typography } from '@material-ui/core'
 
-export const FillInQuestion = ({ question, topLeftContent, topRightContent, answered, handleSelectedList }) => {
+export const FillInQuestion = ({ question, topLeftContent, topRightContent, answered, selectedList, handleSelectedList }) => {
 
   return (
     <div className='fillInQuestion'>
@@ -18,7 +18,7 @@ export const FillInQuestion = ({ question, topLeftContent, topRightContent, answ
           </Typography>
         </div>
       </div>
-      <FillInQuestionAnswer question={question} handleSelectedList={handleSelectedList} />
+      <FillInQuestionAnswer question={question} handleSelectedList={handleSelectedList} selectedList={selectedList} />
     </div>
   )
 }

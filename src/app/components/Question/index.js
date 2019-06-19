@@ -78,8 +78,10 @@ export class Question extends Component {
     if (!prevProps.userAnswer && userAnswer && this.notificationRef.current) {
       if (userAnswer.isCorrect) {
         notify.show('Oikein, hyvä!', 'success', 2000)
-      } else if (this.state.selectedList.length > 0 && this.state.selectedList[0].value !== 'Note: questionSkipped') {
+      } else if ((this.state.selectedList.length > 0 && this.state.selectedList[0] === undefined) || (this.state.selectedList.length > 0 && this.state.selectedList[0].value !== 'Note: questionSkipped')) {
         notify.show('Väärin, voi ei!', 'error', 2000)
+      } else if (this.state.selectedList[0].value === 'Note: questionSkipped') {
+        notify.show('Kysymys skipattu', 'warning', 2000)
       }
     }
   }
@@ -134,7 +136,6 @@ export class Question extends Component {
     let answers = [...this.state.selectedList]
     if (this.props.question.kind === 'FillInTheBlankQuestion') {
       answers = this.state.selectedList.filter(item => item !== undefined)
-      this.setState({ selectedList: answers })
     }
     const time = Date.now() - this.state.startTime
     await this.props.answerQuestion(this.props.question.item._id, answers, time)
@@ -142,14 +143,10 @@ export class Question extends Component {
 
   handleSelectedList = (i, value) => {
     let copy = [...this.state.selectedList]
-    copy[i - 1] = value
+    copy[i] = value
     this.setState({
       selectedList: copy
     })
-  }
-
-  getSelectedList = () => {
-    return this.state.selectedList
   }
 
   // Tätä kutsutaan painetaan skip ekan kerran
@@ -257,7 +254,7 @@ export class Question extends Component {
             topLeftContent={this.renderReviewText()}
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
-            getSelectedList={this.getSelectedList}
+            selectedList={this.state.selectedList}
             handleSelectedList={this.handleSelectedList}
           />
         )}
