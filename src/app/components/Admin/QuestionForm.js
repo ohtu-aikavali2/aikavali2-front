@@ -344,8 +344,7 @@ export class QuestionForm extends Component {
     } else {
       // If the question is valid
       this.setState({ step: this.state.step + 1 })
-      const concepts = this.mapConceptIDsToObjects().concat(
-        this.state.newConcepts.filter(c => this.state.concepts.includes(c._id)))
+      const concepts = this.state.concepts.filter(c => this.state.checkedConceptIds.includes(c._id))
       if (this.state.questionType === 'FillInTheBlank') {
         console.log(this.state.answerOptions.map(item => item.correctValues))
         this.props.postFillInTheBlankQuestion(
