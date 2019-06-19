@@ -18,6 +18,10 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     position: 'relative',
     overflow: 'auto'
+  },
+
+  disabledTextColor: {
+    color: 'black'
   }
 })
 
@@ -44,6 +48,8 @@ export class FillQuestionAnswer extends Component {
       return 'right'
     } else if (userAnswer) {
       return 'wrong'
+    } else {
+      return 'unanswered'
     }
   }
 
@@ -84,6 +90,11 @@ export class FillQuestionAnswer extends Component {
                   disabled={!!(dumb || userAnswer)}
                   style={this.determineTextFieldStyle(i)}
                   onChange={this.handleTextField(i)}
+                  InputProps={{
+                    classes: {
+                      input: classes.disabledTextColor
+                    }
+                  }}
                 />
               </Grid>
             ) : <Grid item key={i}> {word} </Grid>
