@@ -59,12 +59,12 @@ export class FillQuestionAnswer extends Component {
     } else if (userAnswer) {
       return 'wrong'
     } else {
-      return 'unanswered'
+      return 'default'
     }
   }
 
   determineTextFieldStyle = (i) => {
-    const style = { width: 100, paddingBottom: 2, paddingLeft: 2 }
+    const style = { width: 100, paddingBottom: 2 }
     const correctStyle = { backgroundColor: 'rgb(113, 218, 113)', width: 100, paddingTop: 5, paddingLeft: 5 }
     const wrongStyle = { backgroundColor: 'rgb(255, 128, 128)', width: 100, paddingTop: 5, paddingLeft: 5 }
     const correctness = this.determineTextFieldCorrectness(i)
