@@ -18,7 +18,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   margin: '0 0 8px 0',
 
   // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'white',
+  background: isDragging ? 'lightgray' : 'white',
 
   // styles we need to apply on draggables
   ...draggableStyle
@@ -37,32 +37,19 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     position: 'relative',
     overflow: 'auto'
-  },
-  inputText: {
-    color: 'black'
-  },
-
-  svgStyle: {
-    width: '24px',
-    height: '24px',
-    viewBox: '0 0 24 24',
-    float: 'left',
-    paddingRight: '5px',
-    paddingTop: '10px',
-    paddingBottom: '10px'
   }
 })
 
 export class DraggableAnswerOption extends Component {
-  handleClick = () => {
-    console.log('hello')
+  handleRemove = () => {
+    this.props.handleRemove(this.props.value)
   }
 
   render() {
     const { classes, value, answering, dumb, index } = this.props
     const answer_lines = '```\n' + value + ''
     return (
-      <Draggable key={index} draggableId={`draggable-${index}`} index={index} >
+      <Draggable key={index} draggableId={`draggable-${index}`} index={index}>
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -73,7 +60,7 @@ export class DraggableAnswerOption extends Component {
               provided.draggableProps.style
             )}
           >
-            <div className={classes.wrapper} style={{ cursor: 'default'}} id='container' onClick={dumb ? null : this.handleClick}>
+            <div className={classes.wrapper} style={{ cursor: 'default'}} id='container'>
               <Card className={classes.paper} id='paper'>
                 <CardContent>
                   <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
@@ -81,7 +68,7 @@ export class DraggableAnswerOption extends Component {
                       <ReactMarkdown source={answer_lines} />
                     </Grid>
                     <Grid item style={{ position: 'absolute', right: 0 }}>
-                      <IconButton aria-label="add" onClick={() => this.handleClick}>
+                      <IconButton aria-label="add" onClick={(dumb || this.props.userAnswer) ? null : this.handleRemove}>
                         <RemoveIcon />
                       </IconButton>
                     </Grid>
@@ -93,28 +80,6 @@ export class DraggableAnswerOption extends Component {
           </div>
         )}
       </Draggable>
-      // <div id='container'>
-      //   <DragDropContext onDragEnd={this.onDragEnd} >
-      //     <Droppable
-      //   </DragDropContext>
-      // </div>
-      // <div className={classes.wrapper} style={{ cursor: 'default'}} id='container' onClick={dumb ? null : this.handleClick}>
-      //   <Card className={classes.paper} id='paper'>
-      //     <CardContent>
-      //       <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
-      //         <Grid item className='itemGrid'>
-      //           <ReactMarkdown source={answer_lines} />
-      //         </Grid>
-      //         <Grid item style={{ position: 'absolute', right: 0 }}>
-      //           <IconButton aria-label="add" onClick={() => this.handleClick}>
-      //             <RemoveIcon />
-      //           </IconButton>
-      //         </Grid>
-      //       </Grid>
-      //       {answering && <Loading className='answerLoading' bar />}
-      //     </CardContent>
-      //   </Card>
-      // </div >
     )
   }
 }

@@ -165,6 +165,12 @@ export class Question extends Component {
     })
   }
 
+  removeFromSelectedList = (value) => {
+    this.setState({
+      selectedList: this.state.selectedList.filter(item => item !== value)
+    })
+  }
+
   // Tätä kutsutaan painetaan skip ekan kerran
   skipQuestion = async () => {
     // ON tärkeää että setState on ekana, jotta saadaan välittömästi asetettua selected
@@ -310,12 +316,13 @@ export class Question extends Component {
             answered={!!userAnswer}
             selectedList={this.state.selectedList}
             handleSelect={this.addToSelectedList}
+            handleRemove={this.removeFromSelectedList}
             onDragEnd={this.onDragEnd}
             userAnswer={userAnswer}
           />
         )}
         {!userAnswer && !loading && (
-          <Button style={{ maxWidth: '600px', margin: '0 auto' }} onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
+          <Button style={{ maxWidth: '600px', margin: '0 auto', position: 'relative' }} onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
         )}
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />

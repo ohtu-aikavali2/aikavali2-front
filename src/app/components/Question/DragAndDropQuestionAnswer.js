@@ -22,20 +22,6 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     position: 'relative',
     overflow: 'auto'
-  },
-
-  inputText: {
-    color: 'black'
-  },
-
-  svgStyle: {
-    width: '24px',
-    height: '24px',
-    viewBox: '0 0 24 24',
-    float: 'left',
-    paddingRight: '5px',
-    paddingTop: '10px',
-    paddingBottom: '10px'
   }
 })
 
@@ -49,7 +35,7 @@ export class DragAndDropAnswer extends Component {
     const { classes, value, dumb } = this.props
     const answer_lines = '```\n' + value + ''
     return (
-      <div className={classes.wrapper} style={{ cursor: 'default'}} id='container' onClick={dumb ? null : this.handleClick}>
+      <div className={classes.wrapper} style={{ cursor: 'default'}} id='container'>
         <Card className={classes.paper} id='paper'>
           <CardContent>
             <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
@@ -57,7 +43,7 @@ export class DragAndDropAnswer extends Component {
                 <ReactMarkdown source={answer_lines} />
               </Grid>
               <Grid item style={{ position: 'absolute', right: 0 }}>
-                <IconButton aria-label="add" onClick={() => this.handleClick}>
+                <IconButton aria-label="add" onClick={(dumb || this.props.userAnswer) ? null : this.handleClick}>
                   <AddIcon/>
                 </IconButton>
               </Grid>
