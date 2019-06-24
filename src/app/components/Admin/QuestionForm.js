@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import Select from '@material-ui/core/Select'
 import InputLabel from '@material-ui/core/InputLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormGroup from '@material-ui/core/FormGroup'
@@ -126,7 +124,7 @@ export class QuestionForm extends Component {
         for (let i = 0; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
-      } else if (this.state.answerOptions.length < count ) {
+      } else if (this.state.answerOptions.length < count) {
         console.log('nyt tämä kun lisätään olemassa olevaan')
         copyAnswerOptions = [...this.state.answerOptions]
         console.log(copyAnswerOptions, 'length', copyAnswerOptions.length, 'count', count)
@@ -257,8 +255,20 @@ export class QuestionForm extends Component {
     }))
   }
 
-  determineTypeCardStyle = (type) => {
-    return (type === this.state.questionType
+  handleSelectCourse(course) {
+    this.setState(state => ({
+      course: state.course._id === course._id ? '' : course
+    }))
+  }
+
+  handleSelectGroup(groupId) {
+    this.setState(state => ({
+      groupId: state.groupId === groupId ? '' : groupId
+    }))
+  }
+
+  determineCardStyle = (selected) => {
+    return (selected
       ? {
         background: '#3f51b5',
         textColor: 'white'
@@ -267,13 +277,6 @@ export class QuestionForm extends Component {
         textColor: 'black'
       }
     )
-  }
-
-  determineSelectedCourse = () => {
-    const possibleCourses = this.props.courses.filter(obj => {
-      return obj.name === this.state.course
-    })
-    return possibleCourses.length > 0 ? possibleCourses[0] : { groups: [] }
   }
 
   postNewConcept = (concept) => {
@@ -290,7 +293,6 @@ export class QuestionForm extends Component {
 
   addNewConcept = (conceptName) => {
     conceptName = conceptName.trim()
-    const selectedCourse = this.determineSelectedCourse()
     if (conceptName.length < 2) {
       notify.show('Käsitteessä on oltava vähintään kaksi merkkiä.', 'error', 3000)
       return
@@ -300,7 +302,7 @@ export class QuestionForm extends Component {
     } else {
       const newConcept = {
         name: conceptName,
-        course: selectedCourse._id
+        course: this.state.course._id
       }
       // immediately posts the new concept to concepts and courses
       this.postNewConcept(newConcept)
@@ -317,9 +319,8 @@ export class QuestionForm extends Component {
   // }
 
   setInitialConcepts = () => {
-    const selectedCourse = this.determineSelectedCourse()
-    if (selectedCourse.concepts) this.setState({
-      concepts: selectedCourse.concepts
+    if (this.state.course.concepts) this.setState({
+      concepts: this.state.course.concepts
     })
   }
 
@@ -490,7 +491,6 @@ export class QuestionForm extends Component {
 
   render() {
     const { step, questionType } = this.state
-    const selectedCourse = this.determineSelectedCourse()
     return (
       <div className="questionFormContainer">
         <Notifications ref={this.notificationRef} />
@@ -500,34 +500,39 @@ export class QuestionForm extends Component {
 
             {step === 0 && (
               <React.Fragment>
-                <h2>Valitse kurssi</h2>
+                <h2>Valitse kurssi ja ryhmä</h2>
                 <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
-                <Select
-                  fullWidth
-                  value={this.state.course}
-                  onChange={this.handleChange('course')}
-                  style={{ marginBottom: '10px' }}
-                >
-                  {this.props.courses.map(course => (
-                    <MenuItem key={course.name} value={course.name}>
-                      {course.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                {this.props.courses.map(course => {
+                  const style = this.determineCardStyle(course._id === this.state.course._id)
+                  return (
+                    <div className='clickbox' key={course._id}>
+                      <div className='clickbox-link' onClick={() => this.handleSelectCourse(course)}>
+                        <Card style={{ background: style.background }} className='clickbox-container'>
+                          <CardContent style={{ color: style.textColor }}>
+                            {course.name}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )
+                })}
                 {this.state.course !== '' ? (
                   <div>
                     <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
-                    <Select
-                      fullWidth
-                      value={this.state.groupId}
-                      onChange={this.handleChange('groupId')}
-                    >
-                      {selectedCourse.groups.map(group => (
-                        <MenuItem key={group._id} value={group._id}>
-                          {group.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                    {this.state.course.groups.map(group => {
+                      const style = this.determineCardStyle(group._id === this.state.groupId)
+                      return (
+                        <div className='clickbox' key={group._id}>
+                          <div className='clickbox-link' onClick={() => this.handleSelectGroup(group._id)}>
+                            <Card style={{ background: style.background }} className='clickbox-container'>
+                              <CardContent style={{ color: style.textColor }}>
+                                {group.name}
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
                 ) : null}
               </React.Fragment>
@@ -538,7 +543,7 @@ export class QuestionForm extends Component {
                 <h2>Valitse tyyppi</h2>
                 <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
                 {questionTypes.map(option => {
-                  const style = this.determineTypeCardStyle(option.value)
+                  const style = this.determineCardStyle(option.value === this.state.questionType)
                   return (
                     <div className='clickbox' key={option.value}>
                       <div className='clickbox-link' onClick={() => this.handleSelectType(option.value)}>
@@ -685,7 +690,7 @@ export class QuestionForm extends Component {
                       </Grid>
                       {this.state.answerOptions[i].correctValues.length === 0 ? '' : (
                         <Typography variant="body1" gutterBottom>
-                          {i+1}:n tyhjän kentän oikeat vastaukset:
+                          {i + 1}:n tyhjän kentän oikeat vastaukset:
                         </Typography>
                       )}
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
