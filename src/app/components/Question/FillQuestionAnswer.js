@@ -59,7 +59,7 @@ export class FillQuestionAnswer extends Component {
     } else if (userAnswer) {
       return 'wrong'
     } else {
-      return 'unanswered'
+      return 'default'
     }
   }
 
