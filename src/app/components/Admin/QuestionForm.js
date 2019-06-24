@@ -422,10 +422,14 @@ export class QuestionForm extends Component {
     let correctAnswers = false
     let containsAtLeastOneBlank = false
     let containsEmptyWord = false
+    let correctValuesContainsFakeValue = false
     if (this.state.questionType === 'GeneralQuestion') {
       let answerOptionValues = this.state.answerOptions.map(option => option.value)
       hasDuplicates = new Set(answerOptionValues).size !== answerOptionValues.length
       correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
+    } else if (this.state.questionType === 'DragAndDrop') {
+      let answerOptionValues = this.state.answerOptions.map(option => option.value)
+      correctValuesContainsFakeValue = answerOptionValues.some(correct => this.state.fakeAnswerOptions.map(item => item.value).includes(correct))
     } else if (this.state.questionType === 'FillInTheBlank') {
       containsAtLeastOneBlank = this.state.question.includes('TYHJÄ')
       let helper = this.state.answerOptions.map(option => option.correctValues.some(item => item === '') || option.correctValues.length === 0)
@@ -442,13 +446,12 @@ export class QuestionForm extends Component {
       notify.show('Valitse kysymystyyppi', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 && (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'FillInTheBlank') &&
-      this.state.question.length < 3
+      this.state.step === 2 && this.state.question.length < 3
     ) {
       notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
+      this.state.step === 2 && (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'DragAndDrop') &&
       this.state.answerOptions.map(item => item.value).includes('')
     ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 3000)
@@ -509,6 +512,24 @@ export class QuestionForm extends Component {
       notify.show('Jokin vastausvaihtoehtokenttä sisältää tyhjän vastauksen', 'error', 3000)
       return
     } else if (
+      this.state.step === 2 && this.state.questionType === 'DragAndDrop' &&
+      this.state.fakeAnswerOptions.map(item => item.value).includes('')
+    ) {
+      notify.show('Väärissä vaihtoehdoissa ei voi olla tyhjää riviä', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 && this.state.questionType === 'DragAndDrop' &&
+      this.state.answerOptions.length + this.state.fakeAnswerOptions.length < 2
+    ) {
+      notify.show('Kysymykseen tulee liittyä ainakin kaksi vastausta', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 && this.state.questionType === 'DragAndDrop' &&
+      correctValuesContainsFakeValue
+    ) {
+      notify.show('Väärissä vastauksissa on rivi, joka on jo oikeissa vastauksissa', 'error', 3000)
+      return
+    } else if (
       this.state.step === 3 &&
       this.state.checkedConceptIds.length < 1
     ) {
@@ -531,9 +552,8 @@ export class QuestionForm extends Component {
 
   stepBack = () => {
     if (this.state.step === 2) {
-      this.setState({ answerOptions: [], fakeAnswerOptions: [] })
+      this.setState({ answerOptions: [], fakeAnswerOptions: [], question: '' })
     }
-    console.log(this.state.answerOptions)
     this.setState({ step: this.state.step - 1})
   }
 
@@ -756,6 +776,16 @@ export class QuestionForm extends Component {
 
             {step === 2 && (questionType === 'DragAndDrop') && (
               <React.Fragment>
+                <TextField
+                  label="Kysymyksen otsikko"
+                  fullWidth
+                  value={this.state.question}
+                  onChange={this.handleChange('question')}
+                  className="questionField"
+                  placeholder="Esim. Järjestä palat siten, että rivit ovat oikeassa järjestyksessä"
+                  margin="normal"
+                />
+                <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
                 <Typography variant="title" gutterBottom>
                   Luo haluamasi oikea järjestys
                 </Typography>
@@ -774,7 +804,7 @@ export class QuestionForm extends Component {
                           value={option.value}
                           onChange={this.handleArrayChange(option, i, true)}
                           className="answerField"
-                          helperText="Kirjoita teksti kortille, voit lisätä kortteja painamalla '+ Lisää kenttä'"
+                          helperText="Kirjoita teksti kenttään, voit lisätä tekstikenttiä painamalla '+ Lisää kenttä'"
                           margin="normal"
                         />
                       </CardContent>
@@ -787,7 +817,7 @@ export class QuestionForm extends Component {
                 </Button>
                 <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
                 <Typography variant='title' gutterBottom>
-                  Voit luoda myös vastaukseen kuulumattomia paloja
+                  Voit luoda myös vastaukseen kuulumattomia rivejä
                 </Typography>
 
                 {this.state.fakeAnswerOptions.map((option, i) => (
@@ -805,7 +835,7 @@ export class QuestionForm extends Component {
                           value={option.value}
                           onChange={this.handleArrayChange(option, i, false)}
                           className="answerField"
-                          helperText="Kirjoita teksti riville, joka ei kuulu vastaukseen, voit lisätä rivejä painamalla '+ Lisää kenttä'"
+                          helperText="Kirjoita teksti riville, joka ei kuulu vastaukseen. Voit lisätä rivejä painamalla '+ Lisää vastaukseen kuulumaton rivi'"
                           margin="normal"
                         />
                       </CardContent>
@@ -813,7 +843,7 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <Button onClick={this.addAnswerOption(false)} fullWidth variant="contained" color="primary" aria-label="Add">
-                    + Lisää kenttä
+                    + Lisää vastaukseen kuulumaton rivi
                 </Button>
 
               </React.Fragment>
