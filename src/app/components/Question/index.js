@@ -234,9 +234,7 @@ export class Question extends Component {
       <div style={{ maxWidth: '600px', margin: '0 auto', paddingTop: 30 }}>
         <h4>Oikea järjestys</h4>
         {correctAnswer.map((answer, i) =>
-          <Grid item style={{ paddingTop: 10 }} key={i}>
-            {answer}
-          </Grid>
+          <Grid item style={{ paddingTop: 10 }} key={i}> {answer} </Grid>
         )}
       </div>
     </React.Fragment>
@@ -247,7 +245,6 @@ export class Question extends Component {
       fontSize: 16
     }
     const { question, userAnswer, questionMessage, loading } = this.props
-    console.log(userAnswer)
     return (
       <div className='questionContainer'>
         <Notifications ref={this.notificationRef} />
