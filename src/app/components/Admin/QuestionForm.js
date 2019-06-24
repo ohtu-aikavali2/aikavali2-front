@@ -406,6 +406,7 @@ export class QuestionForm extends Component {
         questionType: '',
         question: '',
         answerOptions: [],
+        fakeAnswerOptions: [],
         checkedConceptIds: [],
         newConcept: '',
         concepts: [],
