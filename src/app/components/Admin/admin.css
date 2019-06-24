@@ -15,6 +15,7 @@
 
 .cardActionArea {
     float: right;
+    padding-right: 5px;
     height: 15px;
 }
 

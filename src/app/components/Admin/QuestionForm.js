@@ -139,7 +139,8 @@ export class QuestionForm extends Component {
         for (let i = 0; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
-      } else if (this.state.answerOptions.length < count ) {
+      } else if (this.state.answerOptions.length < count) {
+        console.log('nyt tämä kun lisätään olemassa olevaan')
         copyAnswerOptions = [...this.state.answerOptions]
         for (let i = copyAnswerOptions.length; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
@@ -556,7 +557,7 @@ export class QuestionForm extends Component {
     if (this.state.step === 2) {
       this.setState({ answerOptions: [], fakeAnswerOptions: [], question: '' })
     }
-    this.setState({ step: this.state.step - 1})
+    this.setState({ step: this.state.step - 1 })
   }
 
   render() {
@@ -683,9 +684,13 @@ export class QuestionForm extends Component {
                         <TextField
                           key={i}
                           label="Vastaus"
-                          multiline
                           fullWidth
-                          rowsMax="6"
+                          multiline={true}
+                          inputProps={{
+                            maxLength: 45
+                            // if card content rendering multiple rows gets fixed, change length to higher:
+                            // maxLength: 255
+                          }}
                           value={option.value}
                           onChange={this.handleArrayChange(option, i, null)}
                           className="answerField"
@@ -756,7 +761,7 @@ export class QuestionForm extends Component {
                       </Grid>
                       {this.state.answerOptions[i].correctValues.length === 0 ? '' : (
                         <Typography variant="body1" gutterBottom>
-                          {i+1}:n tyhjän kentän oikeat vastaukset:
+                          {i + 1}:n tyhjän kentän oikeat vastaukset:
                         </Typography>
                       )}
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -815,7 +820,7 @@ export class QuestionForm extends Component {
                 ))}
 
                 <Button onClick={this.addAnswerOption(true)} fullWidth variant="contained" color="primary" aria-label="Add">
-                    + Lisää kenttä
+                  + Lisää kenttä
                 </Button>
                 <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
                 <Typography variant='title' gutterBottom>
@@ -845,7 +850,7 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <Button onClick={this.addAnswerOption(false)} fullWidth variant="contained" color="primary" aria-label="Add">
-                    + Lisää vastaukseen kuulumaton rivi
+                  + Lisää vastaukseen kuulumaton rivi
                 </Button>
 
               </React.Fragment>
