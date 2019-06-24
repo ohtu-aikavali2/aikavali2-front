@@ -23,12 +23,13 @@ import './admin.css'
 import {
   postFillInTheBlankQuestion,
   postGeneralQuestion,
+  postDragAndDropQuestion,
   fetchQuestions
 } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography } from '@material-ui/core'
+import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography, Divider } from '@material-ui/core'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -38,6 +39,10 @@ const questionTypes = [
   {
     value: 'FillInTheBlank',
     label: 'Täytä tyhjät kohdat'
+  },
+  {
+    value: 'DragAndDrop',
+    label: 'Sijoita osat kohdilleen'
   }
 ]
 let question = {
@@ -63,7 +68,8 @@ export class QuestionForm extends Component {
       modalOpen: false,
       selectedValue: '',
       selectedValueForRadioButton: '',
-      toggleConfirmPopup: false
+      toggleConfirmPopup: false,
+      fakeAnswerOptions: []
     }
   }
 
@@ -106,40 +112,41 @@ export class QuestionForm extends Component {
     })
   }
 
-  addAnswerOption = () => () => {
-    if (this.state.questionType === 'GeneralQuestion') {
-      if (this.state.answerOptions.length < 6) {
-        this.setState({
-          answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
-        })
-      }
+  addAnswerOption = (belongsToCorrectAnswers) => () => {
+    if (this.state.answerOptions.length < 6 && this.state.questionType === 'GeneralQuestion') {
+      this.setState({
+        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '', checked: false }]
+      })
+    }
+    if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
+      this.setState({
+        fakeAnswerOptions: [...this.state.fakeAnswerOptions, { cardId: this.state.fakeAnswerOptions.length > 0 ? this.state.fakeAnswerOptions.length : 0, value: '' }]
+      })
+    } else if (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers) {
+      this.setState({
+        answerOptions: [...this.state.answerOptions, { cardId: this.state.answerOptions.length > 0 ? this.state.answerOptions.length : 0, value: '' }]
+      })
     }
   }
 
+  // updates the answer option fields for fill in the blank type question
   updateAllAnswerOptions = () => {
     if (this.state.questionType === 'FillInTheBlank') {
       let count = (this.state.question.match(/TYHJÄ/g) || []).length
       let copyAnswerOptions = []
 
       if (this.state.answerOptions.length === 0) {
-        console.log('tämä kun tyhjä')
         for (let i = 0; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
       } else if (this.state.answerOptions.length < count ) {
-        console.log('nyt tämä kun lisätään olemassa olevaan')
         copyAnswerOptions = [...this.state.answerOptions]
-        console.log(copyAnswerOptions, 'length', copyAnswerOptions.length, 'count', count)
         for (let i = copyAnswerOptions.length; i < count; i++) {
-          console.log('tänne pitäisi päästä', i)
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
       } else if (this.state.answerOptions.length > count) {
-        console.log('tämä kun vähennetään', count)
         copyAnswerOptions = this.state.answerOptions.filter(item => item.location < count)
-        console.log(copyAnswerOptions)
       } else {
-        console.log('ei mitään')
         copyAnswerOptions = [...this.state.answerOptions]
       }
       this.setState({
@@ -148,10 +155,9 @@ export class QuestionForm extends Component {
     }
   }
 
+  // adds word as a acceptable value to given blank
   addWord = (i) => event => {
     let copy = [...this.state.answerOptions]
-    //PITÄIS OLLA SALLITTU COPY KUN EI OO SAMA KUN STATE TOLLA ... SYNTAKSILLA
-    console.log(copy === this.state.answerOptions)
     copy[i].correctValues.push(copy[i].newValue)
     copy[i].newValue = ''
     this.setState({
@@ -163,14 +169,13 @@ export class QuestionForm extends Component {
   handleWordDelete = (chipToDelete, i) => () => {
     let copy = this.state.answerOptions
     copy[i].correctValues = copy[i].correctValues.filter(item => item !== chipToDelete)
-    console.log(copy)
     this.setState({
       answerOptions: copy
     })
   }
 
   // handles changes of answerOptions in state
-  handleArrayChange = (option, i) => event => {
+  handleArrayChange = (option, i, belongsToCorrectAnswers) => event => {
     if (this.state.questionType === 'GeneralQuestion') {
       let newArray = this.state.answerOptions.slice(0, i)
       newArray.push({ cardId: i, value: event.target.value, checked: option.checked })
@@ -179,21 +184,47 @@ export class QuestionForm extends Component {
         answerOptions: newArray
       })
     } else if (this.state.questionType === 'FillInTheBlank') {
-      console.log(option)
       let copy = [...this.state.answerOptions]
-      //PITÄIS OLLA SALLITTU COPY KUN EI OO SAMA KUN STATE TOLLA ... SYNTAKSILLA
-      console.log(copy === this.state.answerOptions)
       copy[i].newValue = event.target.value
       this.setState({
         answerOptions: copy
+      })
+    } else if (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers) {
+      let newArray = this.state.answerOptions.slice(0, i)
+      newArray.push({ cardId: i, value: event.target.value })
+      newArray = newArray.concat(this.state.answerOptions.slice(i + 1))
+      this.setState({
+        answerOptions: newArray
+      })
+    } else if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
+      let newArray = this.state.fakeAnswerOptions.slice(0, i)
+      newArray.push({ cardId: i, value: event.target.value })
+      newArray = newArray.concat(this.state.fakeAnswerOptions.slice(i + 1))
+      this.setState({
+        fakeAnswerOptions: newArray
       })
     }
   }
 
   // removes incorrect answer and rearranges the card ids for correct answers
-  removeAnswerOption = (option, i) => () => {
-    if (this.state.answerOptions.length > 1) {
-      let newOptions = this.state.answerOptions
+  removeAnswerOption = (option, i, belongsToCorrectAnswers) => () => {
+    if (this.state.questionType === 'GeneralQuestion' || (this.state.questionType === 'DragAndDrop' && belongsToCorrectAnswers)) {
+      if (this.state.answerOptions.length > 1) {
+        let newOptions = this.state.answerOptions
+        newOptions.splice(i, 1)
+        let reOrderAnswerOptions = newOptions.map(item => {
+          let temp = Object.assign({}, item)
+          if (temp.cardId > i) {
+            temp.cardId = temp.cardId - 1
+          }
+          return temp
+        })
+        this.setState({
+          answerOptions: reOrderAnswerOptions
+        })
+      }
+    } else if (this.state.questionType === 'DragAndDrop' && !belongsToCorrectAnswers) {
+      let newOptions = this.state.fakeAnswerOptions
       newOptions.splice(i, 1)
       let reOrderAnswerOptions = newOptions.map(item => {
         let temp = Object.assign({}, item)
@@ -203,7 +234,7 @@ export class QuestionForm extends Component {
         return temp
       })
       this.setState({
-        answerOptions: reOrderAnswerOptions
+        fakeAnswerOptions: reOrderAnswerOptions
       })
     }
   }
@@ -311,11 +342,6 @@ export class QuestionForm extends Component {
     this.setState({ showConfirmPopup: !this.state.showConfirmPopup })
   }
 
-  // answerOptionsContainDuplicates = () => {
-  //   const answerOptionValues = this.state.answerOptions.map(option => option.value)
-  //   return new Set(answerOptionValues).size !== answerOptionValues.length
-  // }
-
   setInitialConcepts = () => {
     const selectedCourse = this.determineSelectedCourse()
     if (selectedCourse.concepts) this.setState({
@@ -332,7 +358,7 @@ export class QuestionForm extends Component {
       console.log('Question Type not set!')
     } else if (
       this.state.question === '' &&
-      this.state.questionType !== 'CompileQuestion'
+      this.state.questionType !== 'DragAndDrop'
     ) {
       console.log('Question is empty!')
     } else if (this.state.answerOptions.map(item => item.checked === true).length === 0) {
@@ -353,6 +379,16 @@ export class QuestionForm extends Component {
           this.state.answerOptions.map(item => item.correctValues),
           concepts
         )
+      } else if (this.state.questionType === 'DragAndDrop') {
+        let allAnswers = this.state.answerOptions.map(item => item.value).concat(this.state.fakeAnswerOptions.map(item => item.value))
+        console.log(allAnswers)
+        this.props.postDragAndDropQuestion(
+          this.state.groupId,
+          this.state.question,
+          this.state.answerOptions.map(item => item.value),
+          allAnswers,
+          concepts
+        )
       } else {
         let correctAnswersAsStrings = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
         this.props.postGeneralQuestion(
@@ -370,6 +406,7 @@ export class QuestionForm extends Component {
         questionType: '',
         question: '',
         answerOptions: [],
+        fakeAnswerOptions: [],
         checkedConceptIds: [],
         newConcept: '',
         concepts: [],
@@ -386,9 +423,15 @@ export class QuestionForm extends Component {
     let correctAnswers = false
     let containsAtLeastOneBlank = false
     let containsEmptyWord = false
+    let correctValuesContainsFakeValue = false
     if (this.state.questionType === 'GeneralQuestion') {
-      hasDuplicates = new Set(this.state.answerOptions).size !== this.state.answerOptions.length
+      let answerOptionValues = this.state.answerOptions.map(option => option.value)
+      hasDuplicates = new Set(answerOptionValues).size !== answerOptionValues.length
       correctAnswers = this.state.answerOptions.filter(item => item.checked === true).map(item => item.value)
+    } else if (this.state.questionType === 'DragAndDrop') {
+      let answerOptionValues = this.state.answerOptions.map(option => option.value)
+      correctValuesContainsFakeValue = answerOptionValues.some(correct => this.state.fakeAnswerOptions.map(item => item.value).includes(correct))
+      hasDuplicates = new Set(answerOptionValues).size !== answerOptionValues.length
     } else if (this.state.questionType === 'FillInTheBlank') {
       containsAtLeastOneBlank = this.state.question.includes('TYHJÄ')
       let helper = this.state.answerOptions.map(option => option.correctValues.some(item => item === '') || option.correctValues.length === 0)
@@ -405,13 +448,12 @@ export class QuestionForm extends Component {
       notify.show('Valitse kysymystyyppi', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 &&
-      this.state.question.length < 3
+      this.state.step === 2 && this.state.question.length < 3
     ) {
       notify.show('Kirjoita kysymys, jonka pituus on vähintään 3 merkkiä', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
+      this.state.step === 2 && (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'DragAndDrop') &&
       this.state.answerOptions.map(item => item.value).includes('')
     ) {
       notify.show('Ei saa sisältää tyhjiä vastauksia', 'error', 3000)
@@ -435,7 +477,7 @@ export class QuestionForm extends Component {
       notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
+      this.state.step === 2 && (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'DragAndDrop') &&
       hasDuplicates
     ) {
       notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 3000)
@@ -472,12 +514,34 @@ export class QuestionForm extends Component {
       notify.show('Jokin vastausvaihtoehtokenttä sisältää tyhjän vastauksen', 'error', 3000)
       return
     } else if (
+      this.state.step === 2 && this.state.questionType === 'DragAndDrop' &&
+      this.state.fakeAnswerOptions.map(item => item.value).includes('')
+    ) {
+      notify.show('Väärissä vaihtoehdoissa ei voi olla tyhjää riviä', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 && this.state.questionType === 'DragAndDrop' &&
+      this.state.answerOptions.length + this.state.fakeAnswerOptions.length < 2
+    ) {
+      notify.show('Kysymykseen tulee liittyä ainakin kaksi vastausta', 'error', 3000)
+      return
+    } else if (
+      this.state.step === 2 && this.state.questionType === 'DragAndDrop' &&
+      correctValuesContainsFakeValue
+    ) {
+      notify.show('Väärissä vastauksissa on rivi, joka on jo oikeissa vastauksissa', 'error', 3000)
+      return
+    } else if (
       this.state.step === 3 &&
       this.state.checkedConceptIds.length < 1
     ) {
       notify.show('Valitse ainakin yksi käsite', 'error', 3000)
       return
     }
+    if (this.state.questionType === 'DragAndDrop' && this.state.answerOptions.length === 0) {
+      this.setState({ answerOptions: [{ cardId: 0, value: '', checked: true }] })
+    }
+
     this.setState({ step: this.state.step + 1 })
     question.kind = this.state.questionType
     question.item.value = this.state.question
@@ -486,6 +550,13 @@ export class QuestionForm extends Component {
     }
     // setting concepts to hold existing ones, once, after the course has been chosen
     if (this.state.concepts.length < 1) this.setInitialConcepts()
+  }
+
+  stepBack = () => {
+    if (this.state.step === 2) {
+      this.setState({ answerOptions: [], fakeAnswerOptions: [], question: '' })
+    }
+    this.setState({ step: this.state.step - 1})
   }
 
   render() {
@@ -605,7 +676,7 @@ export class QuestionForm extends Component {
                     <Card>
                       <CardContent style={{ marginBottom: '-25px' }}>
                         <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i)}>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, null)}>
                             <CloseIcon />
                           </IconButton>
                         </CardActions>
@@ -616,7 +687,7 @@ export class QuestionForm extends Component {
                           fullWidth
                           rowsMax="6"
                           value={option.value}
-                          onChange={this.handleArrayChange(option, i)}
+                          onChange={this.handleArrayChange(option, i, null)}
                           className="answerField"
                           helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää vastausvaihtoehto'"
                           margin="normal"
@@ -639,7 +710,7 @@ export class QuestionForm extends Component {
                   </div>
                 ))}
                 <div className="addButtonContainer">
-                  <Button onClick={this.addAnswerOption()} fullWidth variant="contained" color="primary" aria-label="Add">
+                  <Button onClick={this.addAnswerOption(null)} fullWidth variant="contained" color="primary" aria-label="Add">
                     + Lisää vastausvaihtoehto
                   </Button>
                 </div>
@@ -666,12 +737,12 @@ export class QuestionForm extends Component {
                 <div>
                   {this.state.answerOptions.map((option, i) => (
                     <div key={i}>
-                      <Grid container spacing={40} direction="row" alignItems="center" >
+                      <Grid container spacing={40} direction="row" alignItems="center">
                         <Grid item>
                           <TextField
                             label="Vastausvaihtoehto"
                             value={option.newValue}
-                            onChange={this.handleArrayChange(option, i)}
+                            onChange={this.handleArrayChange(option, i, null)}
                             className="answerField"
                             helperText='Kirjoita oikea vastausvaihtoehto sanalle ja tallenna sana painamalla +'
                             margin="normal"
@@ -702,6 +773,81 @@ export class QuestionForm extends Component {
                     {this.state.answerOptions.length === 0 ? 'Luo vastausvaihtoehdoille kentät' : 'Päivitä vastausvaihtoehtojen kentät'}
                   </Button>
                 </div>
+              </React.Fragment>
+            )}
+
+            {step === 2 && (questionType === 'DragAndDrop') && (
+              <React.Fragment>
+                <TextField
+                  label="Kysymyksen otsikko"
+                  fullWidth
+                  value={this.state.question}
+                  onChange={this.handleChange('question')}
+                  className="questionField"
+                  placeholder="Esim. Järjestä palat siten, että rivit ovat oikeassa järjestyksessä"
+                  margin="normal"
+                />
+                <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
+                <Typography variant="title" gutterBottom>
+                  Luo haluamasi oikea järjestys
+                </Typography>
+                {this.state.answerOptions.map((option, i) => (
+                  <div className='cardContainer' key={i}>
+                    <Card>
+                      <CardContent style={{ marginBottom: '-25px' }}>
+                        <CardActions className='cardActionArea'>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, true)}>
+                            <CloseIcon />
+                          </IconButton>
+                        </CardActions>
+                        <TextField
+                          label="Teksti riville"
+                          fullWidth
+                          value={option.value}
+                          onChange={this.handleArrayChange(option, i, true)}
+                          className="answerField"
+                          helperText="Kirjoita teksti kenttään, voit lisätä tekstikenttiä painamalla '+ Lisää kenttä'"
+                          margin="normal"
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+
+                <Button onClick={this.addAnswerOption(true)} fullWidth variant="contained" color="primary" aria-label="Add">
+                    + Lisää kenttä
+                </Button>
+                <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
+                <Typography variant='title' gutterBottom>
+                  Voit luoda myös vastaukseen kuulumattomia rivejä
+                </Typography>
+
+                {this.state.fakeAnswerOptions.map((option, i) => (
+                  <div className='cardContainer' key={i}>
+                    <Card>
+                      <CardContent style={{ marginBottom: '-25px' }}>
+                        <CardActions className='cardActionArea'>
+                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, false)}>
+                            <CloseIcon />
+                          </IconButton>
+                        </CardActions>
+                        <TextField
+                          label="Teksti vastaukseen kuulumattomalle riville"
+                          fullWidth
+                          value={option.value}
+                          onChange={this.handleArrayChange(option, i, false)}
+                          className="answerField"
+                          helperText="Kirjoita teksti riville, joka ei kuulu vastaukseen. Voit lisätä rivejä painamalla '+ Lisää vastaukseen kuulumaton rivi'"
+                          margin="normal"
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+                <Button onClick={this.addAnswerOption(false)} fullWidth variant="contained" color="primary" aria-label="Add">
+                    + Lisää vastaukseen kuulumaton rivi
+                </Button>
+
               </React.Fragment>
             )}
 
@@ -768,7 +914,7 @@ export class QuestionForm extends Component {
             <div>
               <Button
                 disabled={this.state.step < 1 || this.state.step > 4}
-                onClick={() => this.setState({ step: this.state.step - 1 })}
+                onClick={this.stepBack}
                 variant="contained"
                 className="backwardButton"
               >
@@ -828,6 +974,7 @@ export class QuestionForm extends Component {
 
 const mapDispatchToProps = {
   postFillInTheBlankQuestion,
+  postDragAndDropQuestion,
   postGeneralQuestion,
   fetchCourses,
   fetchQuestions
