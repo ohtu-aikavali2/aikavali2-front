@@ -3,7 +3,7 @@ import GeneralQuestionAnswer from './GeneralQuestionAnswer'
 import FeedbackBar from '../common/FeedbackBar'
 import Collapse from '@material-ui/core/Collapse'
 
-export const PrintQuestion = ({ question, handleSelect, topLeftContent, topRightContent, answered, selectedList, selectCount }) => {
+export const PrintQuestion = ({ dumb, question, handleSelect, topLeftContent, topRightContent, answered, selectedList, selectCount }) => {
 
   return (
     <div className='printQuestion'>
@@ -16,7 +16,7 @@ export const PrintQuestion = ({ question, handleSelect, topLeftContent, topRight
           <p>{selectCount === 'selectOne' ? 'Valitse oikea vastaus' : 'Valitse kaikki oikeat'}</p>
         </div>
       </div>
-      {question.options.map((option, i) => <GeneralQuestionAnswer key={i} value={option} id={question._id} handleSelect={handleSelect} selectedList={selectedList} selectCount={selectCount} />)}
+      {question.options.map((option, i) => <GeneralQuestionAnswer key={i} value={option} id={question._id} dumb={dumb} handleSelect={handleSelect} selectedList={selectedList} selectCount={selectCount} />)}
     </div>
   )
 }

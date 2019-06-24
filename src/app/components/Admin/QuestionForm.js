@@ -126,7 +126,7 @@ export class QuestionForm extends Component {
         for (let i = 0; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
-      } else if (this.state.answerOptions.length < count ) {
+      } else if (this.state.answerOptions.length < count) {
         console.log('nyt tämä kun lisätään olemassa olevaan')
         copyAnswerOptions = [...this.state.answerOptions]
         console.log(copyAnswerOptions, 'length', copyAnswerOptions.length, 'count', count)
@@ -685,7 +685,7 @@ export class QuestionForm extends Component {
                       </Grid>
                       {this.state.answerOptions[i].correctValues.length === 0 ? '' : (
                         <Typography variant="body1" gutterBottom>
-                          {i+1}:n tyhjän kentän oikeat vastaukset:
+                          {i + 1}:n tyhjän kentän oikeat vastaukset:
                         </Typography>
                       )}
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>

@@ -246,6 +246,7 @@ export class Question extends Component {
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
             selectCount={this.props.question.item.selectCount}
+            dumb={false}
           />
         )}
         {question && question.kind === 'FillInTheBlankQuestion' && (

@@ -27,8 +27,8 @@ const styles = theme => ({
 
 export class GeneralQuestionAnswer extends Component {
   handleClick = () => {
-    const { id, value, userAnswer } = this.props
-    if (!userAnswer) this.props.handleSelect(id, value)
+    const { id, value, userAnswer, dumb } = this.props
+    if (!userAnswer && !dumb) this.props.handleSelect(id, value)
   }
 
   determineStyle = (selected) => {
