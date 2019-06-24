@@ -284,6 +284,7 @@ export class Question extends Component {
             answered={!!userAnswer}
             selectedList={this.state.selectedList}
             handleSelect={this.addToSelectedList}
+            userAnswer={userAnswer}
           />
         )}
         {!userAnswer && !loading && (

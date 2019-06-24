@@ -15,6 +15,10 @@
   justify-content: center;
 }
 
+.dragAndDropQuestion {
+  text-align: center;
+}
+
 .fillInQuestion {
   margin-bottom: 70px;
   padding-bottom: 10px;

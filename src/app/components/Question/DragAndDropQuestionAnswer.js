@@ -40,6 +40,7 @@ const styles = theme => ({
 })
 
 export class DragAndDropAnswer extends Component {
+
   handleClick = () => {
     this.props.handleSelect(this.props.value)
   }
