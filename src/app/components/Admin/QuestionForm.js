@@ -431,6 +431,7 @@ export class QuestionForm extends Component {
     } else if (this.state.questionType === 'DragAndDrop') {
       let answerOptionValues = this.state.answerOptions.map(option => option.value)
       correctValuesContainsFakeValue = answerOptionValues.some(correct => this.state.fakeAnswerOptions.map(item => item.value).includes(correct))
+      hasDuplicates = new Set(answerOptionValues).size !== answerOptionValues.length
     } else if (this.state.questionType === 'FillInTheBlank') {
       containsAtLeastOneBlank = this.state.question.includes('TYHJÄ')
       let helper = this.state.answerOptions.map(option => option.correctValues.some(item => item === '') || option.correctValues.length === 0)
@@ -476,7 +477,7 @@ export class QuestionForm extends Component {
       notify.show('Kysymyksessä tulee olla ainakin yksi väärä vastaus', 'error', 3000)
       return
     } else if (
-      this.state.step === 2 && this.state.questionType === 'GeneralQuestion' &&
+      this.state.step === 2 && (this.state.questionType === 'GeneralQuestion' || this.state.questionType === 'DragAndDrop') &&
       hasDuplicates
     ) {
       notify.show('Kysymyksellä ei saa olla kahta samaa vaihtoehtoa', 'error', 3000)
