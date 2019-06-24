@@ -150,6 +150,12 @@ export class Question extends Component {
     })
   }
 
+  addToSelectedList = (value) => {
+    this.setState({
+      selectedList: this.state.selectedList.concat(value)
+    })
+  }
+
   // Tätä kutsutaan painetaan skip ekan kerran
   skipQuestion = async () => {
     // ON tärkeää että setState on ekana, jotta saadaan välittömästi asetettua selected
@@ -266,6 +272,7 @@ export class Question extends Component {
             topRightContent={this.renderFlagButton()}
             answered={!!userAnswer}
             selectedList={this.state.selectedList}
+            handleSelect={this.addToSelectedList}
           />
         )}
         {!userAnswer && !loading && (

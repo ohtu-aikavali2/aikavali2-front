@@ -6,8 +6,9 @@ import ReactMarkdown from 'react-markdown'
 import Loading from '../common/Loading'
 
 import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
 import CardContent from '@material-ui/core/CardContent'
+import IconButton from '@material-ui/core/Button'
+import AddIcon from '@material-ui/icons/Add'
 
 const styles = theme => ({
   wrapper: {
@@ -40,22 +41,29 @@ const styles = theme => ({
 })
 
 export class DragAndDropAnswer extends Component {
+  handleClick = () => {
+    this.props.handleSelect(this.props.value)
+  }
+
   render() {
     const { classes, value, answering, dumb } = this.props
     const answer_lines = '```\n' + value + ''
     return (
-      <div className={classes.wrapper} style={{ cursor: dumb ? 'default' : 'pointer' }} id='container' onClick={dumb ? null : this.handleClick}>
+      <div className={classes.wrapper} style={{ cursor: 'default'}} id='container' onClick={dumb ? null : this.handleClick}>
         <Card className={classes.paper} id='paper'>
-          <CardActionArea style={{ width: '100%' }}>
-            <CardContent>
-              <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
-                <Grid item className='itemGrid'>
-                  <ReactMarkdown source={answer_lines} />
-                </Grid>
+          <CardContent>
+            <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
+              <Grid item className='itemGrid'>
+                <ReactMarkdown source={answer_lines} />
               </Grid>
-              {answering && <Loading className='answerLoading' bar />}
-            </CardContent>
-          </CardActionArea>
+              <Grid item style={{ position: 'absolute', right: 0 }}>
+                <IconButton aria-label="add" onClick={() => this.handleClick()}>
+                  <AddIcon/>
+                </IconButton>
+              </Grid>
+            </Grid>
+            {answering && <Loading className='answerLoading' bar />}
+          </CardContent>
         </Card>
       </div >
     )
