@@ -20,7 +20,17 @@ import FlagIcon from '@material-ui/icons/Flag'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import Zoom from '@material-ui/core/Zoom'
 import FillQuestion from './FillQuestion'
+import DragAndDropQuestion from './DragAndDropQuestion'
 import Grid from '@material-ui/core/Grid'
+
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list)
+  const [removed] = result.splice(startIndex, 1)
+  result.splice(endIndex, 0, removed)
+  console.log('järjestetty', result)
+  return result
+}
+
 export class Question extends Component {
   constructor() {
     super()
@@ -130,7 +140,7 @@ export class Question extends Component {
 
   handleAnswer = async () => {
     if (this.state.selectedList.length < 1) {
-      notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
+      notify.show('Valitse ainakin yksi vaihtoehto', 'error', 2000)
       return
     }
     let answers = [...this.state.selectedList]
@@ -146,6 +156,18 @@ export class Question extends Component {
     copy[i] = value
     this.setState({
       selectedList: copy
+    })
+  }
+
+  addToSelectedList = (value) => {
+    this.setState({
+      selectedList: this.state.selectedList.concat(value)
+    })
+  }
+
+  removeFromSelectedList = (value) => {
+    this.setState({
+      selectedList: this.state.selectedList.filter(item => item !== value)
     })
   }
 
@@ -222,6 +244,34 @@ export class Question extends Component {
     )
   }
 
+  onDragEnd = (result) => {
+    console.log('tämä on result', result)
+    if (!result.destination) {
+      return
+    }
+    const copy = [...this.state.selectedList]
+    console.log('state on ', copy)
+    const items = reorder(
+      copy,
+      result.source.index,
+      result.destination.index
+    )
+    console.log('järjestyt itemit',items)
+    this.setState({
+      selectedList: items
+    })
+  }
+  renderCorrectDragAndDropQuestionAnswers = (correctAnswer) => (
+    <React.Fragment>
+      <div style={{ maxWidth: '600px', margin: '0 auto', paddingTop: 30 }}>
+        <h4>Oikea järjestys</h4>
+        {correctAnswer.map((answer, i) =>
+          <Grid item style={{ paddingTop: 10 }} key={i}> {answer} </Grid>
+        )}
+      </div>
+    </React.Fragment>
+  )
+
   render() {
     const text = {
       fontSize: 16
@@ -258,12 +308,26 @@ export class Question extends Component {
             handleSelectedList={this.handleSelectedList}
           />
         )}
+        {question && question.kind === 'DragAndDropQuestion' && (
+          <DragAndDropQuestion
+            question={question.item}
+            topLeftContent={this.renderReviewText()}
+            topRightContent={this.renderFlagButton()}
+            answered={!!userAnswer}
+            selectedList={this.state.selectedList}
+            handleSelect={this.addToSelectedList}
+            handleRemove={this.removeFromSelectedList}
+            onDragEnd={this.onDragEnd}
+            userAnswer={userAnswer}
+          />
+        )}
         {!userAnswer && !loading && (
-          <Button style={{ maxWidth: '600px', margin: '0 auto' }} onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
+          <Button style={{ maxWidth: '600px', margin: '0 auto', position: 'relative' }} onClick={e => this.handleAnswer(e)} fullWidth variant="contained" color="primary" aria-label="Answer">Vastaa</Button>
         )}
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         {question && question.kind === 'FillInTheBlankQuestion' && userAnswer && this.renderCorrectFillQuestionAnswers(userAnswer.correctAnswer)}
+        {question && question.kind === 'DragAndDropQuestion' && userAnswer && !userAnswer.isCorrect && this.renderCorrectDragAndDropQuestionAnswers(userAnswer.correctAnswer)}
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div >
     )
