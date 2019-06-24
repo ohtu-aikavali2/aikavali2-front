@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import ReactMarkdown from 'react-markdown'
-import Loading from '../common/Loading'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
@@ -46,7 +45,7 @@ export class DragAndDropAnswer extends Component {
   }
 
   render() {
-    const { classes, value, answering, dumb } = this.props
+    const { classes, value, dumb } = this.props
     const answer_lines = '```\n' + value + ''
     return (
       <div className={classes.wrapper} style={{ cursor: 'default'}} id='container' onClick={dumb ? null : this.handleClick}>
@@ -57,12 +56,11 @@ export class DragAndDropAnswer extends Component {
                 <ReactMarkdown source={answer_lines} />
               </Grid>
               <Grid item style={{ position: 'absolute', right: 0 }}>
-                <IconButton aria-label="add" onClick={() => this.handleClick()}>
+                <IconButton aria-label="add" onClick={() => this.handleClick}>
                   <AddIcon/>
                 </IconButton>
               </Grid>
             </Grid>
-            {answering && <Loading className='answerLoading' bar />}
           </CardContent>
         </Card>
       </div >
