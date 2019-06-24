@@ -2,7 +2,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { QuestionForm } from '../../../app/components/Admin/QuestionForm'
-import Select from '@material-ui/core/Select'
 import { Button, FormControlLabel, Card, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 
@@ -150,9 +149,7 @@ describe('<QuestionForm />', () => {
     let field = wrapper.find('.answerField').at(1)
     field.simulate('change', { target: { value: 'changedValue' } })
     expect(spy).toHaveBeenCalled()
-    expect(wrapper.state().answerOptions).toEqual([{ cardId: 0, value: 'wrong', checked: false },
-    { cardId: 1, value: 'changedValue', checked: false },
-    { cardId: 2, value: 'correct', checked: true }])
+    expect(wrapper.state().answerOptions).toEqual([{ cardId: 0, value: 'wrong', checked: false }, { cardId: 1, value: 'changedValue', checked: false }, { cardId: 2, value: 'correct', checked: true }])
     expect(wrapper.find(Card).length).toBe(3)
   })
   it('cards can be deleted and array is updated to state accordingly', () => {
@@ -161,8 +158,7 @@ describe('<QuestionForm />', () => {
     const button = wrapper.find(IconButton).at(1)
     button.simulate('click')
     expect(spy).toHaveBeenCalled()
-    expect(wrapper.state().answerOptions).toEqual([{ cardId: 0, value: 'wrong', checked: false },
-    { cardId: 1, value: 'correct', checked: true }])
+    expect(wrapper.state().answerOptions).toEqual([{ cardId: 0, value: 'wrong', checked: false }, { cardId: 1, value: 'correct', checked: true }])
   })
   it('stepbar buttons are rendered correctly', () => {
     wrapper.setState(initialState)

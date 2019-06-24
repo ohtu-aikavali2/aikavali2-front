@@ -258,7 +258,8 @@ export class QuestionForm extends Component {
 
   handleSelectCourse(course) {
     this.setState(state => ({
-      course: state.course._id === course._id ? '' : course
+      course: state.course._id === course._id ? '' : course,
+      groupId: ''
     }))
   }
 
@@ -501,7 +502,7 @@ export class QuestionForm extends Component {
 
             {step === 0 && (
               <React.Fragment>
-                <h2>Valitse kurssi ja ryhmä</h2>
+                <h2>Valitse kurssi</h2>
                 <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
                 {this.props.courses.map(course => (
                   <SelectBox key={course._id} content={course.name} onClick={() => this.handleSelectCourse(course)} selected={course._id === this.state.course._id} />
@@ -520,7 +521,7 @@ export class QuestionForm extends Component {
                   //   )
                   // }
                 ))}
-                {this.state.course !== '' ? (
+                {this.state.course.groups ? (
                   <div>
                     <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
                     {this.state.course.groups.map(group => {
