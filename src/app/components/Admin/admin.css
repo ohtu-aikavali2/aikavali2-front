@@ -23,15 +23,6 @@
     padding-bottom: 10px;
 }
 
-.clickbox {
-    margin: 2%;
-    cursor: pointer;
-}
-
-.clickbox-link {
-  all: unset;
-}
-
 .removeButtonContainer {
     float: left;
     margin-left: 5px;

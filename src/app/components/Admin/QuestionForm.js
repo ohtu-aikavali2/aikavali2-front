@@ -269,18 +269,6 @@ export class QuestionForm extends Component {
     }))
   }
 
-  determineCardStyle = (selected) => {
-    return (selected
-      ? {
-        background: '#3f51b5',
-        textColor: 'white'
-      } : {
-        background: 'white',
-        textColor: 'black'
-      }
-    )
-  }
-
   postNewConcept = (concept) => {
     conceptService
       .postConcept(concept)
@@ -506,38 +494,13 @@ export class QuestionForm extends Component {
                 <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
                 {this.props.courses.map(course => (
                   <SelectBox key={course._id} content={course.name} onClick={() => this.handleSelectCourse(course)} selected={course._id === this.state.course._id} />
-
-                  //   const style = this.determineCardStyle(course._id === this.state.course._id)
-                  //   return (
-                  //     <div className='clickbox' key={course._id}>
-                  //       <div className='clickbox-link' onClick={() => this.handleSelectCourse(course)}>
-                  //         <Card style={{ background: style.background }} className='clickbox-container'>
-                  //           <CardContent style={{ color: style.textColor }}>
-                  //             {course.name}
-                  //           </CardContent>
-                  //         </Card>
-                  //       </div>
-                  //     </div>
-                  //   )
-                  // }
                 ))}
                 {this.state.course.groups ? (
                   <div>
                     <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
-                    {this.state.course.groups.map(group => {
-                      const style = this.determineCardStyle(group._id === this.state.groupId)
-                      return (
-                        <div className='clickbox' key={group._id}>
-                          <div className='clickbox-link' onClick={() => this.handleSelectGroup(group._id)}>
-                            <Card style={{ background: style.background }} className='clickbox-container'>
-                              <CardContent style={{ color: style.textColor }}>
-                                {group.name}
-                              </CardContent>
-                            </Card>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    {this.state.course.groups.map(group => (
+                      <SelectBox key={group._id} content={group.name} onClick={() => this.handleSelectGroup(group._id)} selected={group._id === this.state.groupId} />
+                    ))}
                   </div>
                 ) : null}
               </React.Fragment>
@@ -547,20 +510,9 @@ export class QuestionForm extends Component {
               <React.Fragment>
                 <h2>Valitse tyyppi</h2>
                 <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
-                {questionTypes.map(option => {
-                  const style = this.determineCardStyle(option.value === this.state.questionType)
-                  return (
-                    <div className='clickbox' key={option.value}>
-                      <div className='clickbox-link' onClick={() => this.handleSelectType(option.value)}>
-                        <Card style={{ background: style.background }} className='clickbox-container'>
-                          <CardContent style={{ color: style.textColor }}>
-                            {option.label}
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </div>
-                  )
-                })}
+                {questionTypes.map(option => (
+                  <SelectBox key={option.value} content={option.label} onClick={() => this.handleSelectType(option.value)} selected={option.value === this.state.questionType} />
+                ))}
               </React.Fragment>
             )}
 
