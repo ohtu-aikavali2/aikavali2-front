@@ -20,6 +20,7 @@ import FlagIcon from '@material-ui/icons/Flag'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import Zoom from '@material-ui/core/Zoom'
 import FillQuestion from './FillQuestion'
+import DragAndDropQuestion from './DragAndDropQuestion'
 import Grid from '@material-ui/core/Grid'
 export class Question extends Component {
   constructor() {
@@ -256,6 +257,15 @@ export class Question extends Component {
             answered={!!userAnswer}
             selectedList={this.state.selectedList}
             handleSelectedList={this.handleSelectedList}
+          />
+        )}
+        {question && question.kind === 'DragAndDropQuestion' && (
+          <DragAndDropQuestion
+            question={question.item}
+            topLeftContent={this.renderReviewText()}
+            topRightContent={this.renderFlagButton()}
+            answered={!!userAnswer}
+            selectedList={this.state.selectedList}
           />
         )}
         {!userAnswer && !loading && (
