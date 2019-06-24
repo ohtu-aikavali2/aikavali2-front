@@ -27,6 +27,7 @@ import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
 import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography } from '@material-ui/core'
+import SelectBox from '../common/SelectBox'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -502,20 +503,23 @@ export class QuestionForm extends Component {
               <React.Fragment>
                 <h2>Valitse kurssi ja ryhmä</h2>
                 <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
-                {this.props.courses.map(course => {
-                  const style = this.determineCardStyle(course._id === this.state.course._id)
-                  return (
-                    <div className='clickbox' key={course._id}>
-                      <div className='clickbox-link' onClick={() => this.handleSelectCourse(course)}>
-                        <Card style={{ background: style.background }} className='clickbox-container'>
-                          <CardContent style={{ color: style.textColor }}>
-                            {course.name}
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </div>
-                  )
-                })}
+                {this.props.courses.map(course => (
+                  <SelectBox key={course._id} content={course.name} onClick={() => this.handleSelectCourse(course)} selected={course._id === this.state.course._id} />
+
+                  //   const style = this.determineCardStyle(course._id === this.state.course._id)
+                  //   return (
+                  //     <div className='clickbox' key={course._id}>
+                  //       <div className='clickbox-link' onClick={() => this.handleSelectCourse(course)}>
+                  //         <Card style={{ background: style.background }} className='clickbox-container'>
+                  //           <CardContent style={{ color: style.textColor }}>
+                  //             {course.name}
+                  //           </CardContent>
+                  //         </Card>
+                  //       </div>
+                  //     </div>
+                  //   )
+                  // }
+                ))}
                 {this.state.course !== '' ? (
                   <div>
                     <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
