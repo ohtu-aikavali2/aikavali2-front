@@ -140,7 +140,7 @@ export class Question extends Component {
 
   handleAnswer = async () => {
     if (this.state.selectedList.length < 1) {
-      notify.show('Valitse ainakin yksi vastaus', 'error', 2000)
+      notify.show('Valitse ainakin yksi vaihtoehto', 'error', 2000)
       return
     }
     let answers = [...this.state.selectedList]
@@ -255,6 +255,16 @@ export class Question extends Component {
       selectedList: items
     })
   }
+  renderCorrectDragAndDropQuestionAnswers = (correctAnswer) => (
+    <React.Fragment>
+      <div style={{ maxWidth: '600px', margin: '0 auto', paddingTop: 30 }}>
+        <h4>Oikea järjestys</h4>
+        {correctAnswer.map((answer, i) =>
+          <Grid item style={{ paddingTop: 10 }} key={i}> {answer} </Grid>
+        )}
+      </div>
+    </React.Fragment>
+  )
 
   render() {
     const text = {
@@ -301,6 +311,7 @@ export class Question extends Component {
             selectedList={this.state.selectedList}
             handleSelect={this.addToSelectedList}
             onDragEnd={this.onDragEnd}
+            userAnswer={userAnswer}
           />
         )}
         {!userAnswer && !loading && (
@@ -309,6 +320,7 @@ export class Question extends Component {
         <ReviewPopup toggle={this.toggleReviewWindow} submit={this.handleQuestionReview} checked={this.state.showReview} timeout={200} />
         <ButtonBar handleSkip={questionMessage === null ? this.getNewQuestion : () => { console.log('skipDisabled') }} showNext={userAnswer !== null} noMoreQuestions={questionMessage !== null} />
         {question && question.kind === 'FillInTheBlankQuestion' && userAnswer && this.renderCorrectFillQuestionAnswers(userAnswer.correctAnswer)}
+        {question && question.kind === 'DragAndDropQuestion' && userAnswer && !userAnswer.isCorrect && this.renderCorrectDragAndDropQuestionAnswers(userAnswer.correctAnswer)}
         <div style={{ width: '100%', height: 70 }} className='offset' />
       </div >
     )
