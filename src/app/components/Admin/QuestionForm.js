@@ -612,9 +612,13 @@ export class QuestionForm extends Component {
                         <TextField
                           key={i}
                           label="Vastaus"
-                          multiline
                           fullWidth
-                          rowsMax="6"
+                          multiline={true}
+                          inputProps={{
+                            maxLength: 45
+                            // if card content rendering multiple rows gets fixed, change length to higher:
+                            // maxLength: 255
+                          }}
                           value={option.value}
                           onChange={this.handleArrayChange(option, i)}
                           className="answerField"
