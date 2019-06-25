@@ -119,7 +119,7 @@ class Questions extends Component {
       counter += 1
       data.push({
         id: counter,
-        value: (q.question.kind === 'PrintQuestion' || q.question.kind === 'GeneralQuestion') ? q.question.item.value : 'Mikä kääntyy?',
+        value: q.question.item.value === undefined ? 'ei määritelty' : q.question.item.value,
         course: q.group ? q.group.course ? q.group.course.name : 'ei määritelty' : 'ei määritelty',
         group: q.group ? q.group.name : 'ei määritelty',
         flags: q.flags.length,
@@ -135,7 +135,7 @@ class Questions extends Component {
     const question = this.props.questions.find(q => q._id === id)
     return (
       <AlertWindow neutral>
-        <DumbQuestion question={question.question} correctAnswer={question.correctAnswers[0].value} />
+        <DumbQuestion question={question.question} />
       </AlertWindow>
     )
   }

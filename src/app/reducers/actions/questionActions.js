@@ -83,6 +83,12 @@ export const postFillInTheBlankQuestion = (groupId, value, correctAnswers, conce
   }
 }
 
+export const postDragAndDropQuestion = (groupId, value, correctAnswers, options, concepts) => {
+  return async () => {
+    await questionService.postQuestion({ type: 'dragAndDrop', value, correctAnswers, options, groupId, concepts })
+  }
+}
+
 export const postGeneralQuestion = (groupId, value, correctAnswers, options, concepts, selectCount) => {
   return async () => {
     await questionService.postQuestion({ type: 'general', value, correctAnswers, options, groupId, concepts, selectCount })

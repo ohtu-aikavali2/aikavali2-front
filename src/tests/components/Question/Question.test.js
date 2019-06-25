@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import PrintQuestion from '../../../app/components/Question/PrintQuestion'
+import GeneralQuestion from '../../../app/components/Question/GeneralQuestion'
 import CompileQuestion from '../../../app/components/Question/CompileQuestion'
 import { Question } from '../../../app/components/Question'
 import AlertWindow from '../../../app/components/common/AlertWindow'
@@ -93,17 +93,17 @@ describe('<Question />', () => {
       children: alertWindowProps.children
     })
   })
-  it('renders only PrintQuestion when question.kind is PrintQuestion', () => {
+  it('renders only GeneralQuestion when question.kind is GenaralQuestion', () => {
     question.setProps({
       ...props,
-      question: questions[0],
+      question: questions[2],
       game: {
         started: true,
         ended: false
       }
     })
     expect(question.find(CompileQuestion).length).toBe(0)
-    expect(question.find(PrintQuestion).length).toBe(1)
+    expect(question.find(GeneralQuestion).length).toBe(1)
   })
   it('renders ButtonBar with correct props', () => {
     expect(question.find(ButtonBar).length).toBe(1)
