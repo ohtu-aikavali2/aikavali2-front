@@ -567,7 +567,7 @@ export class QuestionForm extends Component {
                 {this.props.courses.map(course => (
                   <SelectBox
                     key={course._id}
-                    className="selectBox"
+                    className="courseSelectBox"
                     content={course.name}
                     onClick={() => this.handleSelectCourse(course)}
                     selected={course._id === this.state.course._id}
@@ -579,7 +579,7 @@ export class QuestionForm extends Component {
                     {this.state.course.groups.map(group => (
                       <SelectBox
                         key={group._id}
-                        className="selectBox"
+                        className="groupSelectBox"
                         content={group.name}
                         onClick={() => this.handleSelectGroup(group._id)}
                         selected={group._id === this.state.groupId} />
@@ -596,7 +596,7 @@ export class QuestionForm extends Component {
                 {questionTypes.map(option => (
                   <SelectBox
                     key={option.value}
-                    className="selectBox"
+                    className="typeSelectBox"
                     content={option.label}
                     onClick={() => this.handleSelectType(option.value)}
                     selected={option.value === this.state.questionType} />

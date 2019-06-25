@@ -44,7 +44,7 @@ describe('<QuestionForm />', () => {
       history: {
         push: jest.fn()
       },
-      courses: [],
+      courses: [c],
       questions: [],
       questionTypes: questionTypes
     }
@@ -60,18 +60,19 @@ describe('<QuestionForm />', () => {
   it('at start, question field is not rendered', () => {
     expect(wrapper.find('.questionField').length).toBe(0)
   })
-  // it('user can select course and group and question field is not yet rendered', () => {
-  //   const select = wrapper.find(Select)
-  //   expect(wrapper.find('.questionField').length).toBe(0)
-  //   select.simulate('change', { target: { value: c.name } })
-  //   expect(wrapper.state().course).toEqual('Programming')
-  //   const selectSecond = wrapper.find(Select).at(1)
-  //   selectSecond.simulate('change', { target: { value: c.groups[0] } })
-  //   expect(wrapper.state().groupId).toEqual('groupid123')
-  // })
+  it('user can select course and group and question field is not yet rendered', () => {
+    const select = wrapper.find('.courseSelectBox').first()
+    // console.log('----------------', select)
+    // expect(wrapper.find('.questionField').length).toBe(0)
+    select.simulate('click')
+    expect(wrapper.state().course.name).toEqual('Programming')
+    // const selectSecond = wrapper.find('.selectBox').at(1)
+    // selectSecond.simulate('click')
+    // expect(wrapper.state().groupId).toEqual('groupid123')
+  })
   it('user can select \'Yleinen kysymys\' and state will be updated', () => {
     wrapper.setState({ step: 1 })
-    const field = wrapper.find('.selectBox').first()
+    const field = wrapper.find('.typeSelectBox').first()
     field.simulate('click')
     expect(wrapper.state().questionType).toEqual(questionTypes[0].value)
   })
