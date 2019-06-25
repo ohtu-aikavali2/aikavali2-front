@@ -565,13 +565,24 @@ export class QuestionForm extends Component {
                 <h2>Valitse kurssi</h2>
                 <InputLabel style={{ fontSize: 13 }}>Kurssi</InputLabel>
                 {this.props.courses.map(course => (
-                  <SelectBox key={course._id} content={course.name} onClick={() => this.handleSelectCourse(course)} selected={course._id === this.state.course._id} />
+                  <SelectBox
+                    key={course._id}
+                    className="selectBox"
+                    content={course.name}
+                    onClick={() => this.handleSelectCourse(course)}
+                    selected={course._id === this.state.course._id}
+                  />
                 ))}
                 {this.state.course.groups ? (
                   <div>
                     <InputLabel style={{ fontSize: 13 }}>Ryhmä</InputLabel>
                     {this.state.course.groups.map(group => (
-                      <SelectBox key={group._id} content={group.name} onClick={() => this.handleSelectGroup(group._id)} selected={group._id === this.state.groupId} />
+                      <SelectBox
+                        key={group._id}
+                        className="selectBox"
+                        content={group.name}
+                        onClick={() => this.handleSelectGroup(group._id)}
+                        selected={group._id === this.state.groupId} />
                     ))}
                   </div>
                 ) : null}
@@ -583,7 +594,12 @@ export class QuestionForm extends Component {
                 <h2>Valitse tyyppi</h2>
                 <InputLabel style={{ fontSize: 13 }}>Kysymystyyppi</InputLabel>
                 {questionTypes.map(option => (
-                  <SelectBox key={option.value} content={option.label} onClick={() => this.handleSelectType(option.value)} selected={option.value === this.state.questionType} />
+                  <SelectBox
+                    key={option.value}
+                    className="selectBox"
+                    content={option.label}
+                    onClick={() => this.handleSelectType(option.value)}
+                    selected={option.value === this.state.questionType} />
                 ))}
               </React.Fragment>
             )}

@@ -69,17 +69,16 @@ describe('<QuestionForm />', () => {
   //   selectSecond.simulate('change', { target: { value: c.groups[0] } })
   //   expect(wrapper.state().groupId).toEqual('groupid123')
   // })
-  // it('user can select \'Yleinen kysymys\' and state will be updated', () => {
-  //   wrapper.setState({ step: 1 })
-  //   expect(wrapper.find('.clickbox-link').length).toBe(3)
-  //   const field = wrapper.find('.clickbox-link').first()
-  //   field.simulate('click')
-  //   expect(wrapper.state().questionType).toEqual(questionTypes[0].value)
-  // })
+  it('user can select \'Yleinen kysymys\' and state will be updated', () => {
+    wrapper.setState({ step: 1 })
+    const field = wrapper.find('.selectBox').first()
+    field.simulate('click')
+    expect(wrapper.state().questionType).toEqual(questionTypes[0].value)
+  })
   it('user input to question field calls method handleChange and stores value to state', () => {
     wrapper.setState({ step: 2 })
     const spy = jest.spyOn(wrapper.instance(), 'handleChange')
-    let field = wrapper.find('.questionField')
+    let field = wrapper.find('.questionField').first()
     field.simulate('change', { target: { value: 'question?' } })
     expect(wrapper.state().question).toEqual('question?')
     expect(spy).toHaveBeenCalled()
@@ -88,7 +87,6 @@ describe('<QuestionForm />', () => {
   })
   it('radiobutton labels are rendered correctly', () => {
     let radioFirst = wrapper.find(FormControlLabel).first().prop('label')
-    console.log(radioFirst.debug())
     expect(radioFirst).toEqual('Voi valita yhden vastauksen')
     let radioSecond = wrapper.find(FormControlLabel).at(1).prop('label')
     expect(radioSecond).toEqual('Voi valita monta vastausta')
