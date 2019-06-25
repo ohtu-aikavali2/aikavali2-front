@@ -27,8 +27,8 @@ const styles = theme => ({
 
 export class GeneralQuestionAnswer extends Component {
   handleClick = () => {
-    const { id, value, userAnswer } = this.props
-    if (!userAnswer) this.props.handleSelect(id, value)
+    const { id, value, userAnswer, dumb } = this.props
+    if (!userAnswer && !dumb) this.props.handleSelect(id, value)
   }
 
   determineStyle = (selected) => {
@@ -77,8 +77,8 @@ export class GeneralQuestionAnswer extends Component {
         <Card className={classes.paper} id='paper' style={style.backgroundStyle}>
           <CardActionArea style={{ width: '100%' }}>
             <CardContent>
-              <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
-                <Grid style={textStyle} item className='itemGrid'>
+              <Grid container wrap="nowrap" spacing={16} className='containerGrid' >
+                <Grid item style={textStyle} className='itemGrid' >
                   <svg style={{ width: '24px', height: '24px', viewBox: '0 0 24 24', float: 'left', padding: '10px' }}>
                     <path fill="#000000" d={style.answerIcon} />
                   </svg>
