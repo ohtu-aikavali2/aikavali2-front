@@ -320,6 +320,7 @@ export class Question extends Component {
             handleRemove={this.removeFromSelectedList}
             onDragEnd={this.onDragEnd}
             userAnswer={userAnswer}
+            dumb={false}
           />
         )}
         {!userAnswer && !loading && (
