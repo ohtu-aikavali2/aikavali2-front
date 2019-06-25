@@ -60,13 +60,12 @@ describe('<QuestionForm />', () => {
   it('at start, question field is not rendered', () => {
     expect(wrapper.find('.questionField').length).toBe(0)
   })
-  it('user can select course and group and question field is not yet rendered', () => {
+  it('user can select course and question field is not yet rendered', () => {
     const select = wrapper.find('.courseSelectBox').first()
-    // console.log('----------------', select)
-    // expect(wrapper.find('.questionField').length).toBe(0)
+    expect(wrapper.find('.questionField').length).toBe(0)
     select.simulate('click')
     expect(wrapper.state().course.name).toEqual('Programming')
-    // const selectSecond = wrapper.find('.selectBox').at(1)
+    // const selectSecond = wrapper.find('.groupSelectBox').first()
     // selectSecond.simulate('click')
     // expect(wrapper.state().groupId).toEqual('groupid123')
   })
