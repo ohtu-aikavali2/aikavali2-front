@@ -14,9 +14,10 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
   const notSelected = question.options.filter(f => !selectedList.includes(f))
 
   const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? 'white' : 'white',
-    padding: 8,
-    width: 600,
+    background: isDraggingOver ? 'white' : '',
+    margin: '0 auto',
+    width: '600px',
+    maxWidth: '98%',
     display: 'inline-block',
     paddingBottom: 100
   })
