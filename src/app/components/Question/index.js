@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import PrintQuestion from './PrintQuestion'
+import GeneralQuestion from './GeneralQuestion'
 import ButtonBar from '../common/ButtonBar'
 import AlertWindow from '../common/AlertWindow'
 import Typography from '@material-ui/core/Typography'
@@ -287,8 +287,8 @@ export class Question extends Component {
           </AlertWindow>
         )}
         {loading && <Loading />}
-        {question && (question.kind === 'PrintQuestion' || question.kind === 'GeneralQuestion') && (
-          <PrintQuestion
+        {question && question.kind === 'GeneralQuestion' && (
+          <GeneralQuestion
             question={question.item}
             handleSelect={this.handleSelect}
             selectedList={this.state.selectedList}

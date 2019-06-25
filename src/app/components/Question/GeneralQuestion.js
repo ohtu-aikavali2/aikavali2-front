@@ -3,10 +3,10 @@ import GeneralQuestionAnswer from './GeneralQuestionAnswer'
 import FeedbackBar from '../common/FeedbackBar'
 import Collapse from '@material-ui/core/Collapse'
 
-export const PrintQuestion = ({ dumb, question, handleSelect, topLeftContent, topRightContent, answered, selectedList, selectCount }) => {
+export const GeneralQuestion = ({ dumb, question, handleSelect, topLeftContent, topRightContent, answered, selectedList, selectCount }) => {
 
   return (
-    <div className='printQuestion'>
+    <div className='generalQuestion'>
       <Collapse in={answered} timeout={400}>
         <FeedbackBar topLeftContent={topLeftContent} topRightContent={topRightContent} />
       </Collapse>
@@ -21,4 +21,4 @@ export const PrintQuestion = ({ dumb, question, handleSelect, topLeftContent, to
   )
 }
 
-export default PrintQuestion
+export default GeneralQuestion
