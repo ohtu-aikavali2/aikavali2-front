@@ -54,7 +54,7 @@ export class FillQuestionAnswer extends Component {
         }
       }
     }
-    if (userAnswer && w[i] && selectedList[i] && w[i].includes(selectedList[i].toUpperCase())) {
+    if (userAnswer && w[i] && selectedList[i] && !selectedList[i].value && w[i].includes(selectedList[i].toUpperCase())) {
       return 'correct'
     } else if (userAnswer) {
       return 'wrong'
