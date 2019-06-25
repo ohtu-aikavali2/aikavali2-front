@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import GeneralQuestion from './GeneralQuestion'
+import FillQuestion from './FillQuestion'
 
 class DumbQuestion extends Component {
 
@@ -8,7 +9,7 @@ class DumbQuestion extends Component {
     return (
       <div className='dumbQuestionContainer' style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         {question && question.kind === 'GeneralQuestion' && <GeneralQuestion question={question.item} handleQuestionReview={null} handleSelect={null} handleSkip={null} selected={null} dumb={true} correctAnswer={correctAnswer} />}
-        {/* {question && question.kind === 'FillInTheBlankQuestion' && <FillInTheBlank />} */}
+        {question && question.kind === 'FillInTheBlank' && <FillQuestion question={question.item}  topLeftContent={null} topRightContent={null} answered={null} selectedList={null}  handleSelectedList={null} dumb={true}/>}
       </div>
     )
   }
