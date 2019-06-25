@@ -38,7 +38,7 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
           </Typography>
         </div>
       </div>
-      {notSelected.map((option, i) => <DragAndDropQuestionAnswer key={i} value={option} selectedList={selectedList} handleSelect={handleSelect} />)}
+      {notSelected.map((option, i) => <DragAndDropQuestionAnswer key={i} value={option} selectedList={selectedList} handleSelect={handleSelect} dumb={true} />)}
       <Divider variat='middle' style={{ marginTop: '20px', marginBottom: '20px' }}/>
       {selectedList.length < 1 ? '' : (
         <div>
