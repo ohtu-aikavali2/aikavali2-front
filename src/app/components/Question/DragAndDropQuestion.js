@@ -44,7 +44,10 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
       {selectedList.length < 1 ? '' : (
         <div>
           <Typography variant="title" gutterBottom>
-            Raahaa paikoilleen
+            Valitut palat
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            Voit muuttaa järjestystä raahaamalla paloja
           </Typography>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable-0">
