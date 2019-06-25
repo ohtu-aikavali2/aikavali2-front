@@ -12,15 +12,13 @@ import IconButton from '@material-ui/core/Button'
 import RemoveIcon from '@material-ui/icons/Remove'
 
 const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
   userSelect: 'none',
   position: 'relative',
   margin: '0 0 8px 0',
-
+  maxWidth: '600px',
   // change background colour if dragging
   background: isDragging ? 'lightgray' : 'white',
-
-  // styles we need to apply on draggables
+  // styles to apply on draggables
   ...draggableStyle
 })
 
