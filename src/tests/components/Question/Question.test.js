@@ -42,7 +42,7 @@ describe('<Question />', () => {
           'option2',
           'option3'
         ],
-        value: 'Yleinen kysymys',
+        value: 'Monivalinta',
         _id: '12345',
         selectCount: 'selectOne'
       },

@@ -23,7 +23,7 @@ describe('<QuestionForm />', () => {
   const questionTypes = [
     {
       value: 'GeneralQuestion',
-      label: 'Yleinen kysymys'
+      label: 'Monivalinta'
     }
   ]
   let c = {
@@ -69,7 +69,7 @@ describe('<QuestionForm />', () => {
     // selectSecond.simulate('click')
     // expect(wrapper.state().groupId).toEqual('groupid123')
   })
-  it('user can select \'Yleinen kysymys\' and state will be updated', () => {
+  it('user can select \'Monivalinta\' and state will be updated', () => {
     wrapper.setState({ step: 1 })
     const field = wrapper.find('.typeSelectBox').first()
     field.simulate('click')

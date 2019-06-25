@@ -33,7 +33,7 @@ import SelectBox from '../common/SelectBox'
 const questionTypes = [
   {
     value: 'GeneralQuestion',
-    label: 'Yleinen kysymys'
+    label: 'Monivalinta'
   },
   {
     value: 'FillInTheBlank',
