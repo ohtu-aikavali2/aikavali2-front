@@ -8,6 +8,7 @@ class DumbQuestion extends Component {
     return (
       <div className='dumbQuestionContainer' style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         {question && question.kind === 'GeneralQuestion' && <GeneralQuestion question={question.item} handleQuestionReview={null} handleSelect={null} handleSkip={null} selected={null} dumb={true} correctAnswer={correctAnswer} />}
+        {/* {question && question.kind === 'FillInTheBlankQuestion' && <FillInTheBlank />} */}
       </div>
     )
   }
