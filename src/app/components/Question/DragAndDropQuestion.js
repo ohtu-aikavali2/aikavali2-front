@@ -14,9 +14,10 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
   const notSelected = question.options.filter(f => !selectedList.includes(f))
 
   const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? 'white' : 'white',
-    padding: 8,
-    width: 600,
+    background: isDraggingOver ? 'white' : '',
+    margin: '0 auto',
+    width: '600px',
+    maxWidth: '98%',
     display: 'inline-block',
     paddingBottom: 100
   })
@@ -38,12 +39,15 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
           </Typography>
         </div>
       </div>
-      {notSelected.map((option, i) => <DragAndDropQuestionAnswer key={i} value={option} selectedList={selectedList} handleSelect={handleSelect} />)}
+      {notSelected.map((option, i) => <DragAndDropQuestionAnswer key={i} value={option} selectedList={selectedList} handleSelect={handleSelect} dumb={true} />)}
       <Divider variat='middle' style={{ marginTop: '20px', marginBottom: '20px' }}/>
       {selectedList.length < 1 ? '' : (
         <div>
           <Typography variant="title" gutterBottom>
-            Raahaa paikoilleen
+            Valitut palat
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            Voit muuttaa järjestystä raahaamalla paloja
           </Typography>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable-0">
