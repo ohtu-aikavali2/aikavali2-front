@@ -72,7 +72,7 @@ export class QuestionForm extends Component {
     }
   }
 
-  async fetchData() {
+  fetchData = async () => {
     try {
       await this.props.fetchCourses()
       await this.props.fetchQuestions()
@@ -83,11 +83,11 @@ export class QuestionForm extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.fetchData()
   }
 
-  reset() {
+  reset = () => {
     this.fetchData()
     this.setState({ step: 0 })
   }
