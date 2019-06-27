@@ -10,6 +10,8 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import SaveIcon from '@material-ui/icons/Save'
 import CloseIcon from '@material-ui/icons/Close'
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import AddIcon from '@material-ui/icons/Add'
 import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBackward from '@material-ui/icons/ArrowBack'
@@ -346,6 +348,23 @@ export class QuestionForm extends Component {
   setInitialConcepts = () => {
     if (this.state.course.concepts) this.setState({
       concepts: this.state.course.concepts
+    })
+  }
+
+  swapTwoCards = (direction, index) => () => {
+    let copy = [...this.state.answerOptions]
+    let temp = copy[index]
+    if (direction === 'up') {
+      copy[index] = { ...copy[index-1], cardId: copy[index-1].cardId + 1 }
+      copy[index-1] = { ...temp, cardId: temp.cardId - 1 }
+      console.log(copy)
+    } else {
+      copy[index] = { ...copy[index+1], cardId: copy[index+1].cardId - 1 }
+      copy[index+1] = { ...temp, cardId: temp.cardId + 1 }
+      console.log(copy)
+    }
+    this.setState({
+      answerOptions: copy
     })
   }
 
@@ -787,6 +806,12 @@ export class QuestionForm extends Component {
                     <Card>
                       <CardContent style={{ marginBottom: '-25px' }}>
                         <CardActions className='cardActionArea'>
+                          <IconButton aria-label="down-button" disabled={option.cardId+1 === this.state.answerOptions.length} onClick={this.swapTwoCards('down', i)}>
+                            <ArrowDownwardIcon />
+                          </IconButton>
+                          <IconButton aria-label="up-button" disabled={option.cardId === 0} onClick={this.swapTwoCards('up', i)}>
+                            <ArrowUpwardIcon />
+                          </IconButton>
                           <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, true)}>
                             <CloseIcon />
                           </IconButton>
