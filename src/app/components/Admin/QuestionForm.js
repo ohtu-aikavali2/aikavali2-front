@@ -76,7 +76,6 @@ export class QuestionForm extends Component {
     try {
       await this.props.fetchCourses()
       await this.props.fetchQuestions()
-
     } catch (e) {
       console.log(e)
       return
@@ -87,7 +86,7 @@ export class QuestionForm extends Component {
     this.fetchData()
   }
 
-  reset = () => {
+  handleNewQuestion = () => {
     this.fetchData()
     this.setState({ step: 0 })
   }
@@ -948,7 +947,7 @@ export class QuestionForm extends Component {
               )}
               {step > 4 && (
                 <Button
-                  onClick={() => this.reset()}
+                  onClick={() => this.handleNewQuestion()}
                   variant="contained"
                   color="primary"
                 >
