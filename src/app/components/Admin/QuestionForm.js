@@ -1,33 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import InputLabel from '@material-ui/core/InputLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import SaveIcon from '@material-ui/icons/Save'
-import CloseIcon from '@material-ui/icons/Close'
-import AddIcon from '@material-ui/icons/Add'
-import ArrowForward from '@material-ui/icons/ArrowForward'
-import ArrowBackward from '@material-ui/icons/ArrowBack'
-import DumbQuestion from '../Question/DumbQuestion'
 import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
+import {
+  TextField, Button, InputLabel, Checkbox, FormGroup, FormControlLabel,
+  Card, CardContent, CardActions, IconButton, Grid, Chip, Typography, Divider
+} from '@material-ui/core'
+import { Save as SaveIcon, Close as CloseIcon, Add as AddIcon, ArrowForward, ArrowBack as ArrowBackward } from '@material-ui/icons'
+import DumbQuestion from '../Question/DumbQuestion'
 import ConfirmPopup from './Popups/ConfirmPopup'
 import './admin.css'
-import {
-  postFillInTheBlankQuestion,
-  postGeneralQuestion,
-  postDragAndDropQuestion,
-  fetchQuestions
-} from '../../reducers/actions/questionActions'
+import { postFillInTheBlankQuestion, postGeneralQuestion, postDragAndDropQuestion, fetchQuestions } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
-import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography, Divider } from '@material-ui/core'
 import SelectBox from '../common/SelectBox'
 import GeneralQuestionForm from './GeneralQuestionForm'
 // so far the question types are fixed
@@ -803,7 +788,13 @@ export class QuestionForm extends Component {
                   </Button>
                 </div>
 
-                <ConfirmPopup title={`Oletko varma, että haluat lisätä uuden käsitteen "${this.state.newConcept}" ?`} description1={'Valitsemalla OK käsite lisätään heti kurssin käsitteisiin.'} okText={'OK'} toggle={this.toggleConfirmPopup} okClick={() => this.addNewConcept(this.state.newConcept)} checked={this.state.showConfirmPopup} timeout={200} />
+                <ConfirmPopup
+                  title={`Oletko varma, että haluat lisätä uuden käsitteen "${this.state.newConcept}" ?`}
+                  description1={'Valitsemalla OK käsite lisätään heti kurssin käsitteisiin.'}
+                  okText={'OK'}
+                  toggle={this.toggleConfirmPopup}
+                  okClick={() => this.addNewConcept(this.state.newConcept)} checked={this.state.showConfirmPopup} timeout={200}
+                />
               </React.Fragment>
             )}
           </form>
