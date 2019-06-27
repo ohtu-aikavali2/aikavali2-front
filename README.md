@@ -16,6 +16,16 @@ Install dependencies:
 
 ```npm install```
 
+Create .env file: 
+
+```touch .env```
+
+Add two environmental variables needed for the TMC.
+```
+REACT_APP_TMC_CLIENT_ID
+REACT_APP_TMC_SECRET
+```
+
 Start the project:
 
 ```npm start```
