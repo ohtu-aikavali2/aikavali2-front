@@ -9,17 +9,14 @@ import Dialog from '@material-ui/core/Dialog'
 class SimpleDialog extends React.Component {
 
   sortQuestions = questions => {
+    // map to text values
     const questionItems = questions.map(question => question.question.item.value)
+    // creates a map which includes counts and text values of questions
     const uniqueItemsWithCounts = questionItems.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map())
+    // sorts the map by their counts and then stores the keys to sortedQuestions
     const sortedQuestions = new Map([...uniqueItemsWithCounts.entries()].sort((a, b) => b[1] - a[1])).keys()
-    return Array.from(sortedQuestions)
-  }
-
-  sortQuestions = questions => {
-    const questionItems = questions.map(question => question.question.item.value)
-    const uniqueItemsWithCounts = questionItems.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map())
-    const sortedQuestions = new Map([...uniqueItemsWithCounts.entries()].sort((a, b) => b[1] - a[1])).keys()
-    return Array.from(sortedQuestions)
+    // creates an array of the map and returns top 5 questions
+    return Array.from(sortedQuestions).slice(0, 5)
   }
 
   render() {
