@@ -29,6 +29,7 @@ import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
 import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography, Divider } from '@material-ui/core'
 import SelectBox from '../common/SelectBox'
+import GeneralQuestionForm from './GeneralQuestionForm'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -248,9 +249,10 @@ export class QuestionForm extends Component {
   }
 
   // handles checkboxes for correct answers
-  handleCheckForCorrectAnswers(e, option, i) {
+  handleCheckForCorrectAnswers = (option, i) => () => {
     // First if-else checks that only one correct answer can be checked if radiobutton is selected to be select one
     // Other ifs are to make sure that the selection can be changed and the change is made to correct card
+    console.log(this.state.answerOptions)
     const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
     if (checkedElements.length > 0 && this.state.selectedValueForRadioButton === 'selectOne') {
       if (checkedElements.length > 2) {
@@ -613,100 +615,21 @@ export class QuestionForm extends Component {
             )}
 
             {step === 2 && (questionType === 'GeneralQuestion') && (
-              <React.Fragment>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={this.handleClickOpen}
-                >
-                  Valitse kysymys listasta
-                </Button>
-                <div>
-                  <SimpleDialog
-                    selectedValue={this.state.selectedValue}
-                    open={this.state.modalOpen}
-                    onClose={this.handleClose}
-                    questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
-                  />
-                </div>
-                <div>
-                  <TextField
-                    label="Kysymyksesi"
-                    multiline
-                    fullWidth
-                    rowsMax="6"
-                    value={this.state.question}
-                    onChange={this.handleChange('question')}
-                    className="questionField"
-                    helperText="Kirjoita tähän kysymyksesi"
-                    margin="normal"
-                  />
-                </div>
-                <div className="radioButtonForm">
-                  <FormControl component="fieldset" className="RadioButtonFormControl">
-                    <FormLabel component="legend">Montako vastausta käyttäjä voi valita?</FormLabel>
-                    <RadioGroup
-                      aria-label="howManyAnswers"
-                      name="howManyAnswers"
-                      className="Radiogroup"
-                      value={this.state.selectedValueForRadioButton}
-                      onChange={this.handleChange('selectedValueForRadioButton')}
-                    >
-                      <FormControlLabel value="selectOne" control={<Radio color="primary" />} label="Voi valita yhden vastauksen" />
-                      <FormControlLabel value="selectMany" control={<Radio color="primary" />} label="Voi valita monta vastausta" />
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-
-                {this.state.answerOptions.map((option, i) => (
-                  <div key={i} className='cardContainer'>
-                    <Card>
-                      <CardContent style={{ marginBottom: '-25px' }}>
-                        <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, null)}>
-                            <CloseIcon />
-                          </IconButton>
-                        </CardActions>
-                        <TextField
-                          key={i}
-                          label="Vastaus"
-                          fullWidth
-                          multiline={true}
-                          inputProps={{
-                            maxLength: 45
-                            // if card content rendering multiple rows gets fixed, change length to higher:
-                            // maxLength: 255
-                          }}
-                          value={option.value}
-                          onChange={this.handleArrayChange(option, i, null)}
-                          className="answerField"
-                          helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää vastausvaihtoehto'"
-                          margin="normal"
-                        />
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                label="Oikea vastaus"
-                                onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
-                                checked={option.checked}
-                                color='primary'
-                              />
-                            }
-                            label="Oikea vastaus"
-                          />
-                        </FormGroup>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
-                <div className="addButtonContainer">
-                  <Button onClick={this.addAnswerOption(null)} fullWidth variant="contained" color="primary" aria-label="Add">
-                    + Lisää vastausvaihtoehto
-                  </Button>
-                </div>
-
-              </React.Fragment>
+              <GeneralQuestionForm
+                handleClickOpen={this.handleClickOpen}
+                selectedValue={this.state.selectedValue}
+                modalOpen={this.state.modalOpen}
+                handleClose={this.handleClose}
+                questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
+                question={this.state.question}
+                handleChange={this.handleChange}
+                selectedValueForRadioButton={this.state.selectedValueForRadioButton}
+                answerOptions={this.state.answerOptions}
+                removeAnswerOption={this.removeAnswerOption}
+                handleArrayChange={this.handleArrayChange}
+                handleCheckForCorrectAnswers={this.handleCheckForCorrectAnswers}
+                addAnswerOption={this.addAnswerOption}
+              />
             )}
 
             {step === 2 && (questionType === 'FillInTheBlank') && (
