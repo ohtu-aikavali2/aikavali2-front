@@ -72,7 +72,7 @@ export class QuestionForm extends Component {
     }
   }
 
-  async componentDidMount() {
+  async fetchData() {
     try {
       await this.props.fetchCourses()
       await this.props.fetchQuestions()
@@ -81,6 +81,15 @@ export class QuestionForm extends Component {
       console.log(e)
       return
     }
+  }
+
+  componentDidMount() {
+    this.fetchData()
+  }
+
+  reset() {
+    this.fetchData()
+    this.setState({ step: 0 })
   }
 
   // handles change of questionType, question and selected value of radiobutton in state
@@ -939,7 +948,7 @@ export class QuestionForm extends Component {
               )}
               {step > 4 && (
                 <Button
-                  onClick={() => this.setState({ step: 0 })}
+                  onClick={() => this.reset()}
                   variant="contained"
                   color="primary"
                 >
