@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import { connect } from 'react-redux'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -14,7 +13,21 @@ import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio } fr
 
 class GeneralQuestionForm extends Component {
   render() {
-    const { handleClickOpen, selectedValue, modalOpen, handleClose, questions, question, handleChange, selectedValueForRadioButton, answerOptions, removeAnswerOption, handleArrayChange, handleCheckForCorrectAnswers, addAnswerOption } = this.props
+    const {
+      handleClickOpen,
+      selectedValue,
+      modalOpen,
+      handleClose,
+      questions,
+      question,
+      handleChange,
+      selectedValueForRadioButton,
+      answerOptions,
+      removeAnswerOption,
+      handleArrayChange,
+      handleCheckForCorrectAnswers,
+      addAnswerOption
+    } = this.props
     return (
       <React.Fragment>
         <Button

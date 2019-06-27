@@ -4,7 +4,7 @@ import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
 import {
   TextField, Button, InputLabel, Checkbox, FormGroup, FormControlLabel,
-  Card, CardContent, CardActions, IconButton, Grid, Chip, Typography, Divider
+  Card, CardContent, CardActions, IconButton, Typography, Divider
 } from '@material-ui/core'
 import { Save as SaveIcon, Close as CloseIcon, Add as AddIcon, ArrowForward, ArrowBack as ArrowBackward } from '@material-ui/icons'
 import DumbQuestion from '../Question/DumbQuestion'
@@ -15,6 +15,7 @@ import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SelectBox from '../common/SelectBox'
 import GeneralQuestionForm from './GeneralQuestionForm'
+import FillQuestionForm from './FillQuestionForm'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -618,61 +619,15 @@ export class QuestionForm extends Component {
             )}
 
             {step === 2 && (questionType === 'FillInTheBlank') && (
-              <React.Fragment>
-                <div>
-                  <TextField
-                    label="Kysymyksesi"
-                    multiline
-                    fullWidth
-                    rowsMax="3"
-                    value={this.state.question}
-                    onChange={this.handleChange('question')}
-                    className="questionField"
-                    helperText="Kirjoita tähän kysymyksesi ja TYHJÄ niiden sanojen kohdalle, jotka käyttäjän tulee vastauksessaan täyttää"
-                    placeholder="Esimerkiksi: Hauki on TYHJÄ"
-                    margin="normal"
-                  />
-                </div>
-                <div>
-                  {this.state.answerOptions.map((option, i) => (
-                    <div key={i}>
-                      <Grid container spacing={40} direction="row" alignItems="center">
-                        <Grid item>
-                          <TextField
-                            label="Vastausvaihtoehto"
-                            value={option.newValue}
-                            onChange={this.handleArrayChange(option, i, null)}
-                            className="answerField"
-                            helperText='Kirjoita oikea vastausvaihtoehto sanalle ja tallenna sana painamalla +'
-                            margin="normal"
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Button onClick={this.addWord(i)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                            <AddIcon className='addIcon' />
-                          </Button>
-                        </Grid>
-                      </Grid>
-                      {this.state.answerOptions[i].correctValues.length === 0 ? '' : (
-                        <Typography variant="body1" gutterBottom>
-                          {i + 1}:n tyhjän kentän oikeat vastaukset:
-                        </Typography>
-                      )}
-                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {option.correctValues.map((item, j) => (
-                          <Chip key={j} label={item} onDelete={this.handleWordDelete(item, i)} style={{ marginRight: '5px', marginBottom: '10px' }} />
-                        ))}
-                      </div>
-
-                    </div>
-                  ))}
-                </div>
-                <div className="addButtonContain">
-                  <Button onClick={this.updateAllAnswerOptions} fullWidth variant="contained" color="primary" aria-label="Add">
-                    {this.state.answerOptions.length === 0 ? 'Luo vastausvaihtoehdoille kentät' : 'Päivitä vastausvaihtoehtojen kentät'}
-                  </Button>
-                </div>
-              </React.Fragment>
+              <FillQuestionForm
+                handleChange={this.handleChange}
+                handleArrayChange={this.handleArrayChange}
+                addWord={this.addWord}
+                handleWordDelete={this.handleWordDelete}
+                updateAllAnswerOptions={this.updateAllAnswerOptions}
+                question={this.state.question}
+                answerOptions={this.state.answerOptions}
+              />
             )}
 
             {step === 2 && (questionType === 'DragAndDrop') && (
