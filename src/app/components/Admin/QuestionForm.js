@@ -149,7 +149,6 @@ export class QuestionForm extends Component {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
       } else if (this.state.answerOptions.length < count) {
-        console.log('nyt tämä kun lisätään olemassa olevaan')
         copyAnswerOptions = [...this.state.answerOptions]
         for (let i = copyAnswerOptions.length; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
@@ -359,12 +358,11 @@ export class QuestionForm extends Component {
     if (direction === 'up') {
       copy[index] = { ...copy[index-1], cardId: copy[index-1].cardId + 1 }
       copy[index-1] = { ...temp, cardId: temp.cardId - 1 }
-      console.log(copy)
     } else {
       copy[index] = { ...copy[index+1], cardId: copy[index+1].cardId - 1 }
       copy[index+1] = { ...temp, cardId: temp.cardId + 1 }
-      console.log(copy)
     }
+
     this.setState({
       answerOptions: copy
     })
@@ -393,7 +391,6 @@ export class QuestionForm extends Component {
       this.setState({ step: this.state.step + 1 })
       const concepts = this.state.concepts.filter(c => this.state.checkedConceptIds.includes(c._id))
       if (this.state.questionType === 'FillInTheBlank') {
-        console.log(this.state.answerOptions.map(item => item.correctValues))
         this.props.postFillInTheBlankQuestion(
           this.state.groupId,
           this.state.question,
@@ -402,7 +399,6 @@ export class QuestionForm extends Component {
         )
       } else if (this.state.questionType === 'DragAndDrop') {
         let allAnswers = this.state.answerOptions.map(item => item.value).concat(this.state.fakeAnswerOptions.map(item => item.value))
-        console.log(allAnswers)
         this.props.postDragAndDropQuestion(
           this.state.groupId,
           this.state.question,
