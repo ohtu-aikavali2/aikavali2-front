@@ -16,6 +16,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   position: 'relative',
   margin: '0 0 8px 0',
   maxWidth: '600px',
+  cursor: isDragging ? 'grab' : 'grabbing',
   // change background colour if dragging
   background: isDragging ? 'lightgray' : 'white',
   // styles to apply on draggables
@@ -47,7 +48,7 @@ export class DraggableAnswerOption extends Component {
     const { classes, value, answering, dumb, index } = this.props
     const answer_lines = '```\n' + value + ''
     return (
-      <Draggable key={index} draggableId={`draggable-${index}`} index={index}>
+      <Draggable key={index} draggableId={`draggable-${index}`} index={index} shouldRespectForcePress={true} >
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -58,7 +59,7 @@ export class DraggableAnswerOption extends Component {
               provided.draggableProps.style
             )}
           >
-            <div className={classes.wrapper} style={{ cursor: 'default'}} id='container'>
+            <div className={classes.wrapper} style={{ cursor: 'grab' }} id='container'>
               <Card className={classes.paper} id='paper'>
                 <CardContent>
                   <Grid container wrap="nowrap" spacing={16} className='containerGrid'>

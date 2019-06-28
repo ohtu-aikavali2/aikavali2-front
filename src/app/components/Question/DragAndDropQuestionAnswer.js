@@ -35,7 +35,7 @@ export class DragAndDropAnswer extends Component {
     const { classes, value, dumb } = this.props
     const answer_lines = '```\n' + value + ''
     return (
-      <div className={classes.wrapper} style={{ cursor: 'default'}} id='container'>
+      <div className={classes.wrapper} style={{ cursor: 'default' }} id='container'>
         <Card className={classes.paper} id='paper'>
           <CardContent>
             <Grid container wrap="nowrap" spacing={16} className='containerGrid'>
