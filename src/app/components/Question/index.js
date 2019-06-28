@@ -27,7 +27,6 @@ const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)
   const [removed] = result.splice(startIndex, 1)
   result.splice(endIndex, 0, removed)
-  console.log('järjestetty', result)
   return result
 }
 
@@ -245,18 +244,15 @@ export class Question extends Component {
   }
 
   onDragEnd = (result) => {
-    console.log('tämä on result', result)
     if (!result.destination) {
       return
     }
     const copy = [...this.state.selectedList]
-    console.log('state on ', copy)
     const items = reorder(
       copy,
       result.source.index,
       result.destination.index
     )
-    console.log('järjestyt itemit',items)
     this.setState({
       selectedList: items
     })
