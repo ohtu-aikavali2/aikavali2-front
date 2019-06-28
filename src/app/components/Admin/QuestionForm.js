@@ -27,8 +27,9 @@ import {
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
 import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography, Divider } from '@material-ui/core'
+import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography } from '@material-ui/core'
 import SelectBox from '../common/SelectBox'
+import DragAndDropQuestionForm from './DragAndDropQuestionForm'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -119,6 +120,7 @@ export class QuestionForm extends Component {
     })
   }
 
+  // belogsToCorrectAnswers is used as a boolean value to check which state array should be updated, this check is mainly for drag and drop question
   addAnswerOption = (belongsToCorrectAnswers) => () => {
     if (this.state.answerOptions.length < 6 && this.state.questionType === 'GeneralQuestion') {
       this.setState({
@@ -147,7 +149,6 @@ export class QuestionForm extends Component {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
         }
       } else if (this.state.answerOptions.length < count) {
-        console.log('nyt tämä kun lisätään olemassa olevaan')
         copyAnswerOptions = [...this.state.answerOptions]
         for (let i = copyAnswerOptions.length; i < count; i++) {
           copyAnswerOptions.push({ location: i, correctValues: [], newValue: '' })
@@ -174,6 +175,7 @@ export class QuestionForm extends Component {
     event.preventDefault()
   }
 
+  // deletes a single chip
   handleWordDelete = (chipToDelete, i) => () => {
     let copy = this.state.answerOptions
     copy[i].correctValues = copy[i].correctValues.filter(item => item !== chipToDelete)
@@ -349,6 +351,23 @@ export class QuestionForm extends Component {
     })
   }
 
+  // swaps to cards in drag and drop question form
+  swapTwoCards = (direction, index) => () => {
+    let copy = [...this.state.answerOptions]
+    let temp = copy[index]
+    if (direction === 'up') {
+      copy[index] = { ...copy[index-1], cardId: copy[index-1].cardId + 1 }
+      copy[index-1] = { ...temp, cardId: temp.cardId - 1 }
+    } else {
+      copy[index] = { ...copy[index+1], cardId: copy[index+1].cardId - 1 }
+      copy[index+1] = { ...temp, cardId: temp.cardId + 1 }
+    }
+
+    this.setState({
+      answerOptions: copy
+    })
+  }
+
   handleSave = () => {
     if (this.state.course === '') {
       console.log('Course is not set!')
@@ -372,7 +391,6 @@ export class QuestionForm extends Component {
       this.setState({ step: this.state.step + 1 })
       const concepts = this.state.concepts.filter(c => this.state.checkedConceptIds.includes(c._id))
       if (this.state.questionType === 'FillInTheBlank') {
-        console.log(this.state.answerOptions.map(item => item.correctValues))
         this.props.postFillInTheBlankQuestion(
           this.state.groupId,
           this.state.question,
@@ -381,7 +399,6 @@ export class QuestionForm extends Component {
         )
       } else if (this.state.questionType === 'DragAndDrop') {
         let allAnswers = this.state.answerOptions.map(item => item.value).concat(this.state.fakeAnswerOptions.map(item => item.value))
-        console.log(allAnswers)
         this.props.postDragAndDropQuestion(
           this.state.groupId,
           this.state.question,
@@ -768,78 +785,16 @@ export class QuestionForm extends Component {
             )}
 
             {step === 2 && (questionType === 'DragAndDrop') && (
-              <React.Fragment>
-                <TextField
-                  label="Kysymyksen otsikko"
-                  fullWidth
-                  value={this.state.question}
-                  onChange={this.handleChange('question')}
-                  className="questionField"
-                  placeholder="Esim. Järjestä palat siten, että rivit ovat oikeassa järjestyksessä"
-                  margin="normal"
-                />
-                <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
-                <Typography variant="title" gutterBottom>
-                  Luo haluamasi oikea järjestys
-                </Typography>
-                {this.state.answerOptions.map((option, i) => (
-                  <div className='cardContainer' key={i}>
-                    <Card>
-                      <CardContent style={{ marginBottom: '-25px' }}>
-                        <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, true)}>
-                            <CloseIcon />
-                          </IconButton>
-                        </CardActions>
-                        <TextField
-                          label="Teksti riville"
-                          fullWidth
-                          value={option.value}
-                          onChange={this.handleArrayChange(option, i, true)}
-                          className="answerField"
-                          helperText="Kirjoita teksti kenttään, voit lisätä tekstikenttiä painamalla '+ Lisää kenttä'"
-                          margin="normal"
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
-
-                <Button onClick={this.addAnswerOption(true)} fullWidth variant="contained" color="primary" aria-label="Add">
-                  + Lisää kenttä
-                </Button>
-                <Divider variant='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
-                <Typography variant='title' gutterBottom>
-                  Voit luoda myös vastaukseen kuulumattomia rivejä
-                </Typography>
-
-                {this.state.fakeAnswerOptions.map((option, i) => (
-                  <div className='cardContainer' key={i}>
-                    <Card>
-                      <CardContent style={{ marginBottom: '-25px' }}>
-                        <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, false)}>
-                            <CloseIcon />
-                          </IconButton>
-                        </CardActions>
-                        <TextField
-                          label="Teksti vastaukseen kuulumattomalle riville"
-                          fullWidth
-                          value={option.value}
-                          onChange={this.handleArrayChange(option, i, false)}
-                          className="answerField"
-                          helperText="Kirjoita teksti riville, joka ei kuulu vastaukseen. Voit lisätä rivejä painamalla '+ Lisää vastaukseen kuulumaton rivi'"
-                          margin="normal"
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
-                <Button onClick={this.addAnswerOption(false)} fullWidth variant="contained" color="primary" aria-label="Add">
-                  + Lisää vastaukseen kuulumaton rivi
-                </Button>
-
-              </React.Fragment>
+              <DragAndDropQuestionForm
+                handleChange={this.handleChange}
+                handleArrayChange={this.handleArrayChange}
+                addAnswerOption={this.addAnswerOption}
+                removeAnswerOption={this.removeAnswerOption}
+                swapTwoCards={this.swapTwoCards}
+                question={this.state.question}
+                answerOptions={this.state.answerOptions}
+                fakeAnswerOptions={this.state.fakeAnswerOptions}
+              />
             )}
 
             {step === 3 && (
