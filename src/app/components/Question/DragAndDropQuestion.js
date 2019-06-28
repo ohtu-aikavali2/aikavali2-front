@@ -37,16 +37,16 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
           <Typography variant="title" gutterBottom>
             {question.value}
           </Typography>
-          <Typography variant="title2" gutterBottom>
-            Lisää ensiksi vastaukseen kuuluvat vaihtoehdot + napeista
+          <Typography variant="subtitle1" gutterBottom>
+            Lisää ensin vastaukseen kuuluvat vaihtoehdot napeista (+)
           </Typography>
         </div>
       </div>
       {notSelected.map((option, i) => <DragAndDropQuestionAnswer key={i} value={option} selectedList={selectedList} handleSelect={handleSelect} dumb={dumb} />)}
       <Divider variat='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
       {(dumb || selectedList.length < 1)
-        ? (
-          <Typography variant="title" gutterBottom>
+        ? !(dumb || answered) && (
+          <Typography variant="title" gutterBottom style={{ paddingBottom: 100 }}>
             Ei vielä valittuja paloja
           </Typography>
         ) : (
@@ -54,7 +54,7 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
             <Typography variant="title" gutterBottom>
               Valitut palat
             </Typography>
-            <Typography variant="body2" gutterBottom>
+            <Typography variant="subtitle1" gutterBottom>
               Voit muuttaa järjestystä raahaamalla paloja
             </Typography>
             <DragDropContext onDragEnd={onDragEnd}>
