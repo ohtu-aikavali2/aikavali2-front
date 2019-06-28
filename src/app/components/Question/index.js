@@ -256,7 +256,7 @@ export class Question extends Component {
       result.source.index,
       result.destination.index
     )
-    console.log('järjestyt itemit',items)
+    console.log('järjestyt itemit', items)
     this.setState({
       selectedList: items
     })
@@ -320,7 +320,7 @@ export class Question extends Component {
             handleRemove={this.removeFromSelectedList}
             onDragEnd={this.onDragEnd}
             userAnswer={userAnswer}
-            dumb={false}
+            dumb={(userAnswer && this.state.selectedList[0] && this.state.selectedList[0].value === 'Note: questionSkipped')}
           />
         )}
         {!userAnswer && !loading && (
