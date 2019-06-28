@@ -13,13 +13,13 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
 
   const notSelected = question.options.filter(f => !selectedList.includes(f))
 
-  const getListStyle = isDraggingOver => ({
+  const getListStyle = (isDraggingOver, answered) => ({
     background: isDraggingOver ? 'white' : '',
     margin: '0 auto',
     width: '600px',
     maxWidth: '98%',
     display: 'inline-block',
-    paddingBottom: 100
+    paddingBottom: answered ? 0 : 100
   })
 
   return (
@@ -43,36 +43,37 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
         </div>
       </div>
       {notSelected.map((option, i) => <DragAndDropQuestionAnswer key={i} value={option} selectedList={selectedList} handleSelect={handleSelect} dumb={dumb} />)}
-      <Divider variat='middle' style={{ marginTop: '20px', marginBottom: '20px' }}/>
-      {selectedList.length < 1 ? (
-        <Typography variant="title" gutterBottom>
-          Ei vielä valittuja paloja
-        </Typography>
-      ) : (
-        <div>
+      <Divider variat='middle' style={{ marginTop: '20px', marginBottom: '20px' }} />
+      {(dumb || selectedList.length < 1)
+        ? (
           <Typography variant="title" gutterBottom>
-            Valitut palat
+            Ei vielä valittuja paloja
           </Typography>
-          <Typography variant="body2" gutterBottom>
-            Voit muuttaa järjestystä raahaamalla paloja
-          </Typography>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable-0">
-              {(provided, snapshot) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
-                >
-                  {selectedList.map((option, i) => (
-                    <DraggableAnswerOption key={i} value={option} selectedList={selectedList} index={i} handleRemove={handleRemove} />
-                  ))}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
-      )}
+        ) : (
+          <div>
+            <Typography variant="title" gutterBottom>
+              Valitut palat
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              Voit muuttaa järjestystä raahaamalla paloja
+            </Typography>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable-0">
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver, answered)}
+                  >
+                    {selectedList.map((option, i) => (
+                      <DraggableAnswerOption key={i} value={option} selectedList={selectedList} index={i} handleRemove={handleRemove} />
+                    ))}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </div>
+        )}
 
     </div>
   )
