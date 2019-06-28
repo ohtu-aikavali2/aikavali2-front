@@ -1,34 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import InputLabel from '@material-ui/core/InputLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import SaveIcon from '@material-ui/icons/Save'
-import CloseIcon from '@material-ui/icons/Close'
-import AddIcon from '@material-ui/icons/Add'
-import ArrowForward from '@material-ui/icons/ArrowForward'
-import ArrowBackward from '@material-ui/icons/ArrowBack'
-import DumbQuestion from '../Question/DumbQuestion'
 import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
+import { TextField, Button, InputLabel, Checkbox, FormGroup, FormControlLabel } from '@material-ui/core'
+import { Save as SaveIcon, Add as AddIcon, ArrowForward, ArrowBack as ArrowBackward } from '@material-ui/icons'
+import DumbQuestion from '../Question/DumbQuestion'
 import ConfirmPopup from './Popups/ConfirmPopup'
 import './admin.css'
-import {
-  postFillInTheBlankQuestion,
-  postGeneralQuestion,
-  postDragAndDropQuestion,
-  fetchQuestions
-} from '../../reducers/actions/questionActions'
+import { postFillInTheBlankQuestion, postGeneralQuestion, postDragAndDropQuestion, fetchQuestions } from '../../reducers/actions/questionActions'
 import { fetchCourses } from '../../reducers/actions/courseActions'
 import conceptService from '../../services/conceptService'
-import SimpleDialog from '../common/Dialog'
-import { CardActions, IconButton, FormControl, FormLabel, RadioGroup, Radio, Grid, Chip, Typography } from '@material-ui/core'
 import SelectBox from '../common/SelectBox'
+import GeneralQuestionForm from './GeneralQuestionForm'
+import FillQuestionForm from './FillQuestionForm'
 import DragAndDropQuestionForm from './DragAndDropQuestionForm'
 // so far the question types are fixed
 const questionTypes = [
@@ -250,9 +234,10 @@ export class QuestionForm extends Component {
   }
 
   // handles checkboxes for correct answers
-  handleCheckForCorrectAnswers(e, option, i) {
+  handleCheckForCorrectAnswers = (option, i) => () => {
     // First if-else checks that only one correct answer can be checked if radiobutton is selected to be select one
     // Other ifs are to make sure that the selection can be changed and the change is made to correct card
+    console.log(this.state.answerOptions)
     const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
     if (checkedElements.length > 0 && this.state.selectedValueForRadioButton === 'selectOne') {
       if (checkedElements.length > 2) {
@@ -630,158 +615,33 @@ export class QuestionForm extends Component {
             )}
 
             {step === 2 && (questionType === 'GeneralQuestion') && (
-              <React.Fragment>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={this.handleClickOpen}
-                >
-                  Valitse kysymys listasta
-                </Button>
-                <div>
-                  <SimpleDialog
-                    selectedValue={this.state.selectedValue}
-                    open={this.state.modalOpen}
-                    onClose={this.handleClose}
-                    questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
-                  />
-                </div>
-                <div>
-                  <TextField
-                    label="Kysymyksesi"
-                    multiline
-                    fullWidth
-                    rowsMax="6"
-                    value={this.state.question}
-                    onChange={this.handleChange('question')}
-                    className="questionField"
-                    helperText="Kirjoita tähän kysymyksesi"
-                    margin="normal"
-                  />
-                </div>
-                <div className="radioButtonForm">
-                  <FormControl component="fieldset" className="RadioButtonFormControl">
-                    <FormLabel component="legend">Montako vastausta käyttäjä voi valita?</FormLabel>
-                    <RadioGroup
-                      aria-label="howManyAnswers"
-                      name="howManyAnswers"
-                      className="Radiogroup"
-                      value={this.state.selectedValueForRadioButton}
-                      onChange={this.handleChange('selectedValueForRadioButton')}
-                    >
-                      <FormControlLabel value="selectOne" control={<Radio color="primary" />} label="Voi valita yhden vastauksen" />
-                      <FormControlLabel value="selectMany" control={<Radio color="primary" />} label="Voi valita monta vastausta" />
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-
-                {this.state.answerOptions.map((option, i) => (
-                  <div key={i} className='cardContainer'>
-                    <Card>
-                      <CardContent style={{ marginBottom: '-25px' }}>
-                        <CardActions className='cardActionArea'>
-                          <IconButton aria-label="remove" onClick={this.removeAnswerOption(option, i, null)}>
-                            <CloseIcon />
-                          </IconButton>
-                        </CardActions>
-                        <TextField
-                          key={i}
-                          label="Vastaus"
-                          fullWidth
-                          multiline={true}
-                          inputProps={{
-                            maxLength: 45
-                            // if card content rendering multiple rows gets fixed, change length to higher:
-                            // maxLength: 255
-                          }}
-                          value={option.value}
-                          onChange={this.handleArrayChange(option, i, null)}
-                          className="answerField"
-                          helperText="Kirjoita vastausvaihtoehto kysymyksellesi, lisää vaihtoehtoja painamalla '+ Lisää vastausvaihtoehto'"
-                          margin="normal"
-                        />
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                label="Oikea vastaus"
-                                onChange={e => this.handleCheckForCorrectAnswers(e, option, i)}
-                                checked={option.checked}
-                                color='primary'
-                              />
-                            }
-                            label="Oikea vastaus"
-                          />
-                        </FormGroup>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
-                <div className="addButtonContainer">
-                  <Button onClick={this.addAnswerOption(null)} fullWidth variant="contained" color="primary" aria-label="Add">
-                    + Lisää vastausvaihtoehto
-                  </Button>
-                </div>
-
-              </React.Fragment>
+              <GeneralQuestionForm
+                handleClickOpen={this.handleClickOpen}
+                selectedValue={this.state.selectedValue}
+                modalOpen={this.state.modalOpen}
+                handleClose={this.handleClose}
+                questions={this.props.questions.filter(item => item.group._id === this.state.groupId)}
+                question={this.state.question}
+                handleChange={this.handleChange}
+                selectedValueForRadioButton={this.state.selectedValueForRadioButton}
+                answerOptions={this.state.answerOptions}
+                removeAnswerOption={this.removeAnswerOption}
+                handleArrayChange={this.handleArrayChange}
+                handleCheckForCorrectAnswers={this.handleCheckForCorrectAnswers}
+                addAnswerOption={this.addAnswerOption}
+              />
             )}
 
             {step === 2 && (questionType === 'FillInTheBlank') && (
-              <React.Fragment>
-                <div>
-                  <TextField
-                    label="Kysymyksesi"
-                    multiline
-                    fullWidth
-                    rowsMax="3"
-                    value={this.state.question}
-                    onChange={this.handleChange('question')}
-                    className="questionField"
-                    helperText="Kirjoita tähän kysymyksesi ja TYHJÄ niiden sanojen kohdalle, jotka käyttäjän tulee vastauksessaan täyttää"
-                    placeholder="Esimerkiksi: Hauki on TYHJÄ"
-                    margin="normal"
-                  />
-                </div>
-                <div>
-                  {this.state.answerOptions.map((option, i) => (
-                    <div key={i}>
-                      <Grid container spacing={40} direction="row" alignItems="center">
-                        <Grid item>
-                          <TextField
-                            label="Vastausvaihtoehto"
-                            value={option.newValue}
-                            onChange={this.handleArrayChange(option, i, null)}
-                            className="answerField"
-                            helperText='Kirjoita oikea vastausvaihtoehto sanalle ja tallenna sana painamalla +'
-                            margin="normal"
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Button onClick={this.addWord(i)} variant="fab" mini color="primary" aria-label="Add" className='addButton'>
-                            <AddIcon className='addIcon' />
-                          </Button>
-                        </Grid>
-                      </Grid>
-                      {this.state.answerOptions[i].correctValues.length === 0 ? '' : (
-                        <Typography variant="body1" gutterBottom>
-                          {i + 1}:n tyhjän kentän oikeat vastaukset:
-                        </Typography>
-                      )}
-                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {option.correctValues.map((item, j) => (
-                          <Chip key={j} label={item} onDelete={this.handleWordDelete(item, i)} style={{ marginRight: '5px', marginBottom: '10px' }} />
-                        ))}
-                      </div>
-
-                    </div>
-                  ))}
-                </div>
-                <div className="addButtonContain">
-                  <Button onClick={this.updateAllAnswerOptions} fullWidth variant="contained" color="primary" aria-label="Add">
-                    {this.state.answerOptions.length === 0 ? 'Luo vastausvaihtoehdoille kentät' : 'Päivitä vastausvaihtoehtojen kentät'}
-                  </Button>
-                </div>
-              </React.Fragment>
+              <FillQuestionForm
+                handleChange={this.handleChange}
+                handleArrayChange={this.handleArrayChange}
+                addWord={this.addWord}
+                handleWordDelete={this.handleWordDelete}
+                updateAllAnswerOptions={this.updateAllAnswerOptions}
+                question={this.state.question}
+                answerOptions={this.state.answerOptions}
+              />
             )}
 
             {step === 2 && (questionType === 'DragAndDrop') && (
@@ -835,7 +695,13 @@ export class QuestionForm extends Component {
                   </Button>
                 </div>
 
-                <ConfirmPopup title={`Oletko varma, että haluat lisätä uuden käsitteen "${this.state.newConcept}" ?`} description1={'Valitsemalla OK käsite lisätään heti kurssin käsitteisiin.'} okText={'OK'} toggle={this.toggleConfirmPopup} okClick={() => this.addNewConcept(this.state.newConcept)} checked={this.state.showConfirmPopup} timeout={200} />
+                <ConfirmPopup
+                  title={`Oletko varma, että haluat lisätä uuden käsitteen "${this.state.newConcept}" ?`}
+                  description1={'Valitsemalla OK käsite lisätään heti kurssin käsitteisiin.'}
+                  okText={'OK'}
+                  toggle={this.toggleConfirmPopup}
+                  okClick={() => this.addNewConcept(this.state.newConcept)} checked={this.state.showConfirmPopup} timeout={200}
+                />
               </React.Fragment>
             )}
           </form>
