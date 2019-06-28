@@ -37,11 +37,18 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
           <Typography variant="title" gutterBottom>
             {question.value}
           </Typography>
+          <Typography variant="title2" gutterBottom>
+            Lisää ensiksi vastaukseen kuuluvat vaihtoehdot + napeista
+          </Typography>
         </div>
       </div>
       {notSelected.map((option, i) => <DragAndDropQuestionAnswer key={i} value={option} selectedList={selectedList} handleSelect={handleSelect} dumb={dumb} />)}
       <Divider variat='middle' style={{ marginTop: '20px', marginBottom: '20px' }}/>
-      {selectedList.length < 1 ? '' : (
+      {selectedList.length < 1 ? (
+        <Typography variant="title" gutterBottom>
+          Ei vielä valittuja paloja
+        </Typography>
+      ) : (
         <div>
           <Typography variant="title" gutterBottom>
             Valitut palat
