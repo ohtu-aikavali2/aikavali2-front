@@ -237,7 +237,6 @@ export class QuestionForm extends Component {
   handleCheckForCorrectAnswers = (option, i) => () => {
     // First if-else checks that only one correct answer can be checked if radiobutton is selected to be select one
     // Other ifs are to make sure that the selection can be changed and the change is made to correct card
-    console.log(this.state.answerOptions)
     const checkedElements = this.state.answerOptions.filter(item => item.checked === true)
     if (checkedElements.length > 0 && this.state.selectedValueForRadioButton === 'selectOne') {
       if (checkedElements.length > 2) {
@@ -269,6 +268,7 @@ export class QuestionForm extends Component {
     }
   }
 
+  // Adding ID's of selected concepts to state and removing unselected ones
   handleCheckConcept(conceptId) {
     this.setState(state => ({
       checkedConceptIds: state.checkedConceptIds.includes(conceptId)
@@ -277,6 +277,7 @@ export class QuestionForm extends Component {
     }))
   }
 
+  // handles clicking SelectBoxes
   handleSelectType(type) {
     this.setState(state => ({
       questionType: state.questionType === type ? '' : type
@@ -296,6 +297,7 @@ export class QuestionForm extends Component {
     }))
   }
 
+  // posting a new concept and the id to state
   postNewConcept = (concept) => {
     conceptService
       .postConcept(concept)
@@ -330,6 +332,7 @@ export class QuestionForm extends Component {
     this.setState({ showConfirmPopup: !this.state.showConfirmPopup })
   }
 
+  // after the course is selected, add concepts from course to state
   setInitialConcepts = () => {
     if (this.state.course.concepts) this.setState({
       concepts: this.state.course.concepts
@@ -341,11 +344,11 @@ export class QuestionForm extends Component {
     let copy = [...this.state.answerOptions]
     let temp = copy[index]
     if (direction === 'up') {
-      copy[index] = { ...copy[index-1], cardId: copy[index-1].cardId + 1 }
-      copy[index-1] = { ...temp, cardId: temp.cardId - 1 }
+      copy[index] = { ...copy[index - 1], cardId: copy[index - 1].cardId + 1 }
+      copy[index - 1] = { ...temp, cardId: temp.cardId - 1 }
     } else {
-      copy[index] = { ...copy[index+1], cardId: copy[index+1].cardId - 1 }
-      copy[index+1] = { ...temp, cardId: temp.cardId + 1 }
+      copy[index] = { ...copy[index + 1], cardId: copy[index + 1].cardId - 1 }
+      copy[index + 1] = { ...temp, cardId: temp.cardId + 1 }
     }
 
     this.setState({
@@ -550,7 +553,7 @@ export class QuestionForm extends Component {
     if (this.state.step > 1) {
       question.item.options = this.state.answerOptions.map(item => item.value)
     }
-    // setting concepts to hold existing ones, once, after the course has been chosen
+    // setting pre-existing concepts to state after the course has been chosen
     if (this.state.concepts.length < 1) this.setInitialConcepts()
   }
 
