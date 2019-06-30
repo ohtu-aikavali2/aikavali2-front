@@ -710,7 +710,14 @@ export class QuestionForm extends Component {
           </form>
         </div>
         <div>
-          <StepBar step={this.state.step} stepBack={this.stepBack} stepForward={this.stepForward} handleSave={this.handleSave} handleNewQuestion={this.handleNewQuestion} history={this.props.history} />
+          <StepBar
+            step={this.state.step}
+            stepBack={this.stepBack}
+            stepForward={this.stepForward}
+            handleSave={this.handleSave}
+            handleNewQuestion={this.handleNewQuestion}
+            history={this.props.history}
+          />
         </div>
       </div>
     )
