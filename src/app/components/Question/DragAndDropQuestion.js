@@ -26,7 +26,7 @@ export const DragAndDropQuestion = ({ question, topLeftContent, topRightContent,
     <div className='dragAndDropQuestion'>
       {userAnswer && (
         <svg style={{ width: '24px', height: '24px', viewBox: '0 0 24 24', paddingRight: '5px', paddingTop: '10px', paddingBottom: '10px' }}>
-          <path fill="#000000" d={userAnswer.isCorrect ? checkFilled : cross} />
+          <path fill={userAnswer.isCorrect ? 'green' : 'red'} d={userAnswer.isCorrect ? checkFilled : cross} />
         </svg>
       )}
       <Collapse in={answered} timeout={400}>
