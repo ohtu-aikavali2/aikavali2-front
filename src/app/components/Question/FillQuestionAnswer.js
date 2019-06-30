@@ -44,7 +44,9 @@ export class FillQuestionAnswer extends Component {
 
   determineTextFieldCorrectness = (i) => {
     const { userAnswer, selectedList } = this.props
+    // Finding the keywords for blank fields with a regex, inserting empty spaces to separate them from other words and filtering out empty words
     let w = this.props.question.value.replace(/TYHJÄ/g, ' TYHJÄ ').split(' ').filter(c => !!c)
+    // Tracking which blank field corresponds to which element in an answer
     if (userAnswer) {
       let k = 0
       for (let j = 0; j < w.length; j++) {
