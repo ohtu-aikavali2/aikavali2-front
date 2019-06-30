@@ -30,7 +30,7 @@ export class CoursePage extends Component {
           {coursesLoading && <Loading />}
           {courses && courses.map(course => (
             <Course
-              key={course.name}
+              key={course._id}
               title={course.name}
               onClick={() => this.redirect(`/courses/${course._id}`)}
               imageSrc={course.imageSrc}
