@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Steps from 'react-simple-steps'
 import Notifications, { notify } from 'react-notify-toast'
 import { TextField, Button, InputLabel, Checkbox, FormGroup, FormControlLabel } from '@material-ui/core'
-import { Save as SaveIcon, Add as AddIcon, ArrowForward, ArrowBack as ArrowBackward } from '@material-ui/icons'
+import { Add as AddIcon } from '@material-ui/icons'
 import DumbQuestion from '../Question/DumbQuestion'
 import ConfirmPopup from './Popups/ConfirmPopup'
 import './admin.css'
@@ -14,6 +13,7 @@ import SelectBox from '../common/SelectBox'
 import GeneralQuestionForm from './GeneralQuestionForm'
 import FillQuestionForm from './FillQuestionForm'
 import DragAndDropQuestionForm from './DragAndDropQuestionForm'
+import StepBar from '../common/StepBar'
 // so far the question types are fixed
 const questionTypes = [
   {
@@ -709,78 +709,8 @@ export class QuestionForm extends Component {
             )}
           </form>
         </div>
-
-        <div className="stepContainer">
-          <Steps
-            disabled
-            current={this.state.step}
-            steps={[
-              'Valitse kurssi',
-              'Valitse tyyppi',
-              'Täytä kentät',
-              'Valitse käsitteet',
-              'Tallenna'
-            ]}
-          />
-          <div
-            className="stepperButtonContainer"
-            style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}
-          >
-            <div>
-              <Button
-                disabled={this.state.step < 1 || this.state.step > 4}
-                onClick={this.stepBack}
-                variant="contained"
-                className="backwardButton"
-              >
-                {<ArrowBackward className="backwardIcon" />}
-                Takaisin
-              </Button>
-            </div>
-            <div>
-              <Button
-                variant="contained"
-                onClick={() => this.props.history.push('/courses')}
-                color="primary"
-              >
-                Etusivu
-              </Button>
-            </div>
-            <div>
-              {step < 4 && (
-                <Button
-                  style={{ float: 'right' }}
-                  onClick={() => this.stepForward()}
-                  variant="contained"
-                  className="forwardButton"
-                >
-                  Seuraava
-                  {<ArrowForward className="forwardIcon" />}
-                </Button>
-              )}
-              {step === 4 && (
-                <Button
-                  color="primary"
-                  onClick={() => this.handleSave()}
-                  variant="contained"
-                  className="saveButton"
-                >
-                  Tallenna
-                  {<SaveIcon className="saveIcon" />}
-                </Button>
-              )}
-              {step > 4 && (
-                <Button
-                  onClick={() => this.handleNewQuestion()}
-                  variant="contained"
-                  color="primary"
-                >
-                  Uusi kysymys
-                  <AddIcon className="addIcon" />
-                </Button>
-              )}
-            </div>
-          </div>
+        <div>
+          <StepBar step={this.state.step} stepBack={this.stepBack} stepForward={this.stepForward} handleSave={this.handleSave} handleNewQuestion={this.handleNewQuestion} history={this.props.history} />
         </div>
       </div>
     )
